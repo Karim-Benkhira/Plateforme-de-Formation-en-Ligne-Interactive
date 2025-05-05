@@ -17,17 +17,56 @@ class CourseController extends Controller
     public function __construct()
     {
         $this->middleware('auth')->except(['index', 'show']);
-        $this->middleware('role:teacher')->except(['index', 'show']);
+        $this->middleware('role:teacher')->except(['index', 'show', 'enroll']);
     }
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        $courses = Course::with('teacher')
-            ->where('status', 'active')
-            ->orderBy('created_at', 'desc')
-            ->paginate(9);
+        $query = Course::with('teacher');
+
+        // Apply search filter
+        if ($request->filled('search')) {
+            $search = $request->search;
+            $query->where(function ($q) use ($search) {
+                $q->where('title', 'like', "%{$search}%")
+                  ->orWhere('description', 'like', "%{$search}%");
+            });
+        }
+
+        // Apply status filter
+        if ($request->filled('status')) {
+            $query->where('status', $request->status);
+        } else {
+            // Default to showing active courses
+            $query->where('status', 'active');
+        }
+
+        // Apply sorting
+        if ($request->filled('sort')) {
+            switch ($request->sort) {
+                case 'newest':
+                    $query->orderBy('created_at', 'desc');
+                    break;
+                case 'oldest':
+                    $query->orderBy('created_at', 'asc');
+                    break;
+                case 'title_asc':
+                    $query->orderBy('title', 'asc');
+                    break;
+                case 'title_desc':
+                    $query->orderBy('title', 'desc');
+                    break;
+                default:
+                    $query->orderBy('created_at', 'desc');
+            }
+        } else {
+            // Default sorting
+            $query->orderBy('created_at', 'desc');
+        }
+
+        $courses = $query->paginate(9)->withQueryString();
 
         return view('courses.index', compact('courses'));
     }
@@ -74,9 +113,9 @@ class CourseController extends Controller
     public function show(Course $course)
     {
         $course->load(['teacher', 'modules.lessons']);
+        $modules = $course->modules()->with('lessons')->orderBy('order')->get();
 
         // Check if the user is enrolled in this course
-        $isEnrolled = false;
         $enrollment = null;
 
         if (auth()->check()) {
@@ -84,11 +123,44 @@ class CourseController extends Controller
             $enrollment = Enrollment::where('user_id', $user->id)
                 ->where('course_id', $course->id)
                 ->first();
-
-            $isEnrolled = $enrollment !== null;
         }
 
-        return view('courses.show', compact('course', 'isEnrolled', 'enrollment'));
+        return view('courses.show', compact('course', 'modules', 'enrollment'));
+    }
+
+    /**
+     * Enroll a student in a course.
+     *
+     * @param  \App\Models\Course  $course
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    public function enroll(Course $course)
+    {
+        $user = auth()->user();
+
+        // Check if the user is already enrolled
+        $existingEnrollment = Enrollment::where('user_id', $user->id)
+            ->where('course_id', $course->id)
+            ->first();
+
+        if ($existingEnrollment) {
+            return redirect()->route('student.courses.show', $course)
+                ->with('info', 'You are already enrolled in this course.');
+        }
+
+        // Create new enrollment
+        $enrollment = new Enrollment([
+            'user_id' => $user->id,
+            'course_id' => $course->id,
+            'status' => 'active',
+            'progress' => 0,
+            'enrolled_at' => now()
+        ]);
+
+        $enrollment->save();
+
+        return redirect()->route('student.courses.show', $course)
+            ->with('success', 'You have successfully enrolled in this course!');
     }
 
     /**

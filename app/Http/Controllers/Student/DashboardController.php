@@ -33,12 +33,52 @@ class DashboardController extends Controller
     public function index()
     {
         $user = auth()->user();
-        $enrollments = $user->enrolledCourses;
-        $totalCourses = $enrollments->count();
-        $completedCourses = $enrollments->where('pivot.status', 'completed')->count();
-        $recentQuizResults = $user->quizResults()->with('quiz')->latest()->take(5)->get();
 
-        return view('student.dashboard', compact('enrollments', 'totalCourses', 'completedCourses', 'recentQuizResults'));
+        // Get statistics
+        $stats = [
+            'enrolledCourses' => $user->enrollments()->count(),
+            'completedLessons' => $user->completedLessons()->count(),
+            'passedQuizzes' => $user->quizResults()->where('passed', true)->count(),
+        ];
+
+        // Get recent courses
+        $recentCourses = $user->enrollments()
+            ->with('course.teacher')
+            ->orderBy('updated_at', 'desc')
+            ->take(5)
+            ->get();
+
+        // Get recent quiz results
+        $recentResults = $user->quizResults()
+            ->with('quiz.lesson.module.course')
+            ->orderBy('created_at', 'desc')
+            ->take(5)
+            ->get();
+
+        // Get continue learning data
+        $continueLearning = $user->enrollments()
+            ->with(['course', 'lastAccessedLesson'])
+            ->where('status', 'active')
+            ->orderBy('last_accessed_at', 'desc')
+            ->first();
+
+        if ($continueLearning) {
+            $continueLearning->completed_lessons_count = $user->completedLessons()
+                ->whereHas('module', function ($query) use ($continueLearning) {
+                    $query->where('course_id', $continueLearning->course_id);
+                })
+                ->count();
+
+            $continueLearning->total_lessons_count = Lesson::whereHas('module', function ($query) use ($continueLearning) {
+                $query->where('course_id', $continueLearning->course_id);
+            })->count();
+
+            $continueLearning->progress = $continueLearning->total_lessons_count > 0
+                ? round(($continueLearning->completed_lessons_count / $continueLearning->total_lessons_count) * 100)
+                : 0;
+        }
+
+        return view('student.dashboard', compact('stats', 'recentCourses', 'recentResults', 'continueLearning'));
     }
 
     /**
@@ -78,7 +118,44 @@ class DashboardController extends Controller
             ->orderBy('order')
             ->get();
 
-        return view('student.courses.show', compact('course', 'modules', 'enrollment'));
+        // Get completed lessons
+        $completedLessonIds = $user->completedLessons()
+            ->whereHas('module', function ($query) use ($course) {
+                $query->where('course_id', $course->id);
+            })
+            ->pluck('id')
+            ->toArray();
+
+        // Calculate progress
+        $totalLessons = Lesson::whereHas('module', function ($query) use ($course) {
+            $query->where('course_id', $course->id);
+        })->count();
+
+        $completedLessons = count($completedLessonIds);
+        $progress = $totalLessons > 0 ? round(($completedLessons / $totalLessons) * 100) : 0;
+
+        // Get current module and lesson if any
+        $currentLesson = null;
+        $currentModule = null;
+
+        if ($enrollment->last_accessed_lesson_id) {
+            $currentLesson = Lesson::find($enrollment->last_accessed_lesson_id);
+            if ($currentLesson) {
+                $currentModule = $currentLesson->module;
+            }
+        }
+
+        return view('student.courses.show', compact(
+            'course',
+            'modules',
+            'enrollment',
+            'completedLessonIds',
+            'completedLessons',
+            'totalLessons',
+            'progress',
+            'currentLesson',
+            'currentModule'
+        ));
     }
 
     /**
@@ -123,9 +200,116 @@ class DashboardController extends Controller
             abort(403, 'You are not enrolled in this course');
         }
 
-        $quizzes = Quiz::where('lesson_id', $lesson->id)->get();
+        // Update last accessed lesson
+        $enrollment->update([
+            'last_accessed_lesson_id' => $lesson->id,
+            'last_accessed_at' => now()
+        ]);
 
-        return view('student.lessons.show', compact('lesson', 'quizzes'));
+        // Get completed lessons
+        $completedLessonIds = $user->completedLessons()
+            ->whereHas('module', function ($query) use ($module) {
+                $query->where('course_id', $module->course_id);
+            })
+            ->pluck('id')
+            ->toArray();
+
+        // Get previous and next lessons for navigation
+        $previousLesson = Lesson::where('module_id', $lesson->module_id)
+            ->where('order', '<', $lesson->order)
+            ->orderBy('order', 'desc')
+            ->first();
+
+        $nextLesson = Lesson::where('module_id', $lesson->module_id)
+            ->where('order', '>', $lesson->order)
+            ->orderBy('order', 'asc')
+            ->first();
+
+        if (!$nextLesson) {
+            // If no next lesson in current module, get first lesson of next module
+            $nextModule = Module::where('course_id', $module->course_id)
+                ->where('order', '>', $module->order)
+                ->orderBy('order', 'asc')
+                ->first();
+
+            if ($nextModule) {
+                $nextLesson = Lesson::where('module_id', $nextModule->id)
+                    ->orderBy('order', 'asc')
+                    ->first();
+            }
+        }
+
+        if (!$previousLesson) {
+            // If no previous lesson in current module, get last lesson of previous module
+            $previousModule = Module::where('course_id', $module->course_id)
+                ->where('order', '<', $module->order)
+                ->orderBy('order', 'desc')
+                ->first();
+
+            if ($previousModule) {
+                $previousLesson = Lesson::where('module_id', $previousModule->id)
+                    ->orderBy('order', 'desc')
+                    ->first();
+            }
+        }
+
+        // Get current module for sidebar
+        $currentModule = $lesson->module;
+
+        return view('student.lessons.show', compact(
+            'lesson',
+            'completedLessonIds',
+            'previousLesson',
+            'nextLesson',
+            'currentModule'
+        ));
+    }
+
+    /**
+     * Mark a lesson as completed.
+     *
+     * @param  \App\Models\Lesson  $lesson
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    public function completeLesson(Lesson $lesson)
+    {
+        $user = auth()->user();
+        $module = $lesson->module;
+        $enrollment = Enrollment::where('user_id', $user->id)
+            ->where('course_id', $module->course_id)
+            ->first();
+
+        if (!$enrollment) {
+            abort(403, 'You are not enrolled in this course');
+        }
+
+        // Add lesson to completed lessons
+        $user->completedLessons()->syncWithoutDetaching([$lesson->id => ['completed_at' => now()]]);
+
+        // Check if all lessons in the course are completed
+        $totalLessons = Lesson::whereHas('module', function ($query) use ($module) {
+            $query->where('course_id', $module->course_id);
+        })->count();
+
+        $completedLessons = $user->completedLessons()
+            ->whereHas('module', function ($query) use ($module) {
+                $query->where('course_id', $module->course_id);
+            })
+            ->count();
+
+        // Update enrollment progress
+        $progress = $totalLessons > 0 ? round(($completedLessons / $totalLessons) * 100) : 0;
+        $enrollment->update(['progress' => $progress]);
+
+        // If all lessons are completed, mark the enrollment as completed
+        if ($progress == 100) {
+            $enrollment->update([
+                'status' => 'completed',
+                'completed_at' => now()
+            ]);
+        }
+
+        return redirect()->back()->with('success', 'Lesson marked as completed!');
     }
 
     /**
@@ -288,15 +472,51 @@ class DashboardController extends Controller
      *
      * @return \Illuminate\Contracts\Support\Renderable
      */
-    public function results()
+    public function results(Request $request)
     {
         $user = auth()->user();
-        $quizResults = QuizResult::with(['quiz.lesson.module.course'])
-            ->where('user_id', $user->id)
-            ->orderBy('completed_at', 'desc')
-            ->paginate(10);
 
-        return view('student.results.index', compact('quizResults'));
+        // Get enrolled courses for filter
+        $courses = Course::whereHas('enrollments', function ($query) use ($user) {
+            $query->where('user_id', $user->id);
+        })->get();
+
+        // Apply filters
+        $resultsQuery = QuizResult::with(['quiz.lesson.module.course'])
+            ->where('user_id', $user->id)
+            ->where('status', 'completed');
+
+        if ($request->filled('course_id')) {
+            $resultsQuery->whereHas('quiz.lesson.module', function ($query) use ($request) {
+                $query->where('course_id', $request->course_id);
+            });
+        }
+
+        if ($request->filled('quiz_type')) {
+            $resultsQuery->whereHas('quiz', function ($query) use ($request) {
+                $query->where('type', $request->quiz_type);
+            });
+        }
+
+        if ($request->filled('status')) {
+            if ($request->status === 'passed') {
+                $resultsQuery->where('passed', true);
+            } elseif ($request->status === 'failed') {
+                $resultsQuery->where('passed', false);
+            }
+        }
+
+        // Get results
+        $results = $resultsQuery->orderBy('created_at', 'desc')->paginate(10);
+
+        // Get statistics
+        $stats = [
+            'total' => QuizResult::where('user_id', $user->id)->where('status', 'completed')->count(),
+            'passed' => QuizResult::where('user_id', $user->id)->where('status', 'completed')->where('passed', true)->count(),
+            'failed' => QuizResult::where('user_id', $user->id)->where('status', 'completed')->where('passed', false)->count(),
+        ];
+
+        return view('student.results.index', compact('results', 'courses', 'stats'));
     }
 
     /**
@@ -314,10 +534,91 @@ class DashboardController extends Controller
         }
 
         $quiz = $quizResult->quiz;
-        $questions = $quiz->questions()->with(['options', 'studentAnswers' => function ($query) use ($user) {
-            $query->where('user_id', $user->id);
-        }])->get();
 
-        return view('student.results.show', compact('quizResult', 'quiz', 'questions'));
+        // Get the student's answers for this quiz
+        $answers = StudentAnswer::with(['question.options', 'option'])
+            ->where('user_id', $user->id)
+            ->whereHas('question', function ($query) use ($quiz) {
+                $query->where('quiz_id', $quiz->id);
+            })
+            ->get();
+
+        return view('student.results.show', compact('quizResult', 'quiz', 'answers'));
+    }
+
+    /**
+     * Auto-save quiz progress.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  \App\Models\Quiz  $quiz
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function autosaveQuiz(Request $request, Quiz $quiz)
+    {
+        $user = auth()->user();
+
+        // Check if the student is enrolled in the course
+        $lesson = $quiz->lesson;
+        $module = $lesson->module;
+        $enrollment = Enrollment::where('user_id', $user->id)
+            ->where('course_id', $module->course_id)
+            ->first();
+
+        if (!$enrollment) {
+            return response()->json(['error' => 'You are not enrolled in this course'], 403);
+        }
+
+        // Get or create the quiz result
+        $quizResult = QuizResult::firstOrCreate(
+            [
+                'user_id' => $user->id,
+                'quiz_id' => $quiz->id,
+                'status' => 'in_progress'
+            ],
+            [
+                'started_at' => now(),
+                'max_score' => $quiz->getTotalPointsAttribute()
+            ]
+        );
+
+        // Process each question's answer
+        $questions = $request->input('questions', []);
+
+        foreach ($questions as $questionId => $data) {
+            if (isset($data['answer'])) {
+                // For multiple choice and true/false questions
+                StudentAnswer::updateOrCreate(
+                    [
+                        'user_id' => $user->id,
+                        'question_id' => $questionId
+                    ],
+                    [
+                        'option_id' => $data['answer'],
+                        'is_correct' => null // Will be evaluated on final submission
+                    ]
+                );
+            } elseif (isset($data['answer_text'])) {
+                // For short answer questions
+                StudentAnswer::updateOrCreate(
+                    [
+                        'user_id' => $user->id,
+                        'question_id' => $questionId
+                    ],
+                    [
+                        'text_answer' => $data['answer_text'],
+                        'is_correct' => null // Will be evaluated on final submission
+                    ]
+                );
+            }
+        }
+
+        // Update the time spent
+        if ($request->has('time_spent')) {
+            $quizResult->update([
+                'time_spent' => $request->time_spent
+            ]);
+        }
+
+        return response()->json(['success' => true]);
     }
 }

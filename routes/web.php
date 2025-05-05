@@ -27,18 +27,31 @@ Route::get('/home', [HomeController::class, 'index'])->name('home');
 // Courses routes (public)
 Route::get('/courses', [CourseController::class, 'index'])->name('courses.index');
 Route::get('/courses/{course}', [CourseController::class, 'show'])->name('courses.show');
+Route::post('/courses/{course}/enroll', [CourseController::class, 'enroll'])->middleware('auth')->name('courses.enroll');
 
 // Protected routes
 Route::middleware(['auth'])->group(function () {
     // Student routes
     Route::middleware(['role:student'])->prefix('student')->name('student.')->group(function () {
         Route::get('/dashboard', [StudentDashboardController::class, 'index'])->name('dashboard');
+
+        // Courses routes
         Route::get('/courses', [StudentDashboardController::class, 'courses'])->name('courses');
         Route::get('/courses/{course}', [StudentDashboardController::class, 'showCourse'])->name('courses.show');
+
+        // Modules routes
         Route::get('/modules/{module}', [StudentDashboardController::class, 'showModule'])->name('modules.show');
+
+        // Lessons routes
         Route::get('/lessons/{lesson}', [StudentDashboardController::class, 'showLesson'])->name('lessons.show');
+        Route::post('/lessons/{lesson}/complete', [StudentDashboardController::class, 'completeLesson'])->name('lessons.complete');
+
+        // Quizzes routes
         Route::get('/quizzes/{quiz}', [StudentDashboardController::class, 'showQuiz'])->name('quizzes.show');
         Route::post('/quizzes/{quiz}/submit', [StudentDashboardController::class, 'submitQuiz'])->name('quizzes.submit');
+        Route::post('/quizzes/{quiz}/autosave', [StudentDashboardController::class, 'autosaveQuiz'])->name('quizzes.autosave');
+
+        // Results routes
         Route::get('/results', [StudentDashboardController::class, 'results'])->name('results');
         Route::get('/results/{quizResult}', [StudentDashboardController::class, 'showResult'])->name('results.show');
     });
