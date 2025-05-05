@@ -23,6 +23,16 @@ class HomeController extends Controller
      */
     public function index()
     {
+        $user = auth()->user();
+
+        if ($user->isAdmin()) {
+            return redirect()->route('admin.dashboard');
+        } elseif ($user->isTeacher()) {
+            return redirect()->route('teacher.dashboard');
+        } elseif ($user->isStudent()) {
+            return redirect()->route('student.dashboard');
+        }
+
         return view('home');
     }
 }
