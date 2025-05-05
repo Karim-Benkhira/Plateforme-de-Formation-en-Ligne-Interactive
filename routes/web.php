@@ -6,6 +6,7 @@ use App\Http\Controllers\FaceRecognitionController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\LessonController;
 use App\Http\Controllers\ModuleController;
+use App\Http\Controllers\QuestionGeneratorController;
 use App\Http\Controllers\QuizController;
 use App\Http\Controllers\Student\DashboardController as StudentDashboardController;
 use App\Http\Controllers\Teacher\DashboardController as TeacherDashboardController;
@@ -49,6 +50,8 @@ Route::middleware(['auth'])->group(function () {
         Route::resource('modules', ModuleController::class)->except(['index', 'show']);
         Route::resource('lessons', LessonController::class)->except(['index', 'show']);
         Route::resource('quizzes', QuizController::class)->except(['index', 'show']);
+        Route::get('/quizzes/{quiz}/generate-questions', [QuestionGeneratorController::class, 'generateQuestions'])->name('quizzes.generate-questions');
+        Route::resource('questions', QuestionController::class)->except(['index', 'show']);
         Route::get('/students', [TeacherDashboardController::class, 'students'])->name('students');
         Route::get('/students/{user}', [TeacherDashboardController::class, 'showStudent'])->name('students.show');
     });
