@@ -17,7 +17,7 @@ class CourseController extends Controller
     public function __construct()
     {
         $this->middleware('auth')->except(['index', 'show']);
-        $this->middleware('role:teacher')->except(['index', 'show', 'enroll']);
+        $this->middleware(\App\Http\Middleware\CheckRole::class.':teacher')->except(['index', 'show', 'enroll']);
     }
     /**
      * Display a listing of the resource.

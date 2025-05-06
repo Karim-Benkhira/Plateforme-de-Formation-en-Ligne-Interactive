@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use App\Models\User;
 
 class Lesson extends Model
 {
@@ -45,5 +46,15 @@ class Lesson extends Model
     public function course()
     {
         return $this->module->course();
+    }
+
+    /**
+     * Get the students who completed this lesson
+     */
+    public function completedByStudents()
+    {
+        return $this->belongsToMany(User::class, 'lesson_user')
+            ->withPivot('completed_at')
+            ->withTimestamps();
     }
 }

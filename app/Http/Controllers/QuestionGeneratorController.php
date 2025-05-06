@@ -19,7 +19,7 @@ class QuestionGeneratorController extends Controller
     public function __construct()
     {
         $this->middleware('auth');
-        $this->middleware('role:teacher');
+        $this->middleware(\App\Http\Middleware\CheckRole::class.':teacher');
     }
 
     /**

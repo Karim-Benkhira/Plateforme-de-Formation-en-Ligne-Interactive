@@ -22,7 +22,7 @@ class DashboardController extends Controller
     public function __construct()
     {
         $this->middleware('auth');
-        $this->middleware('role:student');
+        $this->middleware(\App\Http\Middleware\CheckRole::class.':student');
     }
 
     /**
@@ -41,6 +41,18 @@ class DashboardController extends Controller
             'passedQuizzes' => $user->quizResults()->where('passed', true)->count(),
         ];
 
+        // Get total courses count
+        $totalCourses = $user->enrollments()->count();
+
+        // Get completed courses count
+        $completedCourses = $user->enrollments()->where('status', 'completed')->count();
+
+        // Get enrollments for display
+        $enrollments = $user->enrollments()
+            ->with('course.teacher')
+            ->orderBy('updated_at', 'desc')
+            ->get();
+
         // Get recent courses
         $recentCourses = $user->enrollments()
             ->with('course.teacher')
@@ -54,6 +66,9 @@ class DashboardController extends Controller
             ->orderBy('created_at', 'desc')
             ->take(5)
             ->get();
+
+        // Rename for template compatibility
+        $recentQuizResults = $recentResults;
 
         // Get continue learning data
         $continueLearning = $user->enrollments()
@@ -78,7 +93,16 @@ class DashboardController extends Controller
                 : 0;
         }
 
-        return view('student.dashboard', compact('stats', 'recentCourses', 'recentResults', 'continueLearning'));
+        return view('student.dashboard', compact(
+            'stats',
+            'recentCourses',
+            'recentResults',
+            'continueLearning',
+            'totalCourses',
+            'completedCourses',
+            'enrollments',
+            'recentQuizResults'
+        ));
     }
 
     /**

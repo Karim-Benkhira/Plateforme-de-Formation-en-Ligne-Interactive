@@ -33,7 +33,7 @@ Route::post('/courses/{course}/enroll', [CourseController::class, 'enroll'])->mi
 // Protected routes
 Route::middleware(['auth'])->group(function () {
     // Student routes
-    Route::middleware(['role:student'])->prefix('student')->name('student.')->group(function () {
+    Route::middleware([\App\Http\Middleware\CheckRole::class.':student'])->prefix('student')->name('student.')->group(function () {
         Route::get('/dashboard', [StudentDashboardController::class, 'index'])->name('dashboard');
 
         // Courses routes
@@ -58,7 +58,7 @@ Route::middleware(['auth'])->group(function () {
     });
 
     // Teacher routes
-    Route::middleware(['role:teacher'])->prefix('teacher')->name('teacher.')->group(function () {
+    Route::middleware([\App\Http\Middleware\CheckRole::class.':teacher'])->prefix('teacher')->name('teacher.')->group(function () {
         Route::get('/dashboard', [TeacherDashboardController::class, 'index'])->name('dashboard');
         Route::resource('courses', CourseController::class)->except(['index', 'show']);
         Route::resource('modules', ModuleController::class)->except(['index', 'show']);
@@ -71,7 +71,7 @@ Route::middleware(['auth'])->group(function () {
     });
 
     // Admin routes
-    Route::middleware(['role:admin'])->prefix('admin')->name('admin.')->group(function () {
+    Route::middleware([\App\Http\Middleware\CheckRole::class.':admin'])->prefix('admin')->name('admin.')->group(function () {
         Route::get('/dashboard', [AdminDashboardController::class, 'index'])->name('dashboard');
         Route::get('/users', [AdminDashboardController::class, 'users'])->name('users');
         Route::get('/users/{user}/edit', [AdminDashboardController::class, 'editUser'])->name('users.edit');

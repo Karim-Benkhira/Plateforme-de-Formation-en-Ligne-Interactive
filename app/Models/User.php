@@ -6,6 +6,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use App\Models\Lesson;
 
 class User extends Authenticatable
 {
@@ -92,6 +93,14 @@ class User extends Authenticatable
     }
 
     /**
+     * Get the enrollments for this student
+     */
+    public function enrollments()
+    {
+        return $this->hasMany(Enrollment::class);
+    }
+
+    /**
      * Get the quiz results for this student
      */
     public function quizResults()
@@ -113,5 +122,15 @@ class User extends Authenticatable
     public function faceRecognitionLogs()
     {
         return $this->hasMany(FaceRecognitionLog::class);
+    }
+
+    /**
+     * Get the completed lessons for this student
+     */
+    public function completedLessons()
+    {
+        return $this->belongsToMany(Lesson::class, 'lesson_user')
+            ->withPivot('completed_at')
+            ->withTimestamps();
     }
 }

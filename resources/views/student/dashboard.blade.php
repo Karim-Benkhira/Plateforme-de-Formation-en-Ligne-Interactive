@@ -58,7 +58,7 @@
                             </div>
                         </div>
                     </div>
-                    
+
                     <div class="mt-4">
                         <h4>{{ __('My Courses') }}</h4>
                         <div class="row">
@@ -66,16 +66,16 @@
                                 <div class="col-md-6 mb-3">
                                     <div class="card h-100">
                                         <div class="card-body">
-                                            <h5 class="card-title">{{ $enrollment->title }}</h5>
+                                            <h5 class="card-title">{{ $enrollment->course->title }}</h5>
                                             <p class="card-text text-muted">
                                                 <small>
-                                                    <i class="fas fa-user me-1"></i> {{ $enrollment->teacher->name }}
+                                                    <i class="fas fa-user me-1"></i> {{ $enrollment->course->teacher->name }}
                                                 </small>
                                             </p>
-                                            <p class="card-text">{{ Str::limit($enrollment->description, 100) }}</p>
+                                            <p class="card-text">{{ Str::limit($enrollment->course->description, 100) }}</p>
                                         </div>
                                         <div class="card-footer bg-white">
-                                            <a href="{{ route('student.courses.show', $enrollment->id) }}" class="btn btn-primary">
+                                            <a href="{{ route('student.courses.show', $enrollment->course) }}" class="btn btn-primary">
                                                 <i class="fas fa-book-open me-1"></i> {{ __('Continue Learning') }}
                                             </a>
                                         </div>
@@ -91,7 +91,7 @@
                             @endforelse
                         </div>
                     </div>
-                    
+
                     <div class="mt-4">
                         <h4>{{ __('Recent Quiz Results') }}</h4>
                         <div class="table-responsive">
@@ -110,11 +110,11 @@
                                             <td>{{ $result->quiz->title }}</td>
                                             <td>
                                                 <div class="progress">
-                                                    <div class="progress-bar bg-{{ $result->percentage >= 60 ? 'success' : 'danger' }}" 
-                                                         role="progressbar" 
-                                                         style="width: {{ $result->percentage }}%;" 
-                                                         aria-valuenow="{{ $result->percentage }}" 
-                                                         aria-valuemin="0" 
+                                                    <div class="progress-bar bg-{{ $result->percentage >= 60 ? 'success' : 'danger' }}"
+                                                         role="progressbar"
+                                                         style="width: {{ $result->percentage }}%;"
+                                                         aria-valuenow="{{ $result->percentage }}"
+                                                         aria-valuemin="0"
                                                          aria-valuemax="100">
                                                         {{ $result->percentage }}%
                                                     </div>
