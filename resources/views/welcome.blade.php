@@ -14,25 +14,7 @@
         <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet" />
 
         <!-- Styles / Scripts -->
-        @if (file_exists(public_path('build/manifest.json')) || file_exists(public_path('hot')))
-            @vite(['resources/css/app.css', 'resources/js/app.js'])
-        @else
-            <style>
-                /* Fallback styles */
-                body {
-                    font-family: 'Poppins', sans-serif;
-                    background-color: #f8fafc;
-                    color: #1a202c;
-                    margin: 0;
-                    padding: 0;
-                }
-                .container {
-                    max-width: 1200px;
-                    margin: 0 auto;
-                    padding: 0 1rem;
-                }
-            </style>
-        @endif
+        @vite(['resources/css/app.css', 'resources/sass/app.scss', 'resources/js/app.js'])
 
         <style>
             :root {
