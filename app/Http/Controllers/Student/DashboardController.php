@@ -39,6 +39,10 @@ class DashboardController extends Controller
             'enrolledCourses' => $user->enrollments()->count(),
             'completedLessons' => $user->completedLessons()->count(),
             'passedQuizzes' => $user->quizResults()->where('passed', true)->count(),
+            'totalQuizzes' => $user->quizResults()->count(),
+            'averageScore' => $user->quizResults()->avg('score') ?? 0,
+            'studyTime' => $user->enrollments()->sum('study_time') ?? 0, // Assuming you track study time
+            'lastActivity' => $user->enrollments()->max('last_accessed_at'),
         ];
 
         // Get total courses count
@@ -93,6 +97,15 @@ class DashboardController extends Controller
                 : 0;
         }
 
+        // Get recommended courses (courses that the student is not enrolled in)
+        $enrolledCourseIds = $user->enrollments()->pluck('course_id')->toArray();
+        $recommendedCourses = Course::where('status', 'active')
+            ->whereNotIn('id', $enrolledCourseIds)
+            ->with('teacher')
+            ->inRandomOrder()
+            ->take(3)
+            ->get();
+
         return view('student.dashboard', compact(
             'stats',
             'recentCourses',
@@ -101,7 +114,8 @@ class DashboardController extends Controller
             'totalCourses',
             'completedCourses',
             'enrollments',
-            'recentQuizResults'
+            'recentQuizResults',
+            'recommendedCourses'
         ));
     }
 
