@@ -6,6 +6,7 @@ use App\Http\Controllers\FaceRecognitionController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\LessonController;
 use App\Http\Controllers\ModuleController;
+use App\Http\Controllers\QuestionController;
 use App\Http\Controllers\QuestionGeneratorController;
 use App\Http\Controllers\QuizController;
 use App\Http\Controllers\Student\DashboardController as StudentDashboardController;
