@@ -41,7 +41,7 @@ class DashboardController extends Controller
             'passedQuizzes' => $user->quizResults()->where('passed', true)->count(),
             'totalQuizzes' => $user->quizResults()->count(),
             'averageScore' => $user->quizResults()->avg('score') ?? 0,
-            'studyTime' => $user->enrollments()->sum('study_time') ?? 0, // Assuming you track study time
+            // 'studyTime' => $user->enrollments()->sum('study_time') ?? 0, // Removed as column doesn't exist
             'lastActivity' => $user->enrollments()->max('last_accessed_at'),
         ];
 
@@ -106,7 +106,8 @@ class DashboardController extends Controller
             ->take(3)
             ->get();
 
-        return view('student.dashboard', compact(
+        // Use the new dashboard template
+        return view('student.dashboard_new', compact(
             'stats',
             'recentCourses',
             'recentResults',

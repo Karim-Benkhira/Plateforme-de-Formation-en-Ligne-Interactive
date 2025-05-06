@@ -13,686 +13,220 @@
         <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
         <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet" />
 
+        <!-- Bootstrap CSS -->
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
+        <!-- EduZone Theme CSS -->
+        <link href="{{ asset('assets/eduzone/css/style.css') }}" rel="stylesheet">
+
         <!-- Styles / Scripts -->
         @vite(['resources/css/app.css', 'resources/sass/app.scss', 'resources/js/app.js'])
 
-        <style>
-            :root {
-                --primary-color: #4361ee;
-                --primary-dark: #3a56d4;
-                --secondary-color: #7209b7;
-                --accent-color: #f72585;
-                --light-color: #f8f9fa;
-                --dark-color: #212529;
-                --gray-color: #6c757d;
-                --success-color: #4cc9f0;
-                --warning-color: #f9c74f;
-                --danger-color: #f94144;
-            }
 
-            * {
-                box-sizing: border-box;
-                margin: 0;
-                padding: 0;
-            }
-
-            body {
-                font-family: 'Poppins', sans-serif;
-                line-height: 1.6;
-                color: var(--dark-color);
-                background-color: var(--light-color);
-            }
-
-            a {
-                text-decoration: none;
-                color: inherit;
-            }
-
-            ul {
-                list-style: none;
-            }
-
-            .container {
-                width: 100%;
-                max-width: 1200px;
-                margin: 0 auto;
-                padding: 0 2rem;
-            }
-
-            /* Header Styles */
-            .header {
-                background-color: #fff;
-                box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-                position: fixed;
-                top: 0;
-                left: 0;
-                right: 0;
-                z-index: 1000;
-                padding: 1rem 0;
-            }
-
-            .header-container {
-                display: flex;
-                justify-content: space-between;
-                align-items: center;
-            }
-
-            .logo {
-                font-size: 1.5rem;
-                font-weight: 700;
-                color: var(--primary-color);
-                display: flex;
-                align-items: center;
-            }
-
-            .logo i {
-                margin-right: 0.5rem;
-                font-size: 1.8rem;
-            }
-
-            .nav-links {
-                display: flex;
-                gap: 1.5rem;
-            }
-
-            .btn {
-                display: inline-block;
-                padding: 0.6rem 1.5rem;
-                border-radius: 50px;
-                font-weight: 500;
-                text-align: center;
-                transition: all 0.3s ease;
-                cursor: pointer;
-            }
-
-            .btn-primary {
-                background-color: var(--primary-color);
-                color: white;
-                border: 2px solid var(--primary-color);
-            }
-
-            .btn-primary:hover {
-                background-color: var(--primary-dark);
-                border-color: var(--primary-dark);
-            }
-
-            .btn-outline {
-                background-color: transparent;
-                color: var(--primary-color);
-                border: 2px solid var(--primary-color);
-            }
-
-            .btn-outline:hover {
-                background-color: var(--primary-color);
-                color: white;
-            }
-
-            /* Hero Section */
-            .hero {
-                background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
-                color: white;
-                padding: 8rem 0 6rem;
-                position: relative;
-                overflow: hidden;
-            }
-
-            .hero-pattern {
-                position: absolute;
-                top: 0;
-                left: 0;
-                width: 100%;
-                height: 100%;
-                background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.08'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
-                opacity: 0.8;
-            }
-
-            .hero-content {
-                position: relative;
-                z-index: 1;
-                text-align: center;
-                max-width: 800px;
-                margin: 0 auto;
-            }
-
-            .hero-title {
-                font-size: 3rem;
-                font-weight: 700;
-                margin-bottom: 1.5rem;
-                line-height: 1.2;
-            }
-
-            .hero-subtitle {
-                font-size: 1.25rem;
-                margin-bottom: 2rem;
-                opacity: 0.9;
-            }
-
-            .hero-buttons {
-                display: flex;
-                gap: 1rem;
-                justify-content: center;
-                flex-wrap: wrap;
-            }
-
-            .btn-hero-primary {
-                background-color: white;
-                color: var(--primary-color);
-                border: 2px solid white;
-                font-weight: 600;
-            }
-
-            .btn-hero-primary:hover {
-                background-color: rgba(255, 255, 255, 0.9);
-                border-color: rgba(255, 255, 255, 0.9);
-            }
-
-            .btn-hero-secondary {
-                background-color: transparent;
-                color: white;
-                border: 2px solid white;
-                font-weight: 600;
-            }
-
-            .btn-hero-secondary:hover {
-                background-color: rgba(255, 255, 255, 0.1);
-            }
-
-            /* Features Section */
-            .section {
-                padding: 5rem 0;
-            }
-
-            .section-light {
-                background-color: white;
-            }
-
-            .section-dark {
-                background-color: #f8f9fa;
-            }
-
-            .section-title {
-                text-align: center;
-                margin-bottom: 3rem;
-            }
-
-            .section-title h2 {
-                font-size: 2.5rem;
-                font-weight: 700;
-                color: var(--dark-color);
-                margin-bottom: 1rem;
-                position: relative;
-                display: inline-block;
-            }
-
-            .section-title h2::after {
-                content: '';
-                position: absolute;
-                bottom: -10px;
-                left: 50%;
-                transform: translateX(-50%);
-                width: 50px;
-                height: 3px;
-                background-color: var(--primary-color);
-            }
-
-            .section-title p {
-                font-size: 1.1rem;
-                color: var(--gray-color);
-                max-width: 600px;
-                margin: 0 auto;
-            }
-
-            .features-grid {
-                display: grid;
-                grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-                gap: 2rem;
-            }
-
-            .feature-card {
-                background-color: white;
-                border-radius: 10px;
-                box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
-                padding: 2rem;
-                transition: transform 0.3s ease, box-shadow 0.3s ease;
-                text-align: center;
-                position: relative;
-                overflow: hidden;
-                z-index: 1;
-            }
-
-            .feature-card::before {
-                content: '';
-                position: absolute;
-                top: 0;
-                left: 0;
-                width: 100%;
-                height: 0;
-                background: linear-gradient(135deg, rgba(67, 97, 238, 0.05) 0%, rgba(114, 9, 183, 0.05) 100%);
-                transition: height 0.3s ease;
-                z-index: -1;
-            }
-
-            .feature-card:hover {
-                transform: translateY(-10px);
-                box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
-            }
-
-            .feature-card:hover::before {
-                height: 100%;
-            }
-
-            .feature-icon {
-                width: 70px;
-                height: 70px;
-                border-radius: 50%;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                margin: 0 auto 1.5rem;
-                font-size: 1.8rem;
-                position: relative;
-            }
-
-            .feature-icon::after {
-                content: '';
-                position: absolute;
-                top: -5px;
-                left: -5px;
-                right: -5px;
-                bottom: -5px;
-                border-radius: 50%;
-                border: 2px dashed;
-                opacity: 0.3;
-            }
-
-            .feature-icon-1 {
-                background-color: rgba(67, 97, 238, 0.1);
-                color: var(--primary-color);
-            }
-
-            .feature-icon-1::after {
-                border-color: var(--primary-color);
-            }
-
-            .feature-icon-2 {
-                background-color: rgba(114, 9, 183, 0.1);
-                color: var(--secondary-color);
-            }
-
-            .feature-icon-2::after {
-                border-color: var(--secondary-color);
-            }
-
-            .feature-icon-3 {
-                background-color: rgba(76, 201, 240, 0.1);
-                color: var(--success-color);
-            }
-
-            .feature-icon-3::after {
-                border-color: var(--success-color);
-            }
-
-            .feature-icon-4 {
-                background-color: rgba(249, 199, 79, 0.1);
-                color: var(--warning-color);
-            }
-
-            .feature-icon-4::after {
-                border-color: var(--warning-color);
-            }
-
-            .feature-title {
-                font-size: 1.25rem;
-                font-weight: 600;
-                margin-bottom: 1rem;
-                color: var(--dark-color);
-            }
-
-            .feature-description {
-                color: var(--gray-color);
-                font-size: 0.95rem;
-            }
-
-            /* Testimonials Section */
-            .testimonials-grid {
-                display: grid;
-                grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-                gap: 2rem;
-            }
-
-            .testimonial-card {
-                background-color: white;
-                border-radius: 10px;
-                box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
-                padding: 2rem;
-                position: relative;
-            }
-
-            .testimonial-card::before {
-                content: '\201C';
-                font-family: Georgia, serif;
-                position: absolute;
-                top: 10px;
-                left: 20px;
-                font-size: 5rem;
-                color: rgba(67, 97, 238, 0.1);
-                line-height: 1;
-            }
-
-            .testimonial-content {
-                position: relative;
-                z-index: 1;
-            }
-
-            .testimonial-text {
-                font-style: italic;
-                margin-bottom: 1.5rem;
-                color: var(--gray-color);
-            }
-
-            .testimonial-author {
-                display: flex;
-                align-items: center;
-            }
-
-            .author-avatar {
-                width: 50px;
-                height: 50px;
-                border-radius: 50%;
-                margin-right: 1rem;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                font-weight: 700;
-                color: white;
-            }
-
-            .avatar-1 {
-                background-color: var(--primary-color);
-            }
-
-            .avatar-2 {
-                background-color: var(--secondary-color);
-            }
-
-            .avatar-3 {
-                background-color: var(--success-color);
-            }
-
-            .author-info h4 {
-                font-weight: 600;
-                margin-bottom: 0.25rem;
-            }
-
-            .author-info p {
-                font-size: 0.85rem;
-                color: var(--gray-color);
-            }
-
-            /* CTA Section */
-            .cta-section {
-                background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
-                color: white;
-                padding: 5rem 0;
-                text-align: center;
-            }
-
-            .cta-content {
-                max-width: 700px;
-                margin: 0 auto;
-            }
-
-            .cta-title {
-                font-size: 2.5rem;
-                font-weight: 700;
-                margin-bottom: 1rem;
-            }
-
-            .cta-subtitle {
-                font-size: 1.1rem;
-                margin-bottom: 2rem;
-                opacity: 0.9;
-            }
-
-            /* Footer */
-            .footer {
-                background-color: var(--dark-color);
-                color: white;
-                padding: 4rem 0 2rem;
-            }
-
-            .footer-grid {
-                display: grid;
-                grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-                gap: 2rem;
-            }
-
-            .footer-column h3 {
-                font-size: 1.25rem;
-                font-weight: 600;
-                margin-bottom: 1.5rem;
-                position: relative;
-                padding-bottom: 0.5rem;
-            }
-
-            .footer-column h3::after {
-                content: '';
-                position: absolute;
-                bottom: 0;
-                left: 0;
-                width: 30px;
-                height: 2px;
-                background-color: var(--primary-color);
-            }
-
-            .footer-links li {
-                margin-bottom: 0.75rem;
-            }
-
-            .footer-links a {
-                color: rgba(255, 255, 255, 0.7);
-                transition: color 0.3s ease;
-            }
-
-            .footer-links a:hover {
-                color: white;
-            }
-
-            .footer-contact li {
-                display: flex;
-                margin-bottom: 1rem;
-            }
-
-            .footer-contact i {
-                margin-right: 0.75rem;
-                color: var(--primary-color);
-            }
-
-            .social-links {
-                display: flex;
-                gap: 1rem;
-                margin-top: 1.5rem;
-            }
-
-            .social-links a {
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                width: 36px;
-                height: 36px;
-                border-radius: 50%;
-                background-color: rgba(255, 255, 255, 0.1);
-                color: white;
-                transition: background-color 0.3s ease;
-            }
-
-            .social-links a:hover {
-                background-color: var(--primary-color);
-            }
-
-            .footer-bottom {
-                margin-top: 3rem;
-                padding-top: 2rem;
-                border-top: 1px solid rgba(255, 255, 255, 0.1);
-                text-align: center;
-                color: rgba(255, 255, 255, 0.7);
-                font-size: 0.9rem;
-            }
-
-            /* Responsive */
-            @media (max-width: 768px) {
-                .hero-title {
-                    font-size: 2.5rem;
-                }
-
-                .section-title h2 {
-                    font-size: 2rem;
-                }
-
-                .cta-title {
-                    font-size: 2rem;
-                }
-            }
-
-            @media (max-width: 576px) {
-                .hero-title {
-                    font-size: 2rem;
-                }
-
-                .hero-subtitle {
-                    font-size: 1rem;
-                }
-
-                .section-title h2 {
-                    font-size: 1.75rem;
-                }
-
-                .cta-title {
-                    font-size: 1.75rem;
-                }
-            }
-        </style>
     </head>
     <body>
         <!-- Header -->
-        <header class="header">
-            <div class="container header-container">
-                <a href="{{ url('/') }}" class="logo">
-                    <i class="fas fa-graduation-cap"></i>
-                    <span>{{ config('app.name', 'Plateforme de Formation') }}</span>
-                </a>
-                <nav class="nav-links">
-                    @if (Route::has('login'))
-                        @auth
-                            <a href="{{ url('/home') }}" class="btn btn-primary">Dashboard</a>
-                        @else
-                            <a href="{{ route('login') }}" class="btn btn-outline">Login</a>
-                            @if (Route::has('register'))
-                                <a href="{{ route('register') }}" class="btn btn-primary">Register</a>
-                            @endif
-                        @endauth
-                    @endif
-                </nav>
+        <header class="header py-2">
+            <div class="container">
+                <div class="row align-items-center">
+                    <div class="col-md-3 col-6">
+                        <a href="{{ url('/') }}" class="logo d-flex align-items-center text-decoration-none">
+                            <img src="{{ asset('assets/eduzone/images/logo.png') }}" alt="Logo" class="me-2" style="height: 40px; width: auto;">
+                            <span class="text-primary fw-bold">{{ config('app.name', 'Plateforme de Formation en Ligne Interactive') }}</span>
+                        </a>
+                    </div>
+                    <div class="col-md-6 d-none d-md-block">
+                        <nav class="main-nav">
+                            <ul class="nav justify-content-center">
+                                <li class="nav-item"><a href="#" class="nav-link">Home</a></li>
+                                <li class="nav-item"><a href="#" class="nav-link">Courses</a></li>
+                                <li class="nav-item"><a href="#" class="nav-link">Teachers</a></li>
+                                <li class="nav-item"><a href="#" class="nav-link">Testimonials</a></li>
+                                <li class="nav-item"><a href="#" class="nav-link">Contact</a></li>
+                            </ul>
+                        </nav>
+                    </div>
+                    <div class="col-md-3 col-6 text-end">
+                        @if (Route::has('login'))
+                            @auth
+                                <a href="{{ url('/home') }}" class="btn btn-primary btn-sm">Dashboard</a>
+                            @else
+                                <a href="{{ route('login') }}" class="btn btn-outline-primary btn-sm me-2">Login</a>
+                                @if (Route::has('register'))
+                                    <a href="{{ route('register') }}" class="btn btn-primary btn-sm">Register</a>
+                                @endif
+                            @endauth
+                        @endif
+                    </div>
+                </div>
             </div>
         </header>
 
         <!-- Hero Section -->
-        <section class="hero">
-            <div class="hero-pattern"></div>
+        <section class="py-5" id="home" style="background: var(--gradient-bg);">
             <div class="container">
-                <div class="hero-content">
-                    <h1 class="hero-title">Interactive Online Learning Platform</h1>
-                    <p class="hero-subtitle">Learn in an innovative way with our platform that combines interactive education and advanced technology</p>
-                    <div class="hero-buttons">
-                        <a href="{{ route('courses.index') }}" class="btn btn-hero-primary">Explore Courses</a>
-                        @if (Route::has('register'))
-                            <a href="{{ route('register') }}" class="btn btn-hero-secondary">Register Now</a>
-                        @endif
+                <div class="row align-items-center py-5">
+                    <div class="col-lg-6 text-white">
+                        <h1 class="fw-bold mb-4">Interactive Online Learning Platform</h1>
+                        <p class="lead mb-4">Learn in an innovative way with our platform that combines interactive education, AI-generated quizzes, and facial recognition for secure exams.</p>
+                        <div class="d-flex gap-3 mb-5">
+                            <a href="{{ route('courses.index') }}" class="btn btn-light px-4">Explore Courses</a>
+                            @if (Route::has('register'))
+                                <a href="{{ route('register') }}" class="btn btn-outline-light px-4">Register Now</a>
+                            @endif
+                        </div>
+
+                        <div class="row text-center mt-5">
+                            <div class="col-4">
+                                <h2 class="fw-bold">500</h2>
+                                <p>Online Courses</p>
+                            </div>
+                            <div class="col-4">
+                                <h2 class="fw-bold">1837</h2>
+                                <p>Students</p>
+                            </div>
+                            <div class="col-4">
+                                <h2 class="fw-bold">200</h2>
+                                <p>Expert Instructors</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-6 text-center">
+                        <img src="{{ asset('assets/eduzone/images/education-hero.png') }}" alt="Education Platform" class="img-fluid" style="max-height: 400px;">
                     </div>
                 </div>
             </div>
         </section>
 
         <!-- Features Section -->
-        <section class="section section-light">
-            <div class="container">
-                <div class="section-title">
-                    <h2>Platform Features</h2>
-                    <p>Discover the advanced features that make our platform unique</p>
+        <section class="py-5 bg-white" id="features">
+            <div class="container py-4">
+                <div class="text-center mb-5">
+                    <h2 class="fw-bold mb-3">Platform Features</h2>
+                    <p class="text-muted">Discover the advanced features that make our platform unique</p>
                 </div>
-                <div class="features-grid">
-                    <div class="feature-card">
-                        <div class="feature-icon feature-icon-1">
-                            <i class="fas fa-laptop-code"></i>
+                <div class="row g-4">
+                    <div class="col-lg-3 col-md-6">
+                        <div class="card border-0 text-center h-100">
+                            <div class="card-body">
+                                <div class="text-center mb-4">
+                                    <img src="{{ asset('assets/eduzone/images/education-hero.svg') }}" alt="Interactive Courses" class="img-fluid" style="height: 80px; width: auto;">
+                                </div>
+                                <h5 class="card-title fw-bold">Interactive Courses</h5>
+                                <p class="card-text text-muted">Interactive educational content that combines theory and practice for a comprehensive learning experience</p>
+                            </div>
                         </div>
-                        <h3 class="feature-title">Interactive Courses</h3>
-                        <p class="feature-description">Interactive educational content that combines theory and practice for a comprehensive learning experience</p>
                     </div>
-                    <div class="feature-card">
-                        <div class="feature-icon feature-icon-2">
-                            <i class="fas fa-brain"></i>
+                    <div class="col-lg-3 col-md-6">
+                        <div class="card border-0 text-center h-100">
+                            <div class="card-body">
+                                <div class="text-center mb-4">
+                                    <img src="{{ asset('assets/eduzone/images/education-hero.svg') }}" alt="Smart Quizzes" class="img-fluid" style="height: 80px; width: auto;">
+                                </div>
+                                <h5 class="card-title fw-bold">Smart Quizzes</h5>
+                                <p class="card-text text-muted">AI-generated quizzes that adapt to the student's level and provide immediate feedback</p>
+                            </div>
                         </div>
-                        <h3 class="feature-title">Smart Quizzes</h3>
-                        <p class="feature-description">AI-generated quizzes that adapt to the student's level and provide immediate feedback</p>
                     </div>
-                    <div class="feature-card">
-                        <div class="feature-icon feature-icon-3">
-                            <i class="fas fa-user-shield"></i>
+                    <div class="col-lg-3 col-md-6">
+                        <div class="card border-0 text-center h-100">
+                            <div class="card-body">
+                                <div class="text-center mb-4">
+                                    <img src="{{ asset('assets/eduzone/images/education-hero.svg') }}" alt="Secure Exams" class="img-fluid" style="height: 80px; width: auto;">
+                                </div>
+                                <h5 class="card-title fw-bold">Secure Exams</h5>
+                                <p class="card-text text-muted">Facial recognition technology to ensure exam integrity and certificate reliability</p>
+                            </div>
                         </div>
-                        <h3 class="feature-title">Secure Exams</h3>
-                        <p class="feature-description">Facial recognition technology to ensure exam integrity and certificate reliability</p>
                     </div>
-                    <div class="feature-card">
-                        <div class="feature-icon feature-icon-4">
-                            <i class="fas fa-chart-line"></i>
+                    <div class="col-lg-3 col-md-6">
+                        <div class="card border-0 text-center h-100">
+                            <div class="card-body">
+                                <div class="text-center mb-4">
+                                    <img src="{{ asset('assets/eduzone/images/education-hero.svg') }}" alt="Progress Tracking" class="img-fluid" style="height: 80px; width: auto;">
+                                </div>
+                                <h5 class="card-title fw-bold">Progress Tracking</h5>
+                                <p class="card-text text-muted">Advanced tools to track student progress and analyze performance to improve the learning experience</p>
+                            </div>
                         </div>
-                        <h3 class="feature-title">Progress Tracking</h3>
-                        <p class="feature-description">Advanced tools to track student progress and analyze performance to improve the learning experience</p>
                     </div>
                 </div>
             </div>
         </section>
 
         <!-- Testimonials Section -->
-        <section class="section section-dark">
-            <div class="container">
-                <div class="section-title">
-                    <h2>What Our Students Say</h2>
-                    <p>Testimonials from students who have benefited from our educational platform</p>
+        <section class="py-5 bg-light" id="testimonials">
+            <div class="container py-4">
+                <div class="text-center mb-5">
+                    <h2 class="fw-bold mb-3">What Our Students Say</h2>
+                    <p class="text-muted">Testimonials from students who have benefited from our educational platform</p>
                 </div>
-                <div class="testimonials-grid">
-                    <div class="testimonial-card">
-                        <div class="testimonial-content">
-                            <p class="testimonial-text">"The platform helped me understand complex concepts in an easy and enjoyable way. The smart quizzes were very useful in assessing my level."</p>
-                            <div class="testimonial-author">
-                                <div class="author-avatar avatar-1">A</div>
-                                <div class="author-info">
-                                    <h4>Ahmed Mohamed</h4>
-                                    <p>Engineering Student</p>
+                <div class="row g-4">
+                    <div class="col-lg-4 col-md-6">
+                        <div class="card border-0 h-100 shadow-sm">
+                            <div class="card-body p-4">
+                                <div class="mb-3">
+                                    <i class="fas fa-star text-warning"></i>
+                                    <i class="fas fa-star text-warning"></i>
+                                    <i class="fas fa-star text-warning"></i>
+                                    <i class="fas fa-star text-warning"></i>
+                                    <i class="fas fa-star text-warning"></i>
+                                </div>
+                                <p class="mb-4">"The platform helped me understand complex concepts in an easy and enjoyable way. The smart quizzes were very useful in assessing my level."</p>
+                                <div class="d-flex align-items-center">
+                                    <div class="rounded-circle text-white d-flex align-items-center justify-content-center me-3" style="width: 50px; height: 50px; background-color: #ff5a00; font-weight: 700;">
+                                        A
+                                    </div>
+                                    <div>
+                                        <h6 class="mb-0 fw-bold">Ahmed Mohamed</h6>
+                                        <small class="text-muted">Engineering Student</small>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-                    <div class="testimonial-card">
-                        <div class="testimonial-content">
-                            <p class="testimonial-text">"I love the flexibility of learning on the platform. I can study anytime, anywhere, and the interactive content makes learning more enjoyable."</p>
-                            <div class="testimonial-author">
-                                <div class="author-avatar avatar-2">S</div>
-                                <div class="author-info">
-                                    <h4>Sarah Ali</h4>
-                                    <p>Medical Student</p>
+                    <div class="col-lg-4 col-md-6">
+                        <div class="card border-0 h-100 shadow-sm">
+                            <div class="card-body p-4">
+                                <div class="mb-3">
+                                    <i class="fas fa-star text-warning"></i>
+                                    <i class="fas fa-star text-warning"></i>
+                                    <i class="fas fa-star text-warning"></i>
+                                    <i class="fas fa-star text-warning"></i>
+                                    <i class="fas fa-star text-warning"></i>
+                                </div>
+                                <p class="mb-4">"I love the flexibility of learning on the platform. I can study anytime, anywhere, and the interactive content makes learning more enjoyable."</p>
+                                <div class="d-flex align-items-center">
+                                    <div class="rounded-circle text-white d-flex align-items-center justify-content-center me-3" style="width: 50px; height: 50px; background-color: #4361ee; font-weight: 700;">
+                                        S
+                                    </div>
+                                    <div>
+                                        <h6 class="mb-0 fw-bold">Sarah Ali</h6>
+                                        <small class="text-muted">Medical Student</small>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-                    <div class="testimonial-card">
-                        <div class="testimonial-content">
-                            <p class="testimonial-text">"As a teacher, I find that the platform provides excellent tools for course management and tracking student progress. The facial recognition technology ensures exam integrity."</p>
-                            <div class="testimonial-author">
-                                <div class="author-avatar avatar-3">M</div>
-                                <div class="author-info">
-                                    <h4>Michael Johnson</h4>
-                                    <p>Teacher</p>
+                    <div class="col-lg-4 col-md-6">
+                        <div class="card border-0 h-100 shadow-sm">
+                            <div class="card-body p-4">
+                                <div class="mb-3">
+                                    <i class="fas fa-star text-warning"></i>
+                                    <i class="fas fa-star text-warning"></i>
+                                    <i class="fas fa-star text-warning"></i>
+                                    <i class="fas fa-star text-warning"></i>
+                                    <i class="fas fa-star text-warning"></i>
+                                </div>
+                                <p class="mb-4">"As a teacher, I find that the platform provides excellent tools for course management and tracking student progress. The facial recognition technology ensures exam integrity."</p>
+                                <div class="d-flex align-items-center">
+                                    <div class="rounded-circle text-white d-flex align-items-center justify-content-center me-3" style="width: 50px; height: 50px; background-color: #36b37e; font-weight: 700;">
+                                        M
+                                    </div>
+                                    <div>
+                                        <h6 class="mb-0 fw-bold">Michael Johnson</h6>
+                                        <small class="text-muted">Teacher</small>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -702,75 +236,173 @@
         </section>
 
         <!-- CTA Section -->
-        <section class="cta-section">
-            <div class="container">
-                <div class="cta-content">
-                    <h2 class="cta-title">Start Your Learning Journey Today</h2>
-                    <p class="cta-subtitle">Join thousands of students who benefit from our advanced educational platform</p>
-                    <div class="hero-buttons">
-                        @if (Route::has('register'))
-                            <a href="{{ route('register') }}" class="btn btn-hero-primary">Register for Free</a>
-                        @endif
-                        <a href="{{ route('courses.index') }}" class="btn btn-hero-secondary">Explore Courses</a>
+        <section class="py-5" style="background: var(--gradient-bg);">
+            <div class="container py-4">
+                <div class="row justify-content-center">
+                    <div class="col-lg-8 text-center text-white">
+                        <h2 class="fw-bold mb-3">Start Your Learning Journey Today</h2>
+                        <p class="mb-4">Join thousands of students who benefit from our advanced educational platform</p>
+                        <div class="d-flex justify-content-center flex-wrap gap-3">
+                            @if (Route::has('register'))
+                                <a href="{{ route('register') }}" class="btn btn-light px-4">Register for Free</a>
+                            @endif
+                            <a href="{{ route('courses.index') }}" class="btn btn-outline-light px-4">Explore Courses</a>
+                        </div>
                     </div>
                 </div>
             </div>
         </section>
 
-        <!-- Footer -->
-        <footer class="footer">
-            <div class="container">
-                <div class="footer-grid">
-                    <div class="footer-column">
-                        <h3>{{ config('app.name', 'Plateforme de Formation') }}</h3>
-                        <p>An interactive educational platform that combines modern education and advanced technology</p>
-                        <div class="social-links">
-                            <a href="#"><i class="fab fa-facebook-f"></i></a>
-                            <a href="#"><i class="fab fa-twitter"></i></a>
-                            <a href="#"><i class="fab fa-instagram"></i></a>
-                            <a href="#"><i class="fab fa-linkedin-in"></i></a>
+        <!-- Popular Courses Section -->
+        <section class="py-5 bg-white">
+            <div class="container py-4">
+                <div class="text-center mb-5">
+                    <h2 class="fw-bold mb-3">Popular Courses</h2>
+                    <p class="text-muted">Explore our most popular courses chosen by thousands of students</p>
+                </div>
+                <div class="row g-4">
+                    <div class="col-lg-4 col-md-6">
+                        <div class="card border-0 shadow-sm h-100">
+                            <img src="{{ asset('assets/eduzone/images/education-hero.svg') }}" class="card-img-top p-3" alt="Course Image">
+                            <div class="card-body pb-0">
+                                <div class="d-flex justify-content-between mb-2">
+                                    <span class="badge bg-primary">Beginner</span>
+                                    <span class="text-warning"><i class="fas fa-star"></i> 4.8 (120)</span>
+                                </div>
+                                <h5 class="card-title fw-bold">Introduction to Web Development</h5>
+                                <p class="card-text text-muted">Learn the fundamentals of web development including HTML, CSS, and JavaScript.</p>
+                            </div>
+                            <div class="card-footer bg-white border-0 d-flex justify-content-between align-items-center">
+                                <div class="d-flex align-items-center">
+                                    <div class="rounded-circle text-white d-flex align-items-center justify-content-center me-2" style="width: 30px; height: 30px; background-color: #ff5a00; font-weight: 700;">
+                                        J
+                                    </div>
+                                    <span>John Smith</span>
+                                </div>
+                                <a href="{{ route('courses.index') }}" class="btn btn-sm btn-outline-primary">View Course</a>
+                            </div>
                         </div>
                     </div>
-                    <div class="footer-column">
-                        <h3>Quick Links</h3>
-                        <ul class="footer-links">
-                            <li><a href="{{ route('courses.index') }}">Courses</a></li>
-                            <li><a href="#">About Us</a></li>
-                            <li><a href="#">Teachers</a></li>
-                            <li><a href="#">Contact Us</a></li>
+                    <div class="col-lg-4 col-md-6">
+                        <div class="card border-0 shadow-sm h-100">
+                            <img src="{{ asset('assets/eduzone/images/education-hero.svg') }}" class="card-img-top p-3" alt="Course Image">
+                            <div class="card-body pb-0">
+                                <div class="d-flex justify-content-between mb-2">
+                                    <span class="badge bg-success">Intermediate</span>
+                                    <span class="text-warning"><i class="fas fa-star"></i> 4.9 (85)</span>
+                                </div>
+                                <h5 class="card-title fw-bold">Data Science Fundamentals</h5>
+                                <p class="card-text text-muted">Master the basics of data analysis, visualization, and machine learning algorithms.</p>
+                            </div>
+                            <div class="card-footer bg-white border-0 d-flex justify-content-between align-items-center">
+                                <div class="d-flex align-items-center">
+                                    <div class="rounded-circle text-white d-flex align-items-center justify-content-center me-2" style="width: 30px; height: 30px; background-color: #4361ee; font-weight: 700;">
+                                        E
+                                    </div>
+                                    <span>Emily Johnson</span>
+                                </div>
+                                <a href="{{ route('courses.index') }}" class="btn btn-sm btn-outline-primary">View Course</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-4 col-md-6">
+                        <div class="card border-0 shadow-sm h-100">
+                            <img src="{{ asset('assets/eduzone/images/education-hero.svg') }}" class="card-img-top p-3" alt="Course Image">
+                            <div class="card-body pb-0">
+                                <div class="d-flex justify-content-between mb-2">
+                                    <span class="badge bg-danger">Advanced</span>
+                                    <span class="text-warning"><i class="fas fa-star"></i> 4.7 (95)</span>
+                                </div>
+                                <h5 class="card-title fw-bold">Artificial Intelligence & Machine Learning</h5>
+                                <p class="card-text text-muted">Dive deep into AI concepts, neural networks, and practical machine learning applications.</p>
+                            </div>
+                            <div class="card-footer bg-white border-0 d-flex justify-content-between align-items-center">
+                                <div class="d-flex align-items-center">
+                                    <div class="rounded-circle text-white d-flex align-items-center justify-content-center me-2" style="width: 30px; height: 30px; background-color: #36b37e; font-weight: 700;">
+                                        D
+                                    </div>
+                                    <span>David Chen</span>
+                                </div>
+                                <a href="{{ route('courses.index') }}" class="btn btn-sm btn-outline-primary">View Course</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="text-center mt-5">
+                    <a href="{{ route('courses.index') }}" class="btn btn-primary px-4">View All Courses</a>
+                </div>
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <footer class="bg-dark text-white pt-5 pb-3" id="contact">
+            <div class="container">
+                <div class="row mb-4">
+                    <div class="col-lg-3 col-md-6 mb-4">
+                        <a href="{{ url('/') }}" class="d-flex align-items-center text-white text-decoration-none mb-3">
+                            <img src="{{ asset('assets/eduzone/images/logo.svg') }}" alt="Logo" class="me-2" style="height: 40px; width: auto; filter: brightness(0) invert(1);">
+                            <span class="fw-bold">{{ config('app.name', 'Plateforme de Formation en Ligne Interactive') }}</span>
+                        </a>
+                        <p class="mb-4 text-muted">An interactive educational platform that combines modern education, AI-generated quizzes, and facial recognition for secure exams.</p>
+                        <div class="d-flex gap-3 mb-4">
+                            <a href="#" class="text-white"><i class="fab fa-facebook-f"></i></a>
+                            <a href="#" class="text-white"><i class="fab fa-twitter"></i></a>
+                            <a href="#" class="text-white"><i class="fab fa-instagram"></i></a>
+                            <a href="#" class="text-white"><i class="fab fa-linkedin-in"></i></a>
+                        </div>
+                    </div>
+                    <div class="col-lg-3 col-md-6 mb-4">
+                        <h5 class="fw-bold mb-4">Quick Links</h5>
+                        <ul class="list-unstyled">
+                            <li class="mb-2"><a href="{{ route('courses.index') }}" class="text-muted text-decoration-none">Courses</a></li>
+                            <li class="mb-2"><a href="#" class="text-muted text-decoration-none">About Us</a></li>
+                            <li class="mb-2"><a href="#" class="text-muted text-decoration-none">Teachers</a></li>
+                            <li class="mb-2"><a href="#" class="text-muted text-decoration-none">Contact Us</a></li>
                         </ul>
                     </div>
-                    <div class="footer-column">
-                        <h3>Support</h3>
-                        <ul class="footer-links">
-                            <li><a href="#">FAQ</a></li>
-                            <li><a href="#">Privacy Policy</a></li>
-                            <li><a href="#">Terms of Use</a></li>
-                            <li><a href="#">Help</a></li>
+                    <div class="col-lg-3 col-md-6 mb-4">
+                        <h5 class="fw-bold mb-4">Support</h5>
+                        <ul class="list-unstyled">
+                            <li class="mb-2"><a href="#" class="text-muted text-decoration-none">FAQ</a></li>
+                            <li class="mb-2"><a href="#" class="text-muted text-decoration-none">Privacy Policy</a></li>
+                            <li class="mb-2"><a href="#" class="text-muted text-decoration-none">Terms of Use</a></li>
+                            <li class="mb-2"><a href="#" class="text-muted text-decoration-none">Help Center</a></li>
                         </ul>
                     </div>
-                    <div class="footer-column">
-                        <h3>Contact Us</h3>
-                        <ul class="footer-contact">
-                            <li>
-                                <i class="fas fa-map-marker-alt"></i>
+                    <div class="col-lg-3 col-md-6 mb-4">
+                        <h5 class="fw-bold mb-4">Contact Us</h5>
+                        <ul class="list-unstyled text-muted">
+                            <li class="mb-3 d-flex">
+                                <i class="fas fa-map-marker-alt me-3 mt-1"></i>
                                 <span>123 Knowledge Street, City</span>
                             </li>
-                            <li>
-                                <i class="fas fa-envelope"></i>
+                            <li class="mb-3 d-flex">
+                                <i class="fas fa-envelope me-3 mt-1"></i>
                                 <span>info@example.com</span>
                             </li>
-                            <li>
-                                <i class="fas fa-phone"></i>
+                            <li class="mb-3 d-flex">
+                                <i class="fas fa-phone me-3 mt-1"></i>
                                 <span>+123 456 7890</span>
                             </li>
                         </ul>
                     </div>
                 </div>
-                <div class="footer-bottom">
-                    <p>&copy; {{ date('Y') }} {{ config('app.name', 'Plateforme de Formation') }}. All rights reserved.</p>
+                <hr class="my-4 opacity-25">
+                <div class="row">
+                    <div class="col-md-6 mb-3 mb-md-0">
+                        <p class="mb-0 text-muted">&copy; {{ date('Y') }} {{ config('app.name', 'Plateforme de Formation en Ligne Interactive') }}. All rights reserved.</p>
+                    </div>
+                    <div class="col-md-6 text-md-end">
+                        <p class="mb-0 text-muted">Designed with <i class="fas fa-heart text-danger"></i> for education</p>
+                    </div>
                 </div>
             </div>
         </footer>
+
+        <!-- Bootstrap JS Bundle with Popper -->
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+        <!-- EduZone Theme Scripts -->
+        <script src="{{ asset('assets/eduzone/js/scripts.js') }}"></script>
     </body>
 </html>

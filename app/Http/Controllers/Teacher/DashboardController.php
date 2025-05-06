@@ -33,7 +33,7 @@ class DashboardController extends Controller
         $totalCourses = $courses->count();
         $totalStudents = Enrollment::whereIn('course_id', $courses->pluck('id'))->count();
 
-        return view('teacher.dashboard', compact('courses', 'totalCourses', 'totalStudents'));
+        return view('teacher.dashboard_new', compact('courses', 'totalCourses', 'totalStudents'));
     }
 
     /**

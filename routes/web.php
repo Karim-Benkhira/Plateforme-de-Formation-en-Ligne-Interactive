@@ -6,6 +6,7 @@ use App\Http\Controllers\FaceRecognitionController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\LessonController;
 use App\Http\Controllers\ModuleController;
+use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\QuestionController;
 use App\Http\Controllers\QuestionGeneratorController;
 use App\Http\Controllers\QuizController;
@@ -84,4 +85,10 @@ Route::middleware(['auth'])->group(function () {
     // Face recognition routes
     Route::post('/face-recognition/verify', [FaceRecognitionController::class, 'verify'])->name('face-recognition.verify');
     Route::post('/face-recognition/register', [FaceRecognitionController::class, 'register'])->name('face-recognition.register');
+
+    // Profile routes
+    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
+    Route::put('/profile', [ProfileController::class, 'update'])->name('profile.update');
+    Route::get('/profile/change-password', [ProfileController::class, 'showChangePasswordForm'])->name('profile.change-password');
+    Route::put('/profile/change-password', [ProfileController::class, 'changePassword'])->name('profile.update-password');
 });
