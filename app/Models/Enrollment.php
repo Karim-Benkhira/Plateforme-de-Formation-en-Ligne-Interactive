@@ -20,6 +20,9 @@ class Enrollment extends Model
         'status',
         'enrolled_at',
         'completed_at',
+        'progress',
+        'last_accessed_lesson_id',
+        'last_accessed_at',
     ];
 
     /**
@@ -30,6 +33,7 @@ class Enrollment extends Model
     protected $casts = [
         'enrolled_at' => 'datetime',
         'completed_at' => 'datetime',
+        'last_accessed_at' => 'datetime',
     ];
 
     /**
@@ -46,5 +50,13 @@ class Enrollment extends Model
     public function course()
     {
         return $this->belongsTo(Course::class);
+    }
+
+    /**
+     * Get the last accessed lesson for this enrollment
+     */
+    public function lastAccessedLesson()
+    {
+        return $this->belongsTo(Lesson::class, 'last_accessed_lesson_id');
     }
 }
