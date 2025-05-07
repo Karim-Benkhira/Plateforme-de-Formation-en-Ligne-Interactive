@@ -1,90 +1,56 @@
-@extends('layouts.app')
+@include('components.header')
+<body class="bg-gradient-to-br from-blue-50 to-blue-100 min-h-screen flex flex-col text-gray-800">
+  <main class="container mx-auto p-4 flex-grow">
+    <section class="my-12">
+      <h2 class="text-4xl text-blue-600 font-extrabold mb-10 text-center drop-shadow">Admin Dashboard</h2>
+      <div class="grid md:grid-cols-3 gap-10 mb-12">
+        <div class="bg-white rounded-xl shadow-lg p-8 text-center border-l-4 border-blue-400">
+          <h3 class="text-xl text-blue-500 font-semibold mb-2">Total Users</h3>
+          <p class="text-3xl text-gray-700 font-bold">{{ $totalUsers }}</p>
+        </div>
+        <div class="bg-white rounded-xl shadow-lg p-8 text-center border-l-4 border-blue-400">
+          <h3 class="text-xl text-blue-500 font-semibold mb-2">Active Courses</h3>
+          <p class="text-3xl text-gray-700 font-bold">{{ $activeCourses }}</p>
+        </div>
+        <div class="bg-white rounded-xl shadow-lg p-8 text-center border-l-4 border-blue-400">
+          <h3 class="text-xl text-blue-500 font-semibold mb-2">Quizzes Taken</h3>
+          <p class="text-3xl text-gray-700 font-bold">{{ $quizzesTaken }}</p>
+        </div>
+      </div>
 
-@section('content')
-<div class="container">
-    <div class="row justify-content-center">
-        <div class="col-md-3">
-            <div class="card">
-                <div class="card-header bg-primary text-white">
-                    {{ __('Admin Menu') }}
-                </div>
-                <div class="card-body p-0">
-                    <ul class="list-group list-group-flush">
-                        <li class="list-group-item">
-                            <a href="{{ route('admin.dashboard') }}" class="d-block">
-                                <i class="fas fa-tachometer-alt me-2"></i>{{ __('Dashboard') }}
-                            </a>
-                        </li>
-                        <li class="list-group-item">
-                            <a href="{{ route('admin.users') }}" class="d-block">
-                                <i class="fas fa-users me-2"></i>{{ __('Manage Users') }}
-                            </a>
-                        </li>
-                        <li class="list-group-item">
-                            <a href="{{ route('admin.courses') }}" class="d-block">
-                                <i class="fas fa-book me-2"></i>{{ __('Manage Courses') }}
-                            </a>
-                        </li>
-                        <li class="list-group-item">
-                            <a href="{{ route('admin.reports') }}" class="d-block">
-                                <i class="fas fa-chart-bar me-2"></i>{{ __('Reports') }}
-                            </a>
-                        </li>
-                    </ul>
-                </div>
-            </div>
+      <div class="bg-white rounded-xl shadow-lg p-8 max-w-3xl mx-auto">
+        <h3 class="text-2xl text-blue-600 font-bold mb-6 text-center">Top 10 Users Leaderboard</h3>
+        <div class="overflow-x-auto">
+          <table class="w-full border-collapse bg-white shadow">
+            <thead>
+              <tr>
+                <th class="border-b-2 p-3 text-left text-blue-700">Rank</th>
+                <th class="border-b-2 p-3 text-left text-blue-700">Name</th>
+                <th class="border-b-2 p-3 text-left text-blue-700">Total Score</th>
+                <th class="border-b-2 p-3 text-left text-blue-700">Quizzes Taken</th>
+              </tr>
+            </thead>
+            <tbody>
+              @foreach($leaders as $index => $user)
+                <tr class="{{ $index % 2 === 0 ? 'bg-blue-50' : '' }}">
+                  <td class="p-3 font-bold text-blue-500">{{ $index + 1 }}</td>
+                  <td class="p-3 font-semibold">{{ $user->username }}</td>
+                  <td class="p-3">
+                    <span class="inline-block bg-blue-500 text-white px-4 py-1 rounded-full font-bold shadow">{{ $user->total_score }}</span>
+                  </td>
+                  <td class="p-3">{{ $user->quizzes_count }}</td>
+                </tr>
+              @endforeach
+              @if($leaders->isEmpty())
+                <tr>
+                  <td colspan="4" class="p-4 text-center text-gray-500">No leaderboard data available.</td>
+                </tr>
+              @endif
+            </tbody>
+          </table>
         </div>
-        <div class="col-md-9">
-            <div class="card">
-                <div class="card-header bg-primary text-white">
-                    {{ __('Admin Dashboard') }}
-                </div>
-                <div class="card-body">
-                    <div class="row">
-                        <div class="col-md-4">
-                            <div class="card bg-primary text-white mb-3">
-                                <div class="card-body text-center">
-                                    <h1 class="display-4">{{ $totalStudents }}</h1>
-                                    <p class="lead">{{ __('Students') }}</p>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-md-4">
-                            <div class="card bg-success text-white mb-3">
-                                <div class="card-body text-center">
-                                    <h1 class="display-4">{{ $totalTeachers }}</h1>
-                                    <p class="lead">{{ __('Teachers') }}</p>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-md-4">
-                            <div class="card bg-info text-white mb-3">
-                                <div class="card-body text-center">
-                                    <h1 class="display-4">{{ $totalCourses }}</h1>
-                                    <p class="lead">{{ __('Courses') }}</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div class="mt-4">
-                        <h4>{{ __('Quick Actions') }}</h4>
-                        <div class="row">
-                            <div class="col-md-6">
-                                <a href="{{ route('admin.users') }}" class="btn btn-outline-primary btn-lg d-block mb-3">
-                                    <i class="fas fa-user-plus me-2"></i>{{ __('Add New User') }}
-                                </a>
-                            </div>
-                            <div class="col-md-6">
-                                <a href="{{ route('admin.courses') }}" class="btn btn-outline-success btn-lg d-block mb-3">
-                                    <i class="fas fa-book-medical me-2"></i>{{ __('View All Courses') }}
-                                </a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-@endsection
+      </div>
+    </section>
+  </main>
+</body>
+</html>

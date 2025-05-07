@@ -1,61 +1,164 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# 🚀 BrightPath Installation Guide
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+## 1. Clone the Repository
 
-## About Laravel
+```bash
+git clone https://github.com/your-username/brightpath.git
+cd brightpath
+```
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+## 2. Install PHP Dependencies
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+Make sure you have [Composer](https://getcomposer.org/) installed.
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+```bash
+composer install
+```
 
-## Learning Laravel
+## 3. Copy and Configure Environment File
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+```bash
+cp .env.example .env
+```
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+Edit `.env` and set your database and mail credentials.
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+## 4. Generate Application Key
 
-## Laravel Sponsors
+```bash
+php artisan key:generate
+```
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+## 5. Run Migrations
 
-### Premium Partners
+```bash
+php artisan migrate
+```
 
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Redberry](https://redberry.international/laravel-development/)**
-- **[Active Logic](https://activelogic.com)**
+## 6. Link Storage
 
-## Contributing
+```bash
+php artisan storage:link
+```
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+## 7. Start the Development Server
 
-## Code of Conduct
+```bash
+php artisan serve
+```
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+Visit [http://localhost:8000](http://localhost:8000) in your browser.
 
-## Security Vulnerabilities
+---
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+## Troubleshooting
 
-## License
+- Make sure your PHP version matches Laravel’s requirements.
+- Ensure your database is running and credentials are correct in `.env`.
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+---
+
+# 🧑‍💻 BrightPath User Guide
+
+Welcome to BrightPath! This guide will help you get started as a user or admin.
+
+---
+
+## 1. Creating a User Account
+
+1. Visit the [registration page](http://localhost:8000/register).
+2. Fill in your name, email, and password.
+3. Click **Register**.
+4. You can now log in and access your dashboard.
+
+---
+
+## 2. Logging In
+
+1. Go to the [login page](http://localhost:8000/login).
+2. Enter your email and password.
+3. Click **Login**.
+
+---
+
+## 3. Admin: Creating a Category
+
+1. Log in as an admin.
+2. In the sidebar or top menu, click **Categories**.
+3. Click **Add Category** or **Create New Category**.
+4. Enter the category name and description.
+5. Click **Save**.
+
+---
+
+## 4. Admin: Creating a Course
+
+1. Log in as an admin.
+2. Click **Courses** in the sidebar or menu.
+3. Click **Add Course**.
+4. Fill in the course details (title, description, category, etc.).
+5. Click **Save**.
+
+---
+
+## 5. Admin: Creating a Quiz
+
+1. Go to the **Quizzes** section.
+2. Click **Add Quiz**.
+3. Enter the quiz title, select the course, and add questions.
+4. For each question, provide options and mark the correct answer (answers separated by commas).
+5. Click **Save**.
+
+---
+
+## 6. Enrolling in a Course (User)
+
+1. Log in as a user.
+2. Browse the **Courses** page.
+3. Click on a course to view content.
+
+---
+
+## 7. Taking a Quiz (User)
+
+1. Go to **the course** detail page.
+2. Click on the available quiz.
+3. Answer the questions and submit.
+4. View your score.
+
+---
+
+## 8. Submitting a Reclamation (User)
+
+1. Go to the **Support** or **Reclamations** section.
+2. Fill in the subject and message.
+3. Click **Send**.
+
+---
+
+## 9. Managing Reclamations (Agent/Admin)
+
+1. Go to the **Reclamations** section.
+2. View the list of submitted reclamations.
+3. Click on a reclamation to view details.
+4. Respond, mark as resolved, or update the status as needed.
+
+---
+
+## 10. Viewing the Leaderboard
+
+- Go to the **Dashboard**.
+- The leaderboard shows the top users by quiz scores.
+
+---
+
+## 11. Logging Out
+
+- Click your profile icon or name in the top right.
+- Select **Logout**.
+
+---
+
+**Enjoy learning and managing with BrightPath!**
+
+---
