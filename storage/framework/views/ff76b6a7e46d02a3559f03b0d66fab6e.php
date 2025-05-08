@@ -38,8 +38,8 @@
           <li><a href="/" class="text-gray-600 hover:text-blue-500">Home</a></li>
           <li><a href="/about" class="text-gray-600 hover:text-blue-500">About Us</a></li>
           <li><a href="/courses" class="text-gray-600 hover:text-blue-500">Courses</a></li>
-          <li><a href="{{ route('login') }}" class="text-gray-600 hover:text-blue-500">Login</a></li>
-          <li><a href="{{ route('register') }}" class="text-gray-600 hover:text-blue-500">Register</a></li>
+          <li><a href="<?php echo e(route('login')); ?>" class="text-gray-600 hover:text-blue-500">Login</a></li>
+          <li><a href="<?php echo e(route('register')); ?>" class="text-gray-600 hover:text-blue-500">Register</a></li>
         </ul>
       </div>
 
@@ -85,10 +85,10 @@
     <!-- Copyright -->
     <div class="pt-8 border-t border-gray-200 text-center">
       <p class="text-gray-600">
-        &copy; {{ date('Y') }} BrightPath. All rights reserved.
+        &copy; <?php echo e(date('Y')); ?> BrightPath. All rights reserved.
         <a class="text-blue-500 hover:underline" href="#">Privacy Policy</a> |
         <a class="text-blue-500 hover:underline" href="#">Terms of Service</a>
       </p>
     </div>
   </div>
-</footer>
+</footer><?php /**PATH /home/karim/Plateforme-de-Formation-en-Ligne-Interactive/resources/views/components/footer.blade.php ENDPATH**/ ?>
