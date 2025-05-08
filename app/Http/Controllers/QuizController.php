@@ -7,6 +7,8 @@ use App\Models\Course;
 use App\Models\Quiz;
 use App\Models\Question;
 use App\Models\QuizResult;
+use App\Services\AIQuizService;
+use Illuminate\Support\Facades\Log;
 
 class QuizController extends Controller
 {
@@ -38,7 +40,7 @@ class QuizController extends Controller
     public function updateQuiz(Request $request, $id) {
         $request->validate([
             'name' => 'required|string|max:255',
-            'course_id' => 'required|exists:courses,id', 
+            'course_id' => 'required|exists:courses,id',
         ]);
 
         $quiz = Quiz::findOrFail($id);
@@ -111,7 +113,7 @@ class QuizController extends Controller
         $question->answers = $request->answers;
         $question->correct = $request->correct - 1;
         $question->save();
-        
+
         return redirect()->route('admin.quizQuestions', $question->quiz_id)->with('success', 'Question updated successfully.');
     }
 
@@ -135,16 +137,16 @@ class QuizController extends Controller
             'answers.*' => 'integer',
             'quiz_id' => 'required|exists:quizzes,id',
         ]);
-    
+
         $quiz = Quiz::with('questions', 'course')->findOrFail($request->quiz_id);
         $questions = $quiz->questions;
-    
+
         $correctAnswersCount = 0;
-    
+
         foreach ($questions as $question) {
             if (isset($request->answers[$question->id])) {
                 $selectedAnswerIndex = $request->answers[$question->id];
-    
+
                 if ($selectedAnswerIndex == $question->correct) {
                     $correctAnswersCount++;
                 }
@@ -168,5 +170,106 @@ class QuizController extends Controller
             'correctAnswers' => $correctAnswersCount,
             'totalQuestions' => count($questions)
         ]);
+    }
+
+    /**
+     * Show the form for generating AI quiz
+     *
+     * @param int $courseId
+     * @return \Illuminate\View\View
+     */
+    public function showGenerateAIQuiz($courseId)
+    {
+        $course = Course::findOrFail($courseId);
+        return view('admin.generateAIQuiz', compact('course'));
+    }
+
+    /**
+     * Generate quiz using AI
+     *
+     * @param Request $request
+     * @param int $courseId
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    public function generateAIQuiz(Request $request, $courseId)
+    {
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'num_questions' => 'required|integer|min:1|max:20',
+            'difficulty' => 'required|in:easy,medium,hard',
+        ]);
+
+        try {
+            $course = Course::findOrFail($courseId);
+
+            // Create the quiz
+            $quiz = new Quiz();
+            $quiz->name = $request->name;
+            $quiz->course_id = $courseId;
+            $quiz->is_ai_generated = true;
+            $quiz->save();
+
+            // Generate questions using AI
+            $aiQuizService = new AIQuizService();
+            $result = $aiQuizService->generateQuiz($course, $request->num_questions, $request->difficulty);
+
+            if (!$result['success']) {
+                return redirect()->back()->withErrors(['ai_error' => $result['message']])->withInput();
+            }
+
+            // Save the generated questions
+            $success = $aiQuizService->saveQuizQuestions($quiz, $result['data']);
+
+            if (!$success) {
+                return redirect()->back()->withErrors(['db_error' => 'Failed to save generated questions.'])->withInput();
+            }
+
+            return redirect()->route('admin.quizQuestions', $quiz->id)
+                ->with('success', 'Quiz generated successfully with AI. Review the questions below.');
+
+        } catch (\Exception $e) {
+            Log::error('Error generating AI quiz: ' . $e->getMessage());
+            return redirect()->back()->withErrors(['error' => 'An error occurred while generating the quiz: ' . $e->getMessage()])->withInput();
+        }
+    }
+
+    /**
+     * Preview AI generated questions before saving
+     *
+     * @param Request $request
+     * @param int $courseId
+     * @return \Illuminate\View\View
+     */
+    public function previewAIQuiz(Request $request, $courseId)
+    {
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'num_questions' => 'required|integer|min:1|max:20',
+            'difficulty' => 'required|in:easy,medium,hard',
+        ]);
+
+        try {
+            $course = Course::findOrFail($courseId);
+
+            // Generate questions using AI
+            $aiQuizService = new AIQuizService();
+            $result = $aiQuizService->generateQuiz($course, $request->num_questions, $request->difficulty);
+
+            if (!$result['success']) {
+                return redirect()->back()->withErrors(['ai_error' => $result['message']])->withInput();
+            }
+
+            return view('admin.previewAIQuiz', [
+                'course' => $course,
+                'quizName' => $request->name,
+                'questions' => $result['data'],
+                'numQuestions' => $request->num_questions,
+                'difficulty' => $request->difficulty
+            ]);
+
+        } catch (\Exception $e) {
+            Log::error('Error previewing AI quiz: ' . $e->getMessage());
+            return redirect()->back()->withErrors(['error' => 'An error occurred while previewing the quiz: ' . $e->getMessage()])->withInput();
+        }
     }
 }

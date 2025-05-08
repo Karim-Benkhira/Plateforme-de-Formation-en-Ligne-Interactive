@@ -42,13 +42,18 @@ Route::middleware(['role:admin'])->group(function () {
     Route::get('/admin/quizzes/{id}/edit', [QuizController::class, 'editQuiz'])->name('admin.editQuiz');
     Route::put('/admin/quizzes/{id}', [QuizController::class, 'updateQuiz'])->name('admin.updateQuiz');
     Route::delete('/admin/quizzes/{id}', [QuizController::class, 'deleteQuiz'])->name('admin.deleteQuiz');
-    
+
     Route::get('/admin/quizzes/{id}/questions', [AdminController::class, 'showQuizQuestions'])->name('admin.quizQuestions');
     Route::get('/admin/quizzes/{quizId}/questions/create', [QuizController::class, 'createQuestion'])->name('admin.createQuestion');
     Route::post('/admin/quizzes/{quizId}/questions', [QuizController::class, 'storeQuestion'])->name('admin.storeQuestion');
     Route::get('/admin/questions/{id}/edit', [QuizController::class, 'editQuestion'])->name('admin.editQuestion');
     Route::put('/admin/questions/{id}', [QuizController::class, 'updateQuestion'])->name('admin.updateQuestion');
     Route::delete('/admin/questions/{id}', [QuizController::class, 'deleteQuestion'])->name('admin.deleteQuestion');
+
+    // AI Quiz Generation
+    Route::get('/admin/courses/{courseId}/generate-quiz', [QuizController::class, 'showGenerateAIQuiz'])->name('admin.showGenerateAIQuiz');
+    Route::post('/admin/courses/{courseId}/generate-quiz', [QuizController::class, 'generateAIQuiz'])->name('admin.generateAIQuiz');
+    Route::post('/admin/courses/{courseId}/preview-quiz', [QuizController::class, 'previewAIQuiz'])->name('admin.previewAIQuiz');
 
     Route::get('/admin/courses', [AdminController::class, 'showCourses'])->name('admin.courses');
     Route::get('/admin/courses/create', [AdminController::class, 'createCourse'])->name('admin.createCourse');

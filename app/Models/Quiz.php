@@ -10,8 +10,9 @@ class Quiz extends Model
     protected $fillable = [
         'name',
         'course_id',
+        'is_ai_generated',
     ];
-    
+
     public function course()
     {
         return $this->belongsTo(Course::class);

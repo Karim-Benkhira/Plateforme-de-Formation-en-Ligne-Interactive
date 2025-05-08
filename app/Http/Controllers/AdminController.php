@@ -62,7 +62,7 @@ class AdminController extends AgentController
 
     public function showCourse($id)
     {
-        $course = Course::with(['contents'])->findOrFail($id);
+        $course = Course::with(['contents', 'quizzes.questions'])->findOrFail($id);
         return view('admin.courseDetails', compact('course'));
     }
 
@@ -76,7 +76,7 @@ class AdminController extends AgentController
         $quiz = Quiz::with('questions')->findOrFail($id);
         return view('admin.quizQuestions', compact('quiz'));
     }
-    
+
     public function updateRole(Request $request, $id) {
         $request->validate([
             'role' => 'required|in:admin,agent,user',
