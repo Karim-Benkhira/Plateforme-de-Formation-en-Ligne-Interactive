@@ -9,6 +9,7 @@ use App\Http\Controllers\StudentController;
 use App\Http\Controllers\QuizController;
 use App\Http\Controllers\ReclamationController;
 use App\Http\Controllers\FaceRecognitionController;
+use App\Http\Controllers\AnalyticsController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -81,6 +82,13 @@ Route::middleware(['role:admin'])->group(function () {
     Route::get('/admin/reclamations/{id}/respond', [AdminController::class, 'respondReclamation'])->name('admin.respondReclamation');
     Route::post('/admin/reclamations/{id}/respond', [ReclamationController::class, 'submitReclamationResponse'])->name('admin.submitReclamationResponse');
     Route::delete('/admin/reclamations/{id}/delete', [ReclamationController::class, 'deleteReclamation'])->name('admin.deleteReclamation');
+
+    // Analytics Routes
+    Route::get('/admin/analytics', [AnalyticsController::class, 'instructorDashboard'])->name('admin.analytics');
+    Route::get('/admin/analytics/course/{courseId}', [AnalyticsController::class, 'courseAnalytics'])->name('admin.analytics.course');
+    Route::get('/admin/analytics/quiz/{quizId}', [AnalyticsController::class, 'quizAnalytics'])->name('admin.analytics.quiz');
+    Route::get('/admin/analytics/course/{courseId}/report', [AnalyticsController::class, 'downloadCourseReport'])->name('admin.analytics.course.report');
+    Route::get('/admin/analytics/student/{studentId}/report', [AnalyticsController::class, 'downloadStudentReport'])->name('admin.analytics.student.report');
 });
 
 Route::middleware(['auth','role:user'])->group(function () {
@@ -95,6 +103,8 @@ Route::middleware(['auth','role:user'])->group(function () {
     Route::post('/student/profile/password', [StudentController::class, 'updatePassword'])->name('student.profile.password');
 
     Route::get('/student/progress', [StudentController::class, 'showProgress'])->name('student.progress');
+    Route::get('/student/analytics', [AnalyticsController::class, 'studentDashboard'])->name('student.analytics');
+    Route::get('/student/analytics/report', [AnalyticsController::class, 'downloadStudentReport'])->name('student.analytics.report');
 
     Route::get('/student/quiz/{id}', [QuizController::class, 'takeQuiz'])->name('student.quiz');
     Route::get('/student/quiz/result', [StudentController::class, 'showQuizResult'])->name('student.quizResult');

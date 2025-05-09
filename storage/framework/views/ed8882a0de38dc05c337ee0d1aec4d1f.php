@@ -52,6 +52,7 @@
                             <a class="px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:text-blue-600 hover:bg-blue-50 transition duration-150" href="<?php echo e(route('admin.categories')); ?>">Categories</a>
                             <a class="px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:text-blue-600 hover:bg-blue-50 transition duration-150" href="<?php echo e(route('admin.reclamations')); ?>">Reports</a>
                             <a class="px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:text-blue-600 hover:bg-blue-50 transition duration-150" href="<?php echo e(route('admin.quizzes')); ?>">Quizzes</a>
+                            <a class="px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:text-blue-600 hover:bg-blue-50 transition duration-150" href="<?php echo e(route('admin.analytics')); ?>">Analytics</a>
                         <?php elseif(Auth::user()->role === 'agent'): ?>
                             <a class="px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:text-blue-600 hover:bg-blue-50 transition duration-150" href="<?php echo e(route('agent.dashboard')); ?>">Dashboard</a>
                             <a class="px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:text-blue-600 hover:bg-blue-50 transition duration-150" href="<?php echo e(route('agent.reclamations')); ?>">Reclamations</a>
@@ -61,6 +62,7 @@
                             <a class="px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:text-blue-600 hover:bg-blue-50 transition duration-150" href="<?php echo e(route('student.myCourses')); ?>">My Courses</a>
                             <a class="px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:text-blue-600 hover:bg-blue-50 transition duration-150" href="<?php echo e(route('student.leaderboard')); ?>">Leaderboard</a>
                             <a class="px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:text-blue-600 hover:bg-blue-50 transition duration-150" href="<?php echo e(route('student.achievements')); ?>">Achievements</a>
+                            <a class="px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:text-blue-600 hover:bg-blue-50 transition duration-150" href="<?php echo e(route('student.analytics')); ?>">Analytics</a>
                             <div class="relative" x-data="{ open: false }">
                                 <button @click="open = !open" class="flex items-center px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:text-blue-600 hover:bg-blue-50 transition duration-150">
                                     <span>Account</span>
