@@ -77,4 +77,62 @@ class User extends Authenticatable
     {
         return $this->faceData && $this->faceData->face_descriptor !== null;
     }
+
+    /**
+     * Get the two-factor authentication configuration for the user.
+     */
+    public function twoFactorAuth()
+    {
+        return $this->hasOne(TwoFactorAuth::class);
+    }
+
+    /**
+     * Check if the user has two-factor authentication enabled.
+     */
+    public function hasTwoFactorEnabled()
+    {
+        return $this->twoFactorAuth && $this->twoFactorAuth->enabled && $this->twoFactorAuth->confirmed_at !== null;
+    }
+
+    /**
+     * Enable two-factor authentication for the user.
+     */
+    public function enableTwoFactorAuth($secretKey)
+    {
+        $twoFactorAuth = $this->twoFactorAuth ?? new TwoFactorAuth(['user_id' => $this->id]);
+        $twoFactorAuth->secret_key = $secretKey;
+        $twoFactorAuth->enabled = true;
+        $twoFactorAuth->save();
+
+        return $twoFactorAuth;
+    }
+
+    /**
+     * Confirm two-factor authentication for the user.
+     */
+    public function confirmTwoFactorAuth()
+    {
+        if ($this->twoFactorAuth) {
+            $this->twoFactorAuth->confirmed_at = now();
+            $this->twoFactorAuth->save();
+
+            return $this->twoFactorAuth->generateRecoveryCodes();
+        }
+
+        return null;
+    }
+
+    /**
+     * Disable two-factor authentication for the user.
+     */
+    public function disableTwoFactorAuth()
+    {
+        if ($this->twoFactorAuth) {
+            $this->twoFactorAuth->enabled = false;
+            $this->twoFactorAuth->confirmed_at = null;
+            $this->twoFactorAuth->secret_key = null;
+            $this->twoFactorAuth->recovery_codes = null;
+            $this->twoFactorAuth->save();
+        }
+    }
 }

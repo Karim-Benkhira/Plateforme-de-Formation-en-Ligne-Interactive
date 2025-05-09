@@ -24,7 +24,13 @@ Route::middleware('guest')->group(function () {
     Route::post('login', [UserController::class, 'login']);
 });
 
-Route::middleware('auth')->group(function () {
+// Two-Factor Authentication Challenge Routes
+Route::middleware(['auth', 'two-factor.challenge'])->group(function () {
+    Route::get('/two-factor-challenge', [TwoFactorAuthController::class, 'showChallenge'])->name('two-factor.challenge');
+    Route::post('/two-factor-challenge', [TwoFactorAuthController::class, 'verifyChallenge']);
+});
+
+Route::middleware(['auth', 'prevent.concurrent.logins'])->group(function () {
     Route::post('logout', [UserController::class, 'LogOut'])->name('logout');
 
     // Face Recognition Routes
@@ -32,13 +38,59 @@ Route::middleware('auth')->group(function () {
     Route::post('/face/register', [FaceRecognitionController::class, 'registerFace'])->name('face.register.post');
     Route::post('/face/verify', [FaceRecognitionController::class, 'verifyFace'])->name('face.verify');
     Route::get('/face/data', [FaceRecognitionController::class, 'getFaceData'])->name('face.data');
+
+    // Two-Factor Authentication Routes
+    Route::prefix('profile/two-factor')->name('profile.two-factor.')->group(function () {
+        Route::get('/', [TwoFactorAuthController::class, 'show'])->name('show');
+        Route::post('/', [TwoFactorAuthController::class, 'enable'])->name('enable');
+        Route::delete('/', [TwoFactorAuthController::class, 'disable'])->name('disable');
+        Route::post('/recovery-codes', [TwoFactorAuthController::class, 'regenerateRecoveryCodes'])->name('regenerate-recovery-codes');
+    });
+
+    // Profile Routes
+    Route::get('/profile', function () {
+        return view('profile.edit');
+    })->name('profile.edit');
+    Route::patch('/profile', [UserController::class, 'updateProfile'])->name('profile.update');
+    Route::put('/profile/password', [UserController::class, 'updatePassword'])->name('profile.password.update');
+
+    // User Activity Log
+    Route::get('/profile/activity', [ActivityLogController::class, 'userActivity'])->name('profile.activity');
+
+    // Browser Sessions
+    Route::get('/profile/sessions', [SessionController::class, 'index'])->name('profile.sessions');
+    Route::delete('/profile/sessions', [SessionController::class, 'destroyOtherSessions'])->name('profile.sessions.destroy');
 });
 
 Route::get('/about', [UserController::class, 'showAbout']);
 Route::get('/courses', [UserController::class, 'showCourses']);
 
+// Legal Routes
+Route::prefix('legal')->name('legal.')->group(function () {
+    Route::get('/privacy', function () {
+        return view('legal.privacy');
+    })->name('privacy');
+
+    Route::get('/terms', function () {
+        return view('legal.terms');
+    })->name('terms');
+
+    Route::get('/cookies', function () {
+        return view('legal.cookies');
+    })->name('cookies');
+
+    Route::get('/accessibility', function () {
+        return view('legal.accessibility');
+    })->name('accessibility');
+});
+
 Route::middleware(['role:admin'])->group(function () {
     Route::get('/admin', [AdminController::class, 'showAdmin'])->name('admin.dashboard');
+
+    // Activity Logs Routes
+    Route::get('/admin/activity-logs', [ActivityLogController::class, 'index'])->name('admin.activity-logs.index');
+    Route::get('/admin/activity-logs/{id}', [ActivityLogController::class, 'show'])->name('admin.activity-logs.show');
+    Route::delete('/admin/activity-logs', [ActivityLogController::class, 'clear'])->name('admin.activity-logs.clear');
 
     Route::get('/admin/users', [AdminController::class, 'showUsers'])->name('admin.users');
     Route::put('/admin/users/{id}/role', [AdminController::class, 'updateRole'])->name('admin.updateRole');

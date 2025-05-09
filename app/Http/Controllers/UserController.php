@@ -65,21 +65,56 @@ class UserController extends Controller
             'password' => 'required',
         ]);
 
+        // Check for too many login attempts
+        $throttlingController = new \App\Http\Controllers\Auth\LoginThrottlingController();
+        $throttlingController->checkLoginThrottling($request);
+
         $user = User::where('email', $request->email)->first();
         if(!$user){
+            // Increment login attempts
+            $throttlingController->incrementLoginAttempts($request);
+
+            // Log failed login
+            \App\Models\ActivityLog::log('auth.failed', 'Failed login attempt - Invalid email', [
+                'email' => $request->email,
+            ]);
+
             return redirect()->back()->with('error', 'Invalid email');
         }
+
         if(!Hash::check($request->password, $user->password)){
+            // Increment login attempts
+            $throttlingController->incrementLoginAttempts($request);
+
+            // Log failed login
+            \App\Models\ActivityLog::log('auth.failed', 'Failed login attempt - Invalid password', [
+                'email' => $request->email,
+            ]);
+
             return redirect()->back()->with('error', 'Invalid password');
         }
 
         if (Auth::attempt(['email' => $request->email, 'password' => $request->password])) {
+            // Clear login attempts
+            $throttlingController->clearLoginAttempts($request);
+
             $user = Auth::user();
 
             if ($user->is_banned) {
+                // Log banned user attempt
+                \App\Models\ActivityLog::log('auth.banned', 'Banned user attempted to login', [
+                    'user_id' => $user->id,
+                ]);
+
                 Auth::logout();
                 return redirect()->route('login')->with('error', 'Your account is banned.');
             }
+
+            // Log successful login
+            \App\Models\ActivityLog::log('auth.login', 'Successful login');
+
+            // Regenerate session
+            $request->session()->regenerate();
 
             if ($user->role === 'admin') {
                 return redirect()->route('admin.dashboard');
@@ -96,4 +131,51 @@ class UserController extends Controller
         return redirect()->route('login')->with('success', 'You have been successfully logged out.');
     }
 
+    /**
+     * Update the user's profile information.
+     */
+    public function updateProfile(Request $request)
+    {
+        $user = Auth::user();
+
+        $request->validate([
+            'username' => 'required|string|max:255|unique:users,username,' . $user->id,
+            'email' => 'required|string|email|max:255|unique:users,email,' . $user->id,
+        ]);
+
+        $user->username = $request->username;
+        $user->email = $request->email;
+        $user->save();
+
+        // Log the activity
+        \App\Models\ActivityLog::log('profile.update', 'Updated profile information');
+
+        return redirect()->route('profile.edit')->with('status', 'Profile updated successfully.');
+    }
+
+    /**
+     * Update the user's password.
+     */
+    public function updatePassword(Request $request)
+    {
+        $request->validate([
+            'current_password' => 'required|string',
+            'password' => 'required|string|min:8|confirmed',
+        ]);
+
+        $user = Auth::user();
+
+        // Check if the current password matches
+        if (!Hash::check($request->current_password, $user->password)) {
+            return back()->withErrors(['current_password' => 'The provided password does not match your current password.']);
+        }
+
+        $user->password = Hash::make($request->password);
+        $user->save();
+
+        // Log the activity
+        \App\Models\ActivityLog::log('password.update', 'Updated password');
+
+        return redirect()->route('profile.edit')->with('status', 'Password updated successfully.');
+    }
 }
