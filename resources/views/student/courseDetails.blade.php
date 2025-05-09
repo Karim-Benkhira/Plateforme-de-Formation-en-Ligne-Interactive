@@ -36,9 +36,17 @@
           ← Back to Courses
         </a>
         @if($course->quizzes->isNotEmpty())
-          <a href="{{ route('student.quiz', $course->quizzes[0]->id) }}" class="inline-block bg-green-500 hover:bg-green-600 text-white font-semibold py-2 px-6 rounded-lg transition duration-200">
-            Take Quiz →
-          </a>
+          <div class="flex space-x-4">
+            <a href="{{ route('student.quiz', $course->quizzes[0]->id) }}" class="inline-block bg-green-500 hover:bg-green-600 text-white font-semibold py-2 px-6 rounded-lg transition duration-200">
+              Take Quiz →
+            </a>
+            <a href="{{ route('student.secureExam', $course->quizzes[0]->id) }}" class="inline-block bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-2 px-6 rounded-lg transition duration-200 flex items-center">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
+                <path fill-rule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clip-rule="evenodd" />
+              </svg>
+              Secure Exam
+            </a>
+          </div>
         @else
           <span class="inline-block bg-gray-300 text-gray-700 font-semibold py-2 px-6 rounded-lg cursor-not-allowed">
             No Quiz Available

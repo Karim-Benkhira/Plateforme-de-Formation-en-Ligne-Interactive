@@ -61,4 +61,20 @@ class User extends Authenticatable
     {
         return $this->hasMany(QuizResult::class);
     }
+
+    /**
+     * Get the face data associated with the user.
+     */
+    public function faceData()
+    {
+        return $this->hasOne(FaceData::class);
+    }
+
+    /**
+     * Check if the user has registered their face.
+     */
+    public function hasFaceRegistered()
+    {
+        return $this->faceData && $this->faceData->face_descriptor !== null;
+    }
 }

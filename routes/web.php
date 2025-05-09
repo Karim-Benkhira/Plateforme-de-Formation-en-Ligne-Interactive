@@ -8,6 +8,7 @@ use App\Http\Controllers\CourseController;
 use App\Http\Controllers\StudentController;
 use App\Http\Controllers\QuizController;
 use App\Http\Controllers\ReclamationController;
+use App\Http\Controllers\FaceRecognitionController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -23,6 +24,12 @@ Route::middleware('guest')->group(function () {
 
 Route::middleware('auth')->group(function () {
     Route::post('logout', [UserController::class, 'LogOut'])->name('logout');
+
+    // Face Recognition Routes
+    Route::get('/face/register', [FaceRecognitionController::class, 'showRegistration'])->name('face.register');
+    Route::post('/face/register', [FaceRecognitionController::class, 'registerFace'])->name('face.register.post');
+    Route::post('/face/verify', [FaceRecognitionController::class, 'verifyFace'])->name('face.verify');
+    Route::get('/face/data', [FaceRecognitionController::class, 'getFaceData'])->name('face.data');
 });
 
 Route::get('/about', [UserController::class, 'showAbout']);
@@ -92,6 +99,9 @@ Route::middleware(['auth','role:user'])->group(function () {
     Route::get('/student/quiz/{id}', [QuizController::class, 'takeQuiz'])->name('student.quiz');
     Route::get('/student/quiz/result', [StudentController::class, 'showQuizResult'])->name('student.quizResult');
     Route::post('/quiz/submit', [QuizController::class, 'submitQuiz'])->name('student.submitQuiz');
+
+    // Secure Exam with Face Recognition
+    Route::get('/student/secure-exam/{quizId}', [FaceRecognitionController::class, 'showExamVerification'])->name('student.secureExam');
 
     Route::get('/student/leaderboard', [StudentController::class, 'showLeaderboard'])->name('student.leaderboard');
 
