@@ -126,9 +126,36 @@ class UserController extends Controller
         }
     }
 
-    public function LogOut(){
-        Auth::logout();
-        return redirect()->route('login')->with('success', 'You have been successfully logged out.');
+    public function LogOut(Request $request){
+        try {
+            // Log the activity before logging out
+            if (Auth::check()) {
+                try {
+                    \App\Models\ActivityLog::log('auth.logout', 'User logged out');
+                } catch (\Exception $e) {
+                    // Silently fail if activity logging fails
+                }
+            }
+
+            // Logout the user
+            Auth::logout();
+
+            // Invalidate the session
+            $request->session()->invalidate();
+
+            // Regenerate the CSRF token
+            $request->session()->regenerateToken();
+
+            return redirect()->route('login')->with('success', 'You have been successfully logged out.');
+        } catch (\Exception $e) {
+            // Log the error
+            \Illuminate\Support\Facades\Log::error('Logout error: ' . $e->getMessage());
+
+            // Force logout even if there was an error
+            Auth::logout();
+
+            return redirect()->route('login')->with('success', 'You have been logged out.');
+        }
     }
 
     /**

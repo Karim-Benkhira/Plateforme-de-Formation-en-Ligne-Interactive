@@ -228,13 +228,13 @@
     <!-- Copyright and Legal -->
     <div class="pt-8 border-t border-gray-200 text-center fade-in" style="animation-delay: 0.5s">
       <div class="flex flex-wrap justify-center gap-4 mb-4">
-        <a href="#" class="text-gray-500 hover:text-blue-600 transition-colors duration-300 text-sm">Terms of Service</a>
+        <a href="<?php echo e(route('legal.terms')); ?>" class="text-gray-500 hover:text-blue-600 transition-colors duration-300 text-sm">Terms of Service</a>
         <span class="text-gray-300">|</span>
-        <a href="#" class="text-gray-500 hover:text-blue-600 transition-colors duration-300 text-sm">Privacy Policy</a>
+        <a href="<?php echo e(route('legal.privacy')); ?>" class="text-gray-500 hover:text-blue-600 transition-colors duration-300 text-sm">Privacy Policy</a>
         <span class="text-gray-300">|</span>
-        <a href="#" class="text-gray-500 hover:text-blue-600 transition-colors duration-300 text-sm">Cookie Policy</a>
+        <a href="<?php echo e(route('legal.cookies')); ?>" class="text-gray-500 hover:text-blue-600 transition-colors duration-300 text-sm">Cookie Policy</a>
         <span class="text-gray-300">|</span>
-        <a href="#" class="text-gray-500 hover:text-blue-600 transition-colors duration-300 text-sm">Accessibility</a>
+        <a href="<?php echo e(route('legal.accessibility')); ?>" class="text-gray-500 hover:text-blue-600 transition-colors duration-300 text-sm">Accessibility</a>
       </div>
       <p class="text-gray-600 mb-2">
         &copy; <?php echo e(date('Y')); ?> <span class="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-indigo-600 font-semibold">BrightPath</span> Learning Platform. All rights reserved.

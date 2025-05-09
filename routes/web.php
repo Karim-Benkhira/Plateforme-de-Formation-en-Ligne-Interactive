@@ -30,8 +30,13 @@ Route::middleware(['auth', 'two-factor.challenge'])->group(function () {
     Route::post('/two-factor-challenge', [TwoFactorAuthController::class, 'verifyChallenge']);
 });
 
-Route::middleware(['auth', 'prevent.concurrent.logins'])->group(function () {
+// Logout route without prevent.concurrent.logins middleware
+Route::middleware(['auth'])->group(function () {
     Route::post('logout', [UserController::class, 'LogOut'])->name('logout');
+});
+
+// Other authenticated routes with prevent.concurrent.logins middleware
+Route::middleware(['auth', 'prevent.concurrent.logins'])->group(function () {
 
     // Face Recognition Routes
     Route::get('/face/register', [FaceRecognitionController::class, 'showRegistration'])->name('face.register');
