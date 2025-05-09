@@ -63,6 +63,7 @@
                             <a class="px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:text-blue-600 hover:bg-blue-50 transition duration-150" href="{{ route('student.leaderboard') }}">Leaderboard</a>
                             <a class="px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:text-blue-600 hover:bg-blue-50 transition duration-150" href="{{ route('student.achievements') }}">Achievements</a>
                             <a class="px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:text-blue-600 hover:bg-blue-50 transition duration-150" href="{{ route('student.analytics') }}">Analytics</a>
+                            <a class="px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:text-blue-600 hover:bg-blue-50 transition duration-150" href="{{ route('student.adaptiveLearning') }}">Adaptive Learning</a>
                             <div class="relative" x-data="{ open: false }">
                                 <button @click="open = !open" class="flex items-center px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:text-blue-600 hover:bg-blue-50 transition duration-150">
                                     <span>Account</span>

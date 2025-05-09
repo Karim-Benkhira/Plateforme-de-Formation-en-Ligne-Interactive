@@ -10,6 +10,7 @@ use App\Http\Controllers\QuizController;
 use App\Http\Controllers\ReclamationController;
 use App\Http\Controllers\FaceRecognitionController;
 use App\Http\Controllers\AnalyticsController;
+use App\Http\Controllers\AdaptiveLearningController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -105,6 +106,13 @@ Route::middleware(['auth','role:user'])->group(function () {
     Route::get('/student/progress', [StudentController::class, 'showProgress'])->name('student.progress');
     Route::get('/student/analytics', [AnalyticsController::class, 'studentDashboard'])->name('student.analytics');
     Route::get('/student/analytics/report', [AnalyticsController::class, 'downloadStudentReport'])->name('student.analytics.report');
+
+    // Adaptive Learning Routes
+    Route::get('/student/adaptive-learning', [AdaptiveLearningController::class, 'dashboard'])->name('student.adaptiveLearning');
+    Route::get('/student/adaptive-learning/course/{courseId}', [AdaptiveLearningController::class, 'courseLearningPath'])->name('student.adaptiveLearning.course');
+    Route::get('/student/adaptive-learning/practice/{courseId}', [AdaptiveLearningController::class, 'practiceSession'])->name('student.adaptiveLearning.practice');
+    Route::post('/student/adaptive-learning/practice/submit', [AdaptiveLearningController::class, 'processPracticeAnswers'])->name('student.adaptiveLearning.practice.submit');
+    Route::get('/student/adaptive-learning/question-demo', [AdaptiveLearningController::class, 'interactiveQuestionDemo'])->name('student.adaptiveLearning.questionDemo');
 
     Route::get('/student/quiz/{id}', [QuizController::class, 'takeQuiz'])->name('student.quiz');
     Route::get('/student/quiz/result', [StudentController::class, 'showQuizResult'])->name('student.quizResult');
