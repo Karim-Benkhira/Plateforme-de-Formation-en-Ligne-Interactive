@@ -35,9 +35,10 @@ return [
         ],
     ],
 
-    'openai' => [
-        'api_key' => env('OPENAI_API_KEY'),
-        'base_url' => env('OPENAI_BASE_URL', 'https://api.openai.com/v1'),
+    'huggingface' => [
+        'api_key' => env('HUGGINGFACE_API_KEY'),
+        'api_url' => env('HUGGINGFACE_API_URL', 'https://api-inference.huggingface.co/models/'),
+        'model' => env('HUGGINGFACE_MODEL', 'google/flan-t5-base'),
     ],
 
 ];

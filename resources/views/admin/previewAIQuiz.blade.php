@@ -63,25 +63,34 @@
                         @foreach($questions as $index => $question)
                             <div class="bg-gray-50 rounded-lg p-6 border border-gray-200">
                                 <h3 class="text-lg font-medium text-gray-900 mb-4">Question {{ $index + 1 }}: {{ $question['question'] }}</h3>
-                                
-                                <div class="space-y-3 ml-6">
-                                    @foreach($question['options'] as $optionIndex => $option)
-                                        <div class="flex items-start">
-                                            <div class="flex items-center h-5">
-                                                <input type="radio" disabled {{ $optionIndex == $question['correct_index'] ? 'checked' : '' }}
-                                                    class="h-4 w-4 text-blue-600 border-gray-300 focus:ring-blue-500">
+
+                                @if($questionType === 'multiple_choice' || $questionType === 'true_false')
+                                    <div class="space-y-3 ml-6">
+                                        @foreach($question['options'] as $optionIndex => $option)
+                                            <div class="flex items-start">
+                                                <div class="flex items-center h-5">
+                                                    <input type="radio" disabled {{ $optionIndex == $question['correct_index'] ? 'checked' : '' }}
+                                                        class="h-4 w-4 text-blue-600 border-gray-300 focus:ring-blue-500">
+                                                </div>
+                                                <div class="ml-3 text-sm">
+                                                    <label class="font-medium text-gray-700 {{ $optionIndex == $question['correct_index'] ? 'text-green-600' : '' }}">
+                                                        {{ $option }}
+                                                        @if($optionIndex == $question['correct_index'])
+                                                            <span class="ml-2 text-green-600">(Correct Answer)</span>
+                                                        @endif
+                                                    </label>
+                                                </div>
                                             </div>
-                                            <div class="ml-3 text-sm">
-                                                <label class="font-medium text-gray-700 {{ $optionIndex == $question['correct_index'] ? 'text-green-600' : '' }}">
-                                                    {{ $option }}
-                                                    @if($optionIndex == $question['correct_index'])
-                                                        <span class="ml-2 text-green-600">(Correct Answer)</span>
-                                                    @endif
-                                                </label>
-                                            </div>
+                                        @endforeach
+                                    </div>
+                                @elseif($questionType === 'short_answer')
+                                    <div class="ml-6">
+                                        <div class="mb-2 text-sm font-medium text-gray-700">Sample Answer:</div>
+                                        <div class="p-3 bg-white border border-gray-300 rounded-md text-gray-700">
+                                            {{ $question['sample_answer'] }}
                                         </div>
-                                    @endforeach
-                                </div>
+                                    </div>
+                                @endif
                             </div>
                         @endforeach
                     @endif

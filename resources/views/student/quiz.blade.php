@@ -11,27 +11,43 @@
             <div class="mb-8 bg-blue-50 rounded-lg shadow p-6">
               <h3 class="text-lg font-bold mb-4">
                 <span class="text-blue-600">Q{{ $index + 1 }}:</span> {{ $question->question }}
+                @if($question->type)
+                  <span class="ml-2 text-xs text-gray-500 bg-gray-100 px-2 py-1 rounded-full">{{ ucfirst(str_replace('_', ' ', $question->type)) }}</span>
+                @endif
               </h3>
-              @php $answers = explode(',', $question->answers); @endphp
-              <div class="space-y-3">
-                @foreach($answers as $answerIndex => $answer)
-                  <label class="block w-full">
-                    <input
-                      type="radio"
-                      name="answers[{{ $question->id }}]"
-                      value="{{ $answerIndex }}"
-                      class="peer hidden"
-                      id="answer{{ $question->id }}_{{ $answerIndex }}"
-                      required
-                    />
-                    <span class="block w-full bg-white border border-gray-300 rounded px-4 py-3 text-center text-gray-800 cursor-pointer transition
-                      peer-checked:bg-blue-100 peer-checked:border-blue-500
-                      hover:bg-gray-100 hover:border-blue-400">
-                      {{ trim($answer) }}
-                    </span>
-                  </label>
-                @endforeach
-              </div>
+
+              @if($question->type == 'multiple_choice' || $question->type == 'true_false' || !$question->type)
+                @php $answers = $question->getFormattedAnswers(); @endphp
+                <div class="space-y-3">
+                  @foreach($answers as $answerIndex => $answer)
+                    <label class="block w-full">
+                      <input
+                        type="radio"
+                        name="answers[{{ $question->id }}]"
+                        value="{{ $answerIndex }}"
+                        class="peer hidden"
+                        id="answer{{ $question->id }}_{{ $answerIndex }}"
+                        required
+                      />
+                      <span class="block w-full bg-white border border-gray-300 rounded px-4 py-3 text-center text-gray-800 cursor-pointer transition
+                        peer-checked:bg-blue-100 peer-checked:border-blue-500
+                        hover:bg-gray-100 hover:border-blue-400">
+                        {{ trim($answer) }}
+                      </span>
+                    </label>
+                  @endforeach
+                </div>
+              @elseif($question->type == 'short_answer')
+                <div class="space-y-3">
+                  <textarea
+                    name="answers[{{ $question->id }}]"
+                    rows="4"
+                    class="w-full border border-gray-300 rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    placeholder="Type your answer here..."
+                    required
+                  ></textarea>
+                </div>
+              @endif
             </div>
           @endforeach
         @else

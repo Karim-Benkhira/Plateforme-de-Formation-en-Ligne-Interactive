@@ -12,6 +12,11 @@ class QuizResult extends Model
         'correct_answers',
         'answers_count',
         'score',
+        'details',
+    ];
+
+    protected $casts = [
+        'details' => 'array',
     ];
 
     public function user()

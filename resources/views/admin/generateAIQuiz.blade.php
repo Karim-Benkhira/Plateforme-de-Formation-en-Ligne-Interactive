@@ -26,7 +26,7 @@
 
             <div class="border-t border-gray-200 pt-6">
                 <h2 class="text-xl font-semibold text-gray-700 mb-4">Generate Quiz with AI</h2>
-                
+
                 @if ($errors->any())
                     <div class="bg-red-50 text-red-500 p-4 rounded-md mb-6">
                         <ul class="list-disc pl-5">
@@ -60,7 +60,7 @@
                             <input type="text" name="name" id="name" value="{{ old('name') }}" required
                                 class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500">
                         </div>
-                        
+
                         <div>
                             <label for="num_questions" class="block text-sm font-medium text-gray-700 mb-1">Number of Questions</label>
                             <select name="num_questions" id="num_questions" required
@@ -72,21 +72,41 @@
                         </div>
                     </div>
 
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-1">Difficulty Level</label>
-                        <div class="flex space-x-4">
-                            <label class="inline-flex items-center">
-                                <input type="radio" name="difficulty" value="easy" class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300" {{ old('difficulty') == 'easy' ? 'checked' : '' }}>
-                                <span class="ml-2 text-gray-700">Easy</span>
-                            </label>
-                            <label class="inline-flex items-center">
-                                <input type="radio" name="difficulty" value="medium" class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300" {{ old('difficulty', 'medium') == 'medium' ? 'checked' : '' }}>
-                                <span class="ml-2 text-gray-700">Medium</span>
-                            </label>
-                            <label class="inline-flex items-center">
-                                <input type="radio" name="difficulty" value="hard" class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300" {{ old('difficulty') == 'hard' ? 'checked' : '' }}>
-                                <span class="ml-2 text-gray-700">Hard</span>
-                            </label>
+                    <div class="grid md:grid-cols-2 gap-6">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Difficulty Level</label>
+                            <div class="flex space-x-4">
+                                <label class="inline-flex items-center">
+                                    <input type="radio" name="difficulty" value="easy" class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300" {{ old('difficulty') == 'easy' ? 'checked' : '' }}>
+                                    <span class="ml-2 text-gray-700">Easy</span>
+                                </label>
+                                <label class="inline-flex items-center">
+                                    <input type="radio" name="difficulty" value="medium" class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300" {{ old('difficulty', 'medium') == 'medium' ? 'checked' : '' }}>
+                                    <span class="ml-2 text-gray-700">Medium</span>
+                                </label>
+                                <label class="inline-flex items-center">
+                                    <input type="radio" name="difficulty" value="hard" class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300" {{ old('difficulty') == 'hard' ? 'checked' : '' }}>
+                                    <span class="ml-2 text-gray-700">Hard</span>
+                                </label>
+                            </div>
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Question Type</label>
+                            <div class="flex space-x-4">
+                                <label class="inline-flex items-center">
+                                    <input type="radio" name="question_type" value="multiple_choice" class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300" {{ old('question_type', 'multiple_choice') == 'multiple_choice' ? 'checked' : '' }}>
+                                    <span class="ml-2 text-gray-700">Multiple Choice</span>
+                                </label>
+                                <label class="inline-flex items-center">
+                                    <input type="radio" name="question_type" value="true_false" class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300" {{ old('question_type') == 'true_false' ? 'checked' : '' }}>
+                                    <span class="ml-2 text-gray-700">True/False</span>
+                                </label>
+                                <label class="inline-flex items-center">
+                                    <input type="radio" name="question_type" value="short_answer" class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300" {{ old('question_type') == 'short_answer' ? 'checked' : '' }}>
+                                    <span class="ml-2 text-gray-700">Short Answer</span>
+                                </label>
+                            </div>
                         </div>
                     </div>
 

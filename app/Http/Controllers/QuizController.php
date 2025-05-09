@@ -134,7 +134,6 @@ class QuizController extends Controller
     {
         $request->validate([
             'answers' => 'required|array',
-            'answers.*' => 'integer',
             'quiz_id' => 'required|exists:quizzes,id',
         ]);
 
@@ -142,14 +141,36 @@ class QuizController extends Controller
         $questions = $quiz->questions;
 
         $correctAnswersCount = 0;
+        $questionDetails = [];
 
         foreach ($questions as $question) {
             if (isset($request->answers[$question->id])) {
-                $selectedAnswerIndex = $request->answers[$question->id];
+                $userAnswer = $request->answers[$question->id];
+                $isCorrect = false;
 
-                if ($selectedAnswerIndex == $question->correct) {
+                // Check if the answer is correct based on question type
+                if ($question->type === 'multiple_choice' || $question->type === 'true_false' || !$question->type) {
+                    // For multiple choice and true/false, we expect an integer index
+                    $isCorrect = (int) $userAnswer === (int) $question->correct;
+                } elseif ($question->type === 'short_answer') {
+                    // For short answer, we use the isCorrect method in the Question model
+                    $isCorrect = $question->isCorrect($userAnswer);
+                }
+
+                if ($isCorrect) {
                     $correctAnswersCount++;
                 }
+
+                // Store question details for feedback
+                $questionDetails[] = [
+                    'question' => $question->question,
+                    'type' => $question->type ?? 'multiple_choice',
+                    'user_answer' => $userAnswer,
+                    'correct_answer' => $question->type === 'short_answer' ?
+                        $question->answers :
+                        $question->getFormattedAnswers()[$question->correct] ?? '',
+                    'is_correct' => $isCorrect
+                ];
             }
         }
 
@@ -162,13 +183,15 @@ class QuizController extends Controller
         $result->correct_answers = $correctAnswersCount;
         $result->answers_count = count($questions);
         $result->score = $totalScore;
+        $result->details = json_encode($questionDetails); // Store detailed results
         $result->save();
 
         return view('student.QuizResults', [
             'quizName' => $quiz->name,
             'score' => $totalScore,
             'correctAnswers' => $correctAnswersCount,
-            'totalQuestions' => count($questions)
+            'totalQuestions' => count($questions),
+            'questionDetails' => $questionDetails
         ]);
     }
 
@@ -197,6 +220,7 @@ class QuizController extends Controller
             'name' => 'required|string|max:255',
             'num_questions' => 'required|integer|min:1|max:20',
             'difficulty' => 'required|in:easy,medium,hard',
+            'question_type' => 'required|in:multiple_choice,true_false,short_answer',
         ]);
 
         try {
@@ -211,14 +235,19 @@ class QuizController extends Controller
 
             // Generate questions using AI
             $aiQuizService = new AIQuizService();
-            $result = $aiQuizService->generateQuiz($course, $request->num_questions, $request->difficulty);
+            $result = $aiQuizService->generateQuiz(
+                $course,
+                $request->num_questions,
+                $request->difficulty,
+                $request->question_type
+            );
 
             if (!$result['success']) {
                 return redirect()->back()->withErrors(['ai_error' => $result['message']])->withInput();
             }
 
             // Save the generated questions
-            $success = $aiQuizService->saveQuizQuestions($quiz, $result['data']);
+            $success = $aiQuizService->saveQuizQuestions($quiz, $result['data'], $request->question_type);
 
             if (!$success) {
                 return redirect()->back()->withErrors(['db_error' => 'Failed to save generated questions.'])->withInput();
@@ -246,6 +275,7 @@ class QuizController extends Controller
             'name' => 'required|string|max:255',
             'num_questions' => 'required|integer|min:1|max:20',
             'difficulty' => 'required|in:easy,medium,hard',
+            'question_type' => 'required|in:multiple_choice,true_false,short_answer',
         ]);
 
         try {
@@ -253,7 +283,12 @@ class QuizController extends Controller
 
             // Generate questions using AI
             $aiQuizService = new AIQuizService();
-            $result = $aiQuizService->generateQuiz($course, $request->num_questions, $request->difficulty);
+            $result = $aiQuizService->generateQuiz(
+                $course,
+                $request->num_questions,
+                $request->difficulty,
+                $request->question_type
+            );
 
             if (!$result['success']) {
                 return redirect()->back()->withErrors(['ai_error' => $result['message']])->withInput();
@@ -264,7 +299,8 @@ class QuizController extends Controller
                 'quizName' => $request->name,
                 'questions' => $result['data'],
                 'numQuestions' => $request->num_questions,
-                'difficulty' => $request->difficulty
+                'difficulty' => $request->difficulty,
+                'questionType' => $request->question_type
             ]);
 
         } catch (\Exception $e) {
