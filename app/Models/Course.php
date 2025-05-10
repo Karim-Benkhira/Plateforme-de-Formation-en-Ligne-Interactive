@@ -12,6 +12,9 @@ class Course extends Model
         'category_id',
         'creator_id',
         'score',
+        'level',
+        'is_published',
+        'image',
     ];
 
     public function users()
@@ -28,7 +31,7 @@ class Course extends Model
     {
         return $this->hasMany(Content::class);
     }
-    
+
     public function creator()
     {
         return $this->belongsTo(User::class, 'creator_id');

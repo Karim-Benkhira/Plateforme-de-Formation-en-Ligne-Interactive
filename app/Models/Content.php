@@ -10,6 +10,7 @@ class Content extends Model
         'course_id',
         'type',
         'file',
+        'content',
     ];
 
     public function course()

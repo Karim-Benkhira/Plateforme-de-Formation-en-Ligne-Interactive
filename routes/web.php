@@ -215,13 +215,39 @@ Route::middleware(['auth','role:agent'])->group(function () {
 
 // Teacher Routes
 Route::middleware(['auth','role:teacher'])->group(function () {
+    // Dashboard
     Route::get('/teacher', [TeacherController::class, 'index'])->name('teacher.dashboard');
+
+    // Courses
     Route::get('/teacher/courses', [TeacherController::class, 'showCourses'])->name('teacher.courses');
     Route::get('/teacher/courses/create', [TeacherController::class, 'createCourse'])->name('teacher.courses.create');
+    Route::post('/teacher/courses', [CourseController::class, 'storeCourse'])->name('teacher.courses.store');
     Route::get('/teacher/courses/{id}', [TeacherController::class, 'showCourse'])->name('teacher.courses.show');
+    Route::get('/teacher/courses/{id}/edit', [CourseController::class, 'editCourse'])->name('teacher.courses.edit');
+    Route::put('/teacher/courses/{id}', [CourseController::class, 'updateCourse'])->name('teacher.courses.update');
+    Route::delete('/teacher/courses/{id}', [CourseController::class, 'deleteCourse'])->name('teacher.courses.delete');
+
+    // Quizzes
     Route::get('/teacher/quizzes', [TeacherController::class, 'showQuizzes'])->name('teacher.quizzes');
     Route::get('/teacher/quizzes/create', [TeacherController::class, 'createQuiz'])->name('teacher.quizzes.create');
+    Route::post('/teacher/quizzes', [QuizController::class, 'storeQuiz'])->name('teacher.quizzes.store');
+    Route::get('/teacher/quizzes/{id}/edit', [QuizController::class, 'editQuiz'])->name('teacher.quizzes.edit');
+    Route::put('/teacher/quizzes/{id}', [QuizController::class, 'updateQuiz'])->name('teacher.quizzes.update');
+    Route::delete('/teacher/quizzes/{id}', [QuizController::class, 'deleteQuiz'])->name('teacher.quizzes.delete');
+
+    // Quiz Questions
+    Route::get('/teacher/quizzes/{quizId}/questions', [QuizController::class, 'showQuizQuestions'])->name('teacher.quizQuestions');
+    Route::get('/teacher/quizzes/{quizId}/questions/create', [QuizController::class, 'createQuestion'])->name('teacher.createQuestion');
+    Route::post('/teacher/quizzes/{quizId}/questions', [QuizController::class, 'storeQuestion'])->name('teacher.storeQuestion');
+    Route::get('/teacher/questions/{id}/edit', [QuizController::class, 'editQuestion'])->name('teacher.editQuestion');
+    Route::put('/teacher/questions/{id}', [QuizController::class, 'updateQuestion'])->name('teacher.updateQuestion');
+    Route::delete('/teacher/questions/{id}', [QuizController::class, 'deleteQuestion'])->name('teacher.deleteQuestion');
+
+    // AI Quiz Generation
     Route::get('/teacher/courses/{courseId}/generate-quiz', [TeacherController::class, 'showGenerateAIQuiz'])->name('teacher.generate-quiz');
+    Route::post('/teacher/courses/{courseId}/generate-quiz', [QuizController::class, 'generateAIQuiz'])->name('teacher.generate-quiz.store');
+
+    // Analytics
     Route::get('/teacher/analytics', [TeacherController::class, 'showAnalytics'])->name('teacher.analytics');
     Route::get('/teacher/analytics/course/{courseId}', [TeacherController::class, 'showCourseAnalytics'])->name('teacher.course-analytics');
 });

@@ -14,107 +14,251 @@ class QuizController extends Controller
 {
     public function createQuiz() {
         $courses = Course::all();
-        return view('admin.createQuiz', compact('courses'));
+
+        // Determine the view based on user role
+        $view = auth()->user()->role === 'admin' ? 'admin.createQuiz' : 'teacher.createQuiz';
+
+        return view($view, compact('courses'));
     }
 
     public function storeQuiz(Request $request) {
         $request->validate([
             'name' => 'required|string|max:255',
             'course_id' => 'required|exists:courses,id',
+            'description' => 'nullable|string',
+            'duration' => 'required|integer|min:1|max:180',
+            'passing_score' => 'required|integer|min:1|max:100',
+            'attempts_allowed' => 'required|integer|min:1|max:10',
+            'is_published' => 'nullable|boolean',
+            'requires_face_verification' => 'nullable|boolean',
         ]);
 
-        Quiz::create([
-            'name' => $request->name,
-            'course_id' => $request->course_id,
-        ]);
+        $quiz = new Quiz();
+        $quiz->name = $request->name;
+        $quiz->course_id = $request->course_id;
+        $quiz->description = $request->description;
+        $quiz->duration = $request->duration;
+        $quiz->passing_score = $request->passing_score;
+        $quiz->attempts_allowed = $request->attempts_allowed;
+        $quiz->is_published = $request->has('is_published');
+        $quiz->requires_face_verification = $request->has('requires_face_verification');
+        $quiz->creator_id = auth()->id();
+        $quiz->save();
 
-        return redirect()->route('admin.quizzes')->with('success', 'Quiz created successfully.');
+        // Determine the redirect route based on user role
+        $redirectRoute = auth()->user()->role === 'admin' ? 'admin.quizzes' : 'teacher.quizzes';
+
+        return redirect()->route($redirectRoute)->with('success', 'Quiz created successfully. Now add questions to your quiz.');
     }
 
     public function editQuiz($id) {
         $quiz = Quiz::findOrFail($id);
         $courses = Course::all();
-        return view('admin.editQuiz', compact('quiz', 'courses'));
+
+        // Determine the view based on user role
+        $view = auth()->user()->role === 'admin' ? 'admin.editQuiz' : 'teacher.editQuiz';
+
+        return view($view, compact('quiz', 'courses'));
     }
 
     public function updateQuiz(Request $request, $id) {
         $request->validate([
             'name' => 'required|string|max:255',
             'course_id' => 'required|exists:courses,id',
+            'description' => 'nullable|string',
+            'duration' => 'required|integer|min:1|max:180',
+            'passing_score' => 'required|integer|min:1|max:100',
+            'attempts_allowed' => 'required|integer|min:1|max:10',
+            'is_published' => 'nullable|boolean',
+            'requires_face_verification' => 'nullable|boolean',
         ]);
 
         $quiz = Quiz::findOrFail($id);
-        $quiz->update([
-            'name' => $request->name,
-            'course_id' => $request->course_id,
-        ]);
+        $quiz->name = $request->name;
+        $quiz->course_id = $request->course_id;
+        $quiz->description = $request->description;
+        $quiz->duration = $request->duration;
+        $quiz->passing_score = $request->passing_score;
+        $quiz->attempts_allowed = $request->attempts_allowed;
+        $quiz->is_published = $request->has('is_published');
+        $quiz->requires_face_verification = $request->has('requires_face_verification');
+        $quiz->save();
 
-        return redirect()->route('admin.quizzes')->with('success', 'Quiz updated successfully.');
+        // Determine the redirect route based on user role
+        $redirectRoute = auth()->user()->role === 'admin' ? 'admin.quizzes' : 'teacher.quizzes';
+
+        return redirect()->route($redirectRoute)->with('success', 'Quiz updated successfully.');
     }
 
     public function deleteQuiz($id) {
         $quiz = Quiz::findOrFail($id);
         $quiz->delete();
 
-        return redirect()->route('admin.quizzes')->with('success', 'Quiz deleted successfully.');
+        // Determine the redirect route based on user role
+        $redirectRoute = auth()->user()->role === 'admin' ? 'admin.quizzes' : 'teacher.quizzes';
+
+        return redirect()->route($redirectRoute)->with('success', 'Quiz deleted successfully.');
+    }
+
+    public function showQuizQuestions($quizId) {
+        $quiz = Quiz::with('questions')->findOrFail($quizId);
+
+        // Determine the view based on user role
+        $view = auth()->user()->role === 'admin' ? 'admin.quizQuestions' : 'teacher.quizQuestions';
+
+        return view($view, compact('quiz'));
     }
 
     public function createQuestion($quizId) {
-        return view('admin.createQuestion', compact('quizId'));
+        $quiz = Quiz::findOrFail($quizId);
+
+        // Determine the view based on user role
+        $view = auth()->user()->role === 'admin' ? 'admin.createQuestion' : 'teacher.createQuestion';
+
+        return view($view, compact('quizId', 'quiz'));
     }
 
     public function storeQuestion(Request $request, $quizId) {
         $request->validate([
-            'question' => 'required|string|max:255',
-            'answers' => 'required|string',
-            'correct' => 'required|integer|min:0',
+            'question' => 'required|string',
+            'question_type' => 'required|in:multiple_choice,true_false,short_answer',
         ]);
 
-        $answersArray = explode(',', $request->answers);
-
-        if ($request->correct < 0 || $request->correct >= count($answersArray) + 1) {
-            return redirect()->back()->withErrors(['correct' => 'The correct answer index is out of bounds.'])->withInput();
-        }
-
+        $quiz = Quiz::findOrFail($quizId);
         $question = new Question();
         $question->quiz_id = $quizId;
         $question->question = $request->question;
-        $question->answers = $request->answers;
-        $question->correct = $request->correct - 1;
+        $question->type = $request->question_type;
+
+        if ($request->question_type === 'multiple_choice') {
+            // Process multiple choice options
+            $options = explode("\n", trim($request->options));
+            $correctIndex = null;
+            $cleanOptions = [];
+
+            foreach ($options as $index => $option) {
+                $option = trim($option);
+                if (empty($option)) continue;
+
+                if (strpos($option, '*') === 0) {
+                    $correctIndex = count($cleanOptions);
+                    $cleanOptions[] = substr($option, 1);
+                } else {
+                    $cleanOptions[] = $option;
+                }
+            }
+
+            if (count($cleanOptions) < 2) {
+                return redirect()->back()->withErrors(['options' => 'You must provide at least 2 options.'])->withInput();
+            }
+
+            if ($correctIndex === null) {
+                return redirect()->back()->withErrors(['options' => 'You must mark one option as correct with an asterisk (*).'])->withInput();
+            }
+
+            $question->answers = implode(',', $cleanOptions);
+            $question->correct = $correctIndex;
+
+        } elseif ($request->question_type === 'true_false') {
+            // Process true/false
+            if (!$request->has('correct_tf')) {
+                return redirect()->back()->withErrors(['correct_tf' => 'You must select the correct answer.'])->withInput();
+            }
+
+            $question->answers = 'True,False';
+            $question->correct = $request->correct_tf === 'true' ? 0 : 1;
+
+        } elseif ($request->question_type === 'short_answer') {
+            // Process short answer
+            if (empty($request->correct_answer)) {
+                return redirect()->back()->withErrors(['correct_answer' => 'You must provide the correct answer.'])->withInput();
+            }
+
+            $question->answers = $request->correct_answer;
+            $question->correct = 0; // Not used for short answer
+        }
+
         $question->save();
 
-        return redirect()->route('admin.quizQuestions', $quizId)->with('success', 'Question added successfully.');
+        // Determine the redirect route based on user role
+        $redirectRoute = auth()->user()->role === 'admin' ? 'admin.quizQuestions' : 'teacher.quizQuestions';
+
+        return redirect()->route($redirectRoute, $quizId)->with('success', 'Question added successfully.');
     }
 
     public function editQuestion($id) {
         $question = Question::findOrFail($id);
-        return view('admin.editQuestion', compact('question'));
+
+        // Determine the view based on user role
+        $view = auth()->user()->role === 'admin' ? 'admin.editQuestion' : 'teacher.editQuestion';
+
+        return view($view, compact('question'));
     }
 
     public function updateQuestion(Request $request, $id) {
         $request->validate([
-            'question' => 'required|string|max:255',
-            'answers' => 'required|string',
-            'correct' => 'required|integer|min:0',
+            'question' => 'required|string',
+            'question_type' => 'required|in:multiple_choice,true_false,short_answer',
         ]);
-
-        $answersArray = explode(',', $request->answers);
-
-        if ($request->correct < 0 || $request->correct - 1 >= count($answersArray)) {
-            return redirect()->back()->withErrors(['correct' => 'The correct answer index is out of bounds.'])->withInput();
-        }
-
-        if (count($answersArray) < 2) {
-            return redirect()->back()->withErrors(['answers' => 'There must be at least two answers.'])->withInput();
-        }
 
         $question = Question::findOrFail($id);
         $question->question = $request->question;
-        $question->answers = $request->answers;
-        $question->correct = $request->correct - 1;
+        $question->type = $request->question_type;
+
+        if ($request->question_type === 'multiple_choice') {
+            // Process multiple choice options
+            $options = explode("\n", trim($request->options));
+            $correctIndex = null;
+            $cleanOptions = [];
+
+            foreach ($options as $index => $option) {
+                $option = trim($option);
+                if (empty($option)) continue;
+
+                if (strpos($option, '*') === 0) {
+                    $correctIndex = count($cleanOptions);
+                    $cleanOptions[] = substr($option, 1);
+                } else {
+                    $cleanOptions[] = $option;
+                }
+            }
+
+            if (count($cleanOptions) < 2) {
+                return redirect()->back()->withErrors(['options' => 'You must provide at least 2 options.'])->withInput();
+            }
+
+            if ($correctIndex === null) {
+                return redirect()->back()->withErrors(['options' => 'You must mark one option as correct with an asterisk (*).'])->withInput();
+            }
+
+            $question->answers = implode(',', $cleanOptions);
+            $question->correct = $correctIndex;
+
+        } elseif ($request->question_type === 'true_false') {
+            // Process true/false
+            if (!$request->has('correct_tf')) {
+                return redirect()->back()->withErrors(['correct_tf' => 'You must select the correct answer.'])->withInput();
+            }
+
+            $question->answers = 'True,False';
+            $question->correct = $request->correct_tf === 'true' ? 0 : 1;
+
+        } elseif ($request->question_type === 'short_answer') {
+            // Process short answer
+            if (empty($request->correct_answer)) {
+                return redirect()->back()->withErrors(['correct_answer' => 'You must provide the correct answer.'])->withInput();
+            }
+
+            $question->answers = $request->correct_answer;
+            $question->correct = 0; // Not used for short answer
+        }
+
         $question->save();
 
-        return redirect()->route('admin.quizQuestions', $question->quiz_id)->with('success', 'Question updated successfully.');
+        // Determine the redirect route based on user role
+        $redirectRoute = auth()->user()->role === 'admin' ? 'admin.quizQuestions' : 'teacher.quizQuestions';
+
+        return redirect()->route($redirectRoute, $question->quiz_id)->with('success', 'Question updated successfully.');
     }
 
     public function deleteQuestion($id) {
@@ -122,7 +266,10 @@ class QuizController extends Controller
         $quizId = $question->quiz_id;
         $question->delete();
 
-        return redirect()->route('admin.quizQuestions', $quizId)->with('success', 'Question deleted successfully.');
+        // Determine the redirect route based on user role
+        $redirectRoute = auth()->user()->role === 'admin' ? 'admin.quizQuestions' : 'teacher.quizQuestions';
+
+        return redirect()->route($redirectRoute, $quizId)->with('success', 'Question deleted successfully.');
     }
 
     public function takeQuiz($id) {
@@ -204,7 +351,11 @@ class QuizController extends Controller
     public function showGenerateAIQuiz($courseId)
     {
         $course = Course::findOrFail($courseId);
-        return view('admin.generateAIQuiz', compact('course'));
+
+        // Determine the view based on user role
+        $view = auth()->user()->role === 'admin' ? 'admin.generateAIQuiz' : 'teacher.generateAIQuiz';
+
+        return view($view, compact('course'));
     }
 
     /**
@@ -253,7 +404,10 @@ class QuizController extends Controller
                 return redirect()->back()->withErrors(['db_error' => 'Failed to save generated questions.'])->withInput();
             }
 
-            return redirect()->route('admin.quizQuestions', $quiz->id)
+            // Determine the redirect route based on user role
+            $redirectRoute = auth()->user()->role === 'admin' ? 'admin.quizQuestions' : 'teacher.quizQuestions';
+
+            return redirect()->route($redirectRoute, $quiz->id)
                 ->with('success', 'Quiz generated successfully with AI. Review the questions below.');
 
         } catch (\Exception $e) {
@@ -294,7 +448,10 @@ class QuizController extends Controller
                 return redirect()->back()->withErrors(['ai_error' => $result['message']])->withInput();
             }
 
-            return view('admin.previewAIQuiz', [
+            // Determine the view based on user role
+            $view = auth()->user()->role === 'admin' ? 'admin.previewAIQuiz' : 'teacher.previewAIQuiz';
+
+            return view($view, [
                 'course' => $course,
                 'quizName' => $request->name,
                 'questions' => $result['data'],

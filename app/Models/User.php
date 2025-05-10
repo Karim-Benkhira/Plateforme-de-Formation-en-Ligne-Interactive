@@ -47,9 +47,20 @@ class User extends Authenticatable
         ];
     }
 
-    public function hasRole($role)
+    public function hasRole($roles)
     {
-        return $this->role === $role;
+        // If $roles is a string with comma-separated values, convert it to an array
+        if (is_string($roles) && strpos($roles, ',') !== false) {
+            $roles = array_map('trim', explode(',', $roles));
+        }
+
+        // If $roles is a single string, convert it to an array
+        if (is_string($roles)) {
+            $roles = [$roles];
+        }
+
+        // Check if the user's role is in the array of allowed roles
+        return in_array($this->role, $roles);
     }
 
     public function quizzes()
