@@ -11,6 +11,10 @@ use App\Http\Controllers\ReclamationController;
 use App\Http\Controllers\FaceRecognitionController;
 use App\Http\Controllers\AnalyticsController;
 use App\Http\Controllers\AdaptiveLearningController;
+use App\Http\Controllers\ActivityLogController;
+use App\Http\Controllers\SessionController;
+use App\Http\Controllers\TwoFactorAuthController;
+use App\Http\Controllers\TeacherController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -35,14 +39,27 @@ Route::middleware(['auth'])->group(function () {
     Route::post('logout', [UserController::class, 'LogOut'])->name('logout');
 });
 
-// Other authenticated routes with prevent.concurrent.logins middleware
-Route::middleware(['auth', 'prevent.concurrent.logins'])->group(function () {
+// Other authenticated routes
+Route::middleware(['auth'])->group(function () {
 
     // Face Recognition Routes
-    Route::get('/face/register', [FaceRecognitionController::class, 'showRegistration'])->name('face.register');
-    Route::post('/face/register', [FaceRecognitionController::class, 'registerFace'])->name('face.register.post');
-    Route::post('/face/verify', [FaceRecognitionController::class, 'verifyFace'])->name('face.verify');
-    Route::get('/face/data', [FaceRecognitionController::class, 'getFaceData'])->name('face.data');
+    Route::prefix('face-recognition')->name('face.')->group(function () {
+        Route::get('/register', [FaceRecognitionController::class, 'showRegistration'])->name('register');
+        Route::get('/modern-register', [FaceRecognitionController::class, 'showModernRegistration'])->name('modern.register');
+        Route::get('/debug-register', [FaceRecognitionController::class, 'showDebugRegistration'])->name('debug.register');
+        Route::post('/register', [FaceRecognitionController::class, 'registerFace'])->name('register.post');
+        Route::post('/verify', [FaceRecognitionController::class, 'verifyFace'])->name('verify');
+        Route::get('/data', [FaceRecognitionController::class, 'getFaceData'])->name('data');
+
+        // Exam session routes
+        Route::post('/exam-session/{quizId}', [FaceRecognitionController::class, 'startExamSession'])->name('exam.session.start');
+        Route::post('/terminate-session/{sessionId}', [FaceRecognitionController::class, 'terminateSession'])->name('exam.session.terminate');
+
+        // Exam monitoring (for teachers/admins)
+        Route::get('/monitoring', [FaceRecognitionController::class, 'showExamMonitoring'])
+            ->name('exam.monitoring')
+            ->middleware('role:teacher,admin');
+    });
 
     // Two-Factor Authentication Routes
     Route::prefix('profile/two-factor')->name('profile.two-factor.')->group(function () {
@@ -194,4 +211,17 @@ Route::middleware(['auth','role:agent'])->group(function () {
     Route::get('/agent/reclamations', [AgentController::class, 'showReclamations'])->name('agent.reclamations');
     Route::get('/agent/reclamations/{id}/respond', [AgentController::class, 'respondReclamation'])->name('agent.respondReclamation');
     Route::post('/agent/reclamations/{id}/respond', [ReclamationController::class, 'submitReclamationResponse'])->name('agent.submitReclamationResponse');
+});
+
+// Teacher Routes
+Route::middleware(['auth','role:teacher'])->group(function () {
+    Route::get('/teacher', [TeacherController::class, 'index'])->name('teacher.dashboard');
+    Route::get('/teacher/courses', [TeacherController::class, 'showCourses'])->name('teacher.courses');
+    Route::get('/teacher/courses/create', [TeacherController::class, 'createCourse'])->name('teacher.courses.create');
+    Route::get('/teacher/courses/{id}', [TeacherController::class, 'showCourse'])->name('teacher.courses.show');
+    Route::get('/teacher/quizzes', [TeacherController::class, 'showQuizzes'])->name('teacher.quizzes');
+    Route::get('/teacher/quizzes/create', [TeacherController::class, 'createQuiz'])->name('teacher.quizzes.create');
+    Route::get('/teacher/courses/{courseId}/generate-quiz', [TeacherController::class, 'showGenerateAIQuiz'])->name('teacher.generate-quiz');
+    Route::get('/teacher/analytics', [TeacherController::class, 'showAnalytics'])->name('teacher.analytics');
+    Route::get('/teacher/analytics/course/{courseId}', [TeacherController::class, 'showCourseAnalytics'])->name('teacher.course-analytics');
 });

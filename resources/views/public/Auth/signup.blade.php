@@ -48,28 +48,42 @@
     <h2 class="mb-6 text-2xl font-bold text-cyan-500">Welcome To Bright Path!</h2>
     <form action="{{ route('register') }}" method="POST">
       @csrf
-      <input type="text" name="name" placeholder="Username" 
+      <input type="text" name="name" placeholder="Username"
         value="{{ old('name') }}"
         class="w-full p-3 mb-4 border border-cyan-300 rounded-md bg-white text-gray-700 focus:outline-none focus:ring-2 focus:ring-cyan-400 @error('name') border-red-500 @enderror">
       @error('name')
         <p class="text-red-500 text-sm mb-4">{{ $message }}</p>
       @enderror
 
-      <input type="email" name="email" placeholder="Email" 
+      <input type="email" name="email" placeholder="Email"
         value="{{ old('email') }}"
         class="w-full p-3 mb-4 border border-cyan-300 rounded-md bg-white text-gray-700 focus:outline-none focus:ring-2 focus:ring-cyan-400 @error('email') border-red-500 @enderror">
       @error('email')
         <p class="text-red-500 text-sm mb-4">{{ $message }}</p>
       @enderror
 
-      <input type="password" name="password" placeholder="Password" 
+      <input type="password" name="password" placeholder="Password"
         class="w-full p-3 mb-4 border border-cyan-300 rounded-md bg-white text-gray-700 focus:outline-none focus:ring-2 focus:ring-cyan-400 @error('password') border-red-500 @enderror">
       @error('password')
         <p class="text-red-500 text-sm mb-4">{{ $message }}</p>
       @enderror
 
-      <input type="password" name="password_confirmation" placeholder="Confirm Password" 
+      <input type="password" name="password_confirmation" placeholder="Confirm Password"
         class="w-full p-3 mb-4 border border-cyan-300 rounded-md bg-white text-gray-700 focus:outline-none focus:ring-2 focus:ring-cyan-400">
+
+      <div class="mb-4">
+        <label class="block text-gray-700 text-sm font-bold mb-2">Account Type</label>
+        <div class="flex justify-center space-x-4">
+          <label class="inline-flex items-center">
+            <input type="radio" name="role" value="user" class="form-radio text-cyan-500" checked>
+            <span class="ml-2 text-gray-700">Student</span>
+          </label>
+          <label class="inline-flex items-center">
+            <input type="radio" name="role" value="teacher" class="form-radio text-cyan-500">
+            <span class="ml-2 text-gray-700">Teacher</span>
+          </label>
+        </div>
+      </div>
 
       <button class="w-full mt-6 p-3 bg-gradient-to-r from-cyan-400 to-teal-300 text-black font-bold rounded-md transition-transform transform hover:-translate-y-1 hover:shadow-lg">
         Sign Up

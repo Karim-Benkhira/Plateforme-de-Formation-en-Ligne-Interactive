@@ -33,15 +33,20 @@ class AdaptiveLearningController extends Controller
     public function dashboard()
     {
         $student = Auth::user();
-        $enrolledCourses = $student->enrolledCourses;
+
+        // Get courses from quiz results since there's no direct enrollment relationship
+        $quizResults = $student->results()->with('quiz.course')->get();
+        $enrolledCourses = $quizResults->pluck('quiz.course')->unique('id');
 
         $coursesData = [];
 
         foreach ($enrolledCourses as $course) {
-            $coursesData[] = [
-                'course' => $course,
-                'learning_path' => $this->adaptiveLearningService->generateLearningPath($student, $course),
-            ];
+            if ($course) {  // Make sure course exists
+                $coursesData[] = [
+                    'course' => $course,
+                    'learning_path' => $this->adaptiveLearningService->generateLearningPath($student, $course),
+                ];
+            }
         }
 
         return view('adaptive-learning.dashboard', [

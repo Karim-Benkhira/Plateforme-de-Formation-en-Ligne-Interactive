@@ -6,120 +6,140 @@
     <title>BrightPath - Interactive Learning Platform</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
-    <style>
-        .animate-blob {
-            animation: blob 7s infinite;
-        }
-        .animation-delay-2000 {
-            animation-delay: 2s;
-        }
-        .animation-delay-4000 {
-            animation-delay: 4s;
-        }
-        @keyframes blob {
-            0% {
-                transform: translate(0px, 0px) scale(1);
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        primary: {
+                            50: '#f0f9ff',
+                            100: '#e0f2fe',
+                            200: '#bae6fd',
+                            300: '#7dd3fc',
+                            400: '#38bdf8',
+                            500: '#0ea5e9',
+                            600: '#0284c7',
+                            700: '#0369a1',
+                            800: '#075985',
+                            900: '#0c4a6e',
+                        },
+                        secondary: {
+                            50: '#f5f3ff',
+                            100: '#ede9fe',
+                            200: '#ddd6fe',
+                            300: '#c4b5fd',
+                            400: '#a78bfa',
+                            500: '#8b5cf6',
+                            600: '#7c3aed',
+                            700: '#6d28d9',
+                            800: '#5b21b6',
+                            900: '#4c1d95',
+                        }
+                    },
+                    fontFamily: {
+                        'sans': ['Poppins', 'sans-serif'],
+                    },
+                    animation: {
+                        'bounce-slow': 'bounce 3s infinite',
+                        'blob': 'blob 7s infinite',
+                        'floating': 'floating 3s ease-in-out infinite',
+                        'slide-in-left': 'slideInLeft 1s ease-out',
+                        'slide-in-right': 'slideInRight 1s ease-out',
+                        'fade-in': 'fadeIn 1.5s ease-out',
+                        'scale-in': 'scaleIn 0.5s ease-out',
+                        'pulse-slow': 'pulseSlow 3s infinite',
+                    },
+                    keyframes: {
+                        blob: {
+                            '0%': { transform: 'translate(0px, 0px) scale(1)' },
+                            '33%': { transform: 'translate(30px, -50px) scale(1.1)' },
+                            '66%': { transform: 'translate(-20px, 20px) scale(0.9)' },
+                            '100%': { transform: 'translate(0px, 0px) scale(1)' }
+                        },
+                        floating: {
+                            '0%': { transform: 'translateY(0px) rotate(-2deg)' },
+                            '50%': { transform: 'translateY(-15px) rotate(0deg)' },
+                            '100%': { transform: 'translateY(0px) rotate(-2deg)' }
+                        },
+                        slideInLeft: {
+                            '0%': { transform: 'translateX(-100px)', opacity: '0' },
+                            '100%': { transform: 'translateX(0)', opacity: '1' }
+                        },
+                        slideInRight: {
+                            '0%': { transform: 'translateX(100px)', opacity: '0' },
+                            '100%': { transform: 'translateX(0)', opacity: '1' }
+                        },
+                        fadeIn: {
+                            '0%': { opacity: '0' },
+                            '100%': { opacity: '1' }
+                        },
+                        scaleIn: {
+                            '0%': { transform: 'scale(0.8)', opacity: '0' },
+                            '100%': { transform: 'scale(1)', opacity: '1' }
+                        },
+                        pulseSlow: {
+                            '0%, 100%': { transform: 'scale(1)' },
+                            '50%': { transform: 'scale(1.05)' }
+                        }
+                    }
+                }
             }
-            33% {
-                transform: translate(30px, -50px) scale(1.1);
-            }
-            66% {
-                transform: translate(-20px, 20px) scale(0.9);
-            }
-            100% {
-                transform: translate(0px, 0px) scale(1);
-            }
         }
-        .floating {
-            animation: floating 3s ease-in-out infinite;
-        }
-        @keyframes floating {
-            0% { transform: translateY(0px) rotate(-2deg); }
-            50% { transform: translateY(-15px) rotate(0deg); }
-            100% { transform: translateY(0px) rotate(-2deg); }
-        }
-        .slide-in-left {
-            animation: slideInLeft 1s ease-out;
-        }
-        .slide-in-right {
-            animation: slideInRight 1s ease-out;
-        }
-        @keyframes slideInLeft {
-            0% { transform: translateX(-100px); opacity: 0; }
-            100% { transform: translateX(0); opacity: 1; }
-        }
-        @keyframes slideInRight {
-            0% { transform: translateX(100px); opacity: 0; }
-            100% { transform: translateX(0); opacity: 1; }
-        }
-        .fade-in {
-            animation: fadeIn 1.5s ease-out;
-        }
-        @keyframes fadeIn {
-            0% { opacity: 0; }
-            100% { opacity: 1; }
-        }
-        .scale-in {
-            animation: scaleIn 0.5s ease-out;
-        }
-        @keyframes scaleIn {
-            0% { transform: scale(0.8); opacity: 0; }
-            100% { transform: scale(1); opacity: 1; }
-        }
-        .pulse-slow {
-            animation: pulseSlow 3s infinite;
-        }
-        @keyframes pulseSlow {
-            0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.05); }
-        }
-    </style>
+    </script>
 </head>
-<body class="font-[Poppins] antialiased text-gray-800 overflow-x-hidden">
+<body class="font-sans antialiased text-gray-800 overflow-x-hidden bg-gray-50">
 
   <!-- Header -->
   @include('components.header')
 
   <!-- Main Content -->
-  <div class="bg-gradient-to-b from-blue-50 to-white">
+  <div class="bg-gradient-to-b from-primary-50 via-white to-gray-50">
     <!-- Hero Section -->
     <section class="relative overflow-hidden min-h-screen flex items-center">
       <!-- Background Elements -->
       <div class="absolute inset-0 z-0">
-        <div class="absolute top-20 left-10 w-72 h-72 bg-blue-100 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-blob"></div>
-        <div class="absolute top-40 right-10 w-72 h-72 bg-cyan-100 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-blob animation-delay-2000"></div>
-        <div class="absolute -bottom-8 left-1/2 w-72 h-72 bg-indigo-100 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-blob animation-delay-4000"></div>
+        <div class="absolute top-20 left-10 w-72 h-72 bg-primary-100 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-blob"></div>
+        <div class="absolute top-40 right-10 w-72 h-72 bg-cyan-100 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-blob delay-1000"></div>
+        <div class="absolute -bottom-8 left-1/2 w-72 h-72 bg-secondary-100 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-blob delay-2000"></div>
 
         <!-- Decorative Elements -->
         <div class="hidden lg:block absolute top-40 left-20 transform rotate-12">
-            <svg width="40" height="40" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg" class="text-blue-500 opacity-50">
+            <svg width="40" height="40" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg" class="text-primary-500 opacity-50">
                 <circle cx="20" cy="20" r="8" stroke="currentColor" stroke-width="2"/>
                 <circle cx="20" cy="20" r="16" stroke="currentColor" stroke-width="2" stroke-dasharray="4 4"/>
             </svg>
         </div>
         <div class="hidden lg:block absolute bottom-40 right-20 transform -rotate-12">
-            <svg width="40" height="40" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg" class="text-indigo-500 opacity-50">
+            <svg width="40" height="40" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg" class="text-secondary-500 opacity-50">
                 <rect x="10" y="10" width="20" height="20" stroke="currentColor" stroke-width="2"/>
                 <rect x="4" y="4" width="32" height="32" stroke="currentColor" stroke-width="2" stroke-dasharray="4 4"/>
             </svg>
         </div>
+
+        <!-- Grid Pattern -->
+        <div class="absolute inset-0 bg-grid-pattern opacity-5"></div>
       </div>
 
       <!-- Hero Content -->
       <div class="container mx-auto px-4 py-20 relative z-10">
         <div class="flex flex-col md:flex-row items-center">
-          <div class="md:w-1/2 mb-10 md:mb-0 slide-in-left">
-            <span class="inline-block px-3 py-1 bg-blue-100 text-blue-600 rounded-full text-sm font-semibold mb-4">
-              Next-Gen Learning Platform
-            </span>
-            <h1 class="text-4xl md:text-5xl font-extrabold text-blue-600 leading-tight mb-4">
-              Transform Your <span class="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-indigo-600">Learning Experience</span>
+          <div class="md:w-1/2 mb-10 md:mb-0 animate-slide-in-left">
+            <div class="inline-flex items-center px-3 py-1 bg-primary-100 text-primary-600 rounded-full text-sm font-semibold mb-4 shadow-sm">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
+              </svg>
+              <span>Next-Gen Learning Platform</span>
+            </div>
+            <h1 class="text-4xl md:text-6xl font-extrabold leading-tight mb-6">
+              Transform Your <span class="text-transparent bg-clip-text bg-gradient-to-r from-primary-600 to-secondary-600">Learning Experience</span>
             </h1>
             <p class="text-xl text-gray-600 mb-8 max-w-lg">
               BrightPath offers an interactive learning platform with AI-generated quizzes and secure exam environments powered by facial recognition.
             </p>
             <div class="flex flex-wrap gap-4">
-              <a href="/courses" class="px-6 py-3 bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-semibold rounded-lg shadow-md hover:shadow-lg transition duration-300 transform hover:-translate-y-1 scale-in">
+              <a href="/courses" class="px-6 py-3 bg-gradient-to-r from-primary-600 to-primary-700 text-white font-semibold rounded-lg shadow-md hover:shadow-lg transition duration-300 transform hover:-translate-y-1 animate-scale-in">
                 <span class="flex items-center">
                   <span>Explore Courses</span>
                   <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 ml-2" viewBox="0 0 20 20" fill="currentColor">
@@ -127,7 +147,7 @@
                   </svg>
                 </span>
               </a>
-              <a href="/register" class="px-6 py-3 bg-white text-blue-600 font-semibold rounded-lg shadow-md border border-blue-200 hover:bg-blue-50 transition duration-300 transform hover:-translate-y-1 scale-in" style="animation-delay: 0.2s">
+              <a href="/register" class="px-6 py-3 bg-white text-primary-600 font-semibold rounded-lg shadow-md border border-primary-200 hover:bg-primary-50 transition duration-300 transform hover:-translate-y-1 animate-scale-in" style="animation-delay: 0.2s">
                 <span class="flex items-center">
                   <span>Join Now</span>
                   <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 ml-2" viewBox="0 0 20 20" fill="currentColor">
@@ -138,27 +158,28 @@
             </div>
 
             <!-- Stats -->
-            <div class="flex flex-wrap gap-6 mt-10">
-              <div class="flex items-center">
-                <div class="text-2xl font-bold text-blue-600">10K+</div>
-                <div class="ml-2 text-sm text-gray-600">Students</div>
+            <div class="flex flex-wrap gap-8 mt-12">
+              <div class="flex flex-col items-center bg-white p-4 rounded-lg shadow-sm">
+                <div class="text-3xl font-bold text-primary-600">10K+</div>
+                <div class="text-sm text-gray-600">Students</div>
               </div>
-              <div class="flex items-center">
-                <div class="text-2xl font-bold text-blue-600">200+</div>
-                <div class="ml-2 text-sm text-gray-600">Courses</div>
+              <div class="flex flex-col items-center bg-white p-4 rounded-lg shadow-sm">
+                <div class="text-3xl font-bold text-primary-600">200+</div>
+                <div class="text-sm text-gray-600">Courses</div>
               </div>
-              <div class="flex items-center">
-                <div class="text-2xl font-bold text-blue-600">95%</div>
-                <div class="ml-2 text-sm text-gray-600">Satisfaction</div>
+              <div class="flex flex-col items-center bg-white p-4 rounded-lg shadow-sm">
+                <div class="text-3xl font-bold text-primary-600">95%</div>
+                <div class="text-sm text-gray-600">Satisfaction</div>
               </div>
             </div>
           </div>
-          <div class="md:w-1/2 slide-in-right">
+          <div class="md:w-1/2 animate-slide-in-right">
             <div class="relative">
-              <img src="https://images.unsplash.com/photo-1501504905252-473c47e087f8?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80" alt="Online Learning" class="rounded-xl shadow-2xl floating">
+              <div class="absolute -inset-0.5 bg-gradient-to-r from-primary-500 to-secondary-500 rounded-2xl blur opacity-30 animate-pulse-slow"></div>
+              <img src="https://images.unsplash.com/photo-1501504905252-473c47e087f8?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80" alt="Online Learning" class="relative rounded-xl shadow-2xl animate-floating object-cover w-full">
 
               <!-- Floating Elements -->
-              <div class="absolute -top-6 -right-6 bg-white rounded-lg shadow-lg p-4 scale-in" style="animation-delay: 0.4s">
+              <div class="absolute -top-6 -right-6 bg-white rounded-lg shadow-lg p-4 animate-scale-in" style="animation-delay: 0.4s">
                 <div class="flex items-center">
                   <div class="w-10 h-10 bg-green-100 rounded-full flex items-center justify-center mr-3">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -172,10 +193,10 @@
                 </div>
               </div>
 
-              <div class="absolute -bottom-6 -left-6 bg-white rounded-lg shadow-lg p-4 scale-in" style="animation-delay: 0.6s">
+              <div class="absolute -bottom-6 -left-6 bg-white rounded-lg shadow-lg p-4 animate-scale-in" style="animation-delay: 0.6s">
                 <div class="flex items-center">
-                  <div class="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center mr-3">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <div class="w-10 h-10 bg-primary-100 rounded-full flex items-center justify-center mr-3">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-primary-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
                     </svg>
                   </div>
@@ -185,12 +206,27 @@
                   </div>
                 </div>
               </div>
+
+              <!-- Additional Floating Element -->
+              <div class="absolute top-1/2 -right-10 bg-white rounded-lg shadow-lg p-4 animate-scale-in hidden md:block" style="animation-delay: 0.8s">
+                <div class="flex items-center">
+                  <div class="w-10 h-10 bg-secondary-100 rounded-full flex items-center justify-center mr-3">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-secondary-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
+                    </svg>
+                  </div>
+                  <div>
+                    <div class="text-sm font-semibold">Adaptive Learning</div>
+                    <div class="text-xs text-gray-500">Personalized Path</div>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         </div>
 
         <!-- Scroll Down Indicator -->
-        <div class="absolute bottom-10 left-1/2 transform -translate-x-1/2 flex flex-col items-center fade-in" style="animation-delay: 1s">
+        <div class="absolute bottom-10 left-1/2 transform -translate-x-1/2 flex flex-col items-center animate-fade-in" style="animation-delay: 1s">
           <span class="text-sm text-gray-500 mb-2">Scroll to explore</span>
           <div class="w-6 h-10 border-2 border-gray-400 rounded-full flex justify-center p-1">
             <div class="w-1.5 h-1.5 bg-gray-400 rounded-full animate-bounce mt-1"></div>

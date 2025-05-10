@@ -31,6 +31,7 @@
                       @method('PUT')
                       <select name="role" class="border rounded px-2 py-1">
                         <option value="user" {{ $user->role === 'user' ? 'selected' : '' }}>User</option>
+                        <option value="teacher" {{ $user->role === 'teacher' ? 'selected' : '' }}>Teacher</option>
                         <option value="agent" {{ $user->role === 'agent' ? 'selected' : '' }}>Agent</option>
                         <option value="admin" {{ $user->role === 'admin' ? 'selected' : '' }}>Admin</option>
                       </select>

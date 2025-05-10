@@ -7,7 +7,7 @@
                 <h1 class="text-2xl font-bold">Secure Exam Verification</h1>
                 <p class="mt-2">Your identity will be verified using facial recognition before and during the exam</p>
             </div>
-            
+
             <div class="p-6">
                 <div class="mb-6 bg-yellow-50 border-l-4 border-yellow-400 p-4">
                     <div class="flex">
@@ -23,7 +23,7 @@
                         </div>
                     </div>
                 </div>
-                
+
                 <div class="face-recognition-container">
                     <div class="face-video-container">
                         <video id="face-video" class="face-video" autoplay muted playsinline></video>
@@ -47,8 +47,31 @@
                         </button>
                     </div>
                 </div>
-                
+
                 <div class="mt-6">
+                    <h3 class="text-lg font-semibold text-gray-800 mb-2">Exam Information</h3>
+                    <div class="bg-gray-50 p-4 rounded-lg mb-4">
+                        <div class="grid grid-cols-2 gap-4">
+                            <div>
+                                <p class="text-sm text-gray-500">Quiz</p>
+                                <p class="font-medium">{{ $quiz->name }}</p>
+                            </div>
+                            <div>
+                                <p class="text-sm text-gray-500">Course</p>
+                                <p class="font-medium">{{ $quiz->course->name }}</p>
+                            </div>
+                            <div>
+                                <p class="text-sm text-gray-500">Questions</p>
+                                <p class="font-medium">{{ $quiz->questions->count() }}</p>
+                            </div>
+                            <div>
+                                <p class="text-sm text-gray-500">Time Limit</p>
+                                <p class="font-medium">{{ $quiz->time_limit ?? 'No limit' }}</p>
+                            </div>
+                        </div>
+                        <input type="hidden" id="quiz-id" value="{{ $quiz->id }}">
+                    </div>
+
                     <h3 class="text-lg font-semibold text-gray-800 mb-2">Exam Rules</h3>
                     <ul class="list-disc pl-5 text-gray-600 space-y-1">
                         <li>Ensure your face remains visible throughout the exam</li>
@@ -95,89 +118,89 @@
         const statusEl = document.getElementById('face-status');
         const progressBar = document.getElementById('face-progress-bar');
         const verificationModal = document.getElementById('verification-modal');
-        
+
         let verificationComplete = false;
-        
+
         // Initialize face recognition
         await faceRecognition.init();
-        
+
         // Start camera
         await faceRecognition.startVideo();
-        
+
         // Event listeners
         startVerificationBtn.addEventListener('click', async function() {
             startVerificationBtn.disabled = true;
             startVerificationBtn.textContent = 'Verifying...';
-            
+
             // Show verification modal
             verificationModal.classList.remove('hidden');
-            
+
             try {
                 // Perform verification
                 const result = await verifyIdentity();
-                
+
                 // Hide verification modal
                 verificationModal.classList.add('hidden');
-                
+
                 if (result.success) {
                     statusEl.textContent = 'Verification successful!';
                     statusEl.className = 'face-status status-success';
                     progressBar.style.width = '100%';
-                    
+
                     startVerificationBtn.classList.add('hidden');
                     continueExamBtn.classList.remove('hidden');
-                    
+
                     verificationComplete = true;
                 } else {
                     statusEl.textContent = 'Verification failed: ' + result.message;
                     statusEl.className = 'face-status status-error';
-                    
+
                     startVerificationBtn.disabled = false;
                     startVerificationBtn.textContent = 'Retry Verification';
                 }
             } catch (error) {
                 console.error('Error during verification:', error);
-                
+
                 // Hide verification modal
                 verificationModal.classList.add('hidden');
-                
+
                 statusEl.textContent = 'An error occurred during verification. Please try again.';
                 statusEl.className = 'face-status status-error';
-                
+
                 startVerificationBtn.disabled = false;
                 startVerificationBtn.textContent = 'Retry Verification';
             }
         });
-        
+
         continueExamBtn.addEventListener('click', function() {
             if (verificationComplete) {
                 // Start continuous verification
                 faceRecognition.startVerification(30, 3);
-                
+
                 // Redirect to exam
                 window.location.href = '{{ route("student.quiz", ["id" => $quizId]) }}';
             }
         });
-        
+
         // Handle exam termination event
         document.addEventListener('exam-terminated', function(e) {
             alert('Exam session terminated: ' + e.detail.reason);
             window.location.href = '{{ route("student.dashboard") }}';
         });
-        
+
         // Verify identity against registered face
         async function verifyIdentity() {
             try {
                 // Capture face
                 const descriptor = await faceRecognition.captureFace();
-                
+
                 if (!descriptor) {
                     return {
                         success: false,
                         message: 'No face detected. Please ensure your face is clearly visible.'
                     };
                 }
-                
+
                 // Send to server for verification
                 const response = await fetch('{{ route("face.verify") }}', {
                     method: 'POST',
@@ -189,9 +212,9 @@
                         face_descriptor: JSON.stringify(Array.from(descriptor))
                     })
                 });
-                
+
                 const result = await response.json();
-                
+
                 return result;
             } catch (error) {
                 console.error('Error verifying identity:', error);

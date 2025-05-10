@@ -49,13 +49,13 @@
     <form action="{{ route('login') }}" method="POST">
       @csrf
       <h2 class="mb-6 text-2xl font-bold text-cyan-500">Welcome To Bright Path!</h2>
-      <input type="email" name="email" placeholder="Email" 
+      <input type="email" name="email" placeholder="Email"
         value="{{ old('email') }}"
         class="w-full p-3 mb-4 border border-cyan-300 rounded-md bg-white text-gray-700 focus:outline-none focus:ring-2 focus:ring-cyan-400 @error('email') border-red-500 @enderror">
       @error('email')
         <p class="text-red-500 text-sm mb-4">{{ $message }}</p>
       @enderror
-      <input type="password" name="password" placeholder="Password" 
+      <input type="password" name="password" placeholder="Password"
         class="w-full p-3 mb-4 border border-cyan-300 rounded-md bg-white text-gray-700 focus:outline-none focus:ring-2 focus:ring-cyan-400 @error('password') border-red-500 @enderror">
       @error('password')
         <p class="text-red-500 text-sm mb-4">{{ $message }}</p>

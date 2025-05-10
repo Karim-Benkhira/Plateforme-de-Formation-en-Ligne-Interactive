@@ -36,7 +36,7 @@ class StudentController extends UserController
                 return $courseResults->sortByDesc('created_at')->first();
             });
 
-        return view('student.myCourses', ['courses' => $courses]);
+        return view('student.MyCourses', ['courses' => $courses]);
     }
 
     public function showProfile(){
@@ -156,7 +156,7 @@ class StudentController extends UserController
 
         return view('student.achievements', compact('achievements', 'totalScore', 'quizzesTaken'));
     }
-    
+
     public function showProgress(){
         return view('student.progress');
     }

@@ -6,6 +6,9 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Schema;
 use App\Http\Controllers\Validator;
 
 class UserController extends Controller
@@ -31,6 +34,7 @@ class UserController extends Controller
             'name' => 'required',
             'email' => 'required|email',
             'password' => 'required',
+            'role' => 'required|in:user,teacher',
         ]);
 
         if (!Validator::validateEmail($request->email)) {
@@ -43,20 +47,32 @@ class UserController extends Controller
             return redirect()->back()->with('error', 'Password must be at least 8 characters');
         }
 
-        $user = new User();
-        $user->username = $request->name;
-        $user->email = $request->email;
-        $user->password = bcrypt($request->password);
+        try {
+            $user = new User();
+            $user->username = $request->name;
+            $user->email = $request->email;
+            $user->password = bcrypt($request->password);
 
-        $firstUser = User::first();
-        if(!$firstUser){
-            $user->role = 'admin';
-        } else {
-            $user->role = 'user';
+            // Check if there are any users in the database
+            $usersCount = User::count();
+
+            if($usersCount === 0){
+                // First user is always admin, regardless of selected role
+                $user->role = 'admin';
+                \Illuminate\Support\Facades\Log::info('First user registered as admin: ' . $request->email);
+            } else {
+                // Use the selected role (student or teacher)
+                $user->role = $request->role;
+                \Illuminate\Support\Facades\Log::info('User registered as ' . $request->role . ': ' . $request->email);
+            }
+
+            $user->save();
+            return redirect()->route('login')->with('success', 'Registration successful. Please log in.');
+        } catch (\Exception $e) {
+            // Log the error
+            \Illuminate\Support\Facades\Log::error('Registration error: ' . $e->getMessage());
+            return redirect()->back()->with('error', 'An error occurred during registration. Please try again.');
         }
-
-        $user->save();
-        return redirect()->route('login')->with('success', 'Registration successful. Please log in.');
     }
 
     public function login(Request $request){
@@ -116,10 +132,48 @@ class UserController extends Controller
             // Regenerate session
             $request->session()->regenerate();
 
+            // Handle concurrent logins (previously in middleware)
+            try {
+                $currentSessionId = $request->session()->getId();
+
+                if (\Illuminate\Support\Facades\Schema::hasTable('sessions') &&
+                    \Illuminate\Support\Facades\Schema::hasColumn('sessions', 'user_id') &&
+                    \Illuminate\Support\Facades\Schema::hasColumn('sessions', 'id')) {
+
+                    // Get all sessions for this user
+                    $sessions = \Illuminate\Support\Facades\DB::table('sessions')
+                        ->where('user_id', $user->id)
+                        ->where('id', '!=', $currentSessionId)
+                        ->get();
+
+                    // If there are other active sessions, log them out
+                    if ($sessions->count() > 0) {
+                        // Delete all other sessions
+                        \Illuminate\Support\Facades\DB::table('sessions')
+                            ->where('user_id', $user->id)
+                            ->where('id', '!=', $currentSessionId)
+                            ->delete();
+
+                        // Log the activity
+                        try {
+                            \App\Models\ActivityLog::log('session.concurrent_login', 'Logged out from other devices due to concurrent login policy');
+                        } catch (\Exception $e) {
+                            // Silently fail if activity logging fails
+                            \Illuminate\Support\Facades\Log::warning('Failed to log activity: ' . $e->getMessage());
+                        }
+                    }
+                }
+            } catch (\Exception $e) {
+                // Log the error but don't interrupt the user experience
+                \Illuminate\Support\Facades\Log::error('Session management error: ' . $e->getMessage());
+            }
+
             if ($user->role === 'admin') {
                 return redirect()->route('admin.dashboard');
             } elseif ($user->role === 'agent') {
                 return redirect()->route('agent.dashboard');
+            } elseif ($user->role === 'teacher') {
+                return redirect()->route('teacher.dashboard');
             } else {
                 return redirect()->route('student.dashboard');
             }
@@ -128,12 +182,17 @@ class UserController extends Controller
 
     public function LogOut(Request $request){
         try {
-            // Log the activity before logging out
+            // Get the user ID before logging out
+            $userId = null;
             if (Auth::check()) {
+                $userId = Auth::id();
+
+                // Try to log the activity before logging out
                 try {
                     \App\Models\ActivityLog::log('auth.logout', 'User logged out');
                 } catch (\Exception $e) {
                     // Silently fail if activity logging fails
+                    \Illuminate\Support\Facades\Log::warning('Failed to log logout activity: ' . $e->getMessage());
                 }
             }
 
@@ -146,6 +205,18 @@ class UserController extends Controller
             // Regenerate the CSRF token
             $request->session()->regenerateToken();
 
+            // Clean up any remaining sessions for this user
+            if ($userId && \Illuminate\Support\Facades\Schema::hasTable('sessions')) {
+                try {
+                    \Illuminate\Support\Facades\DB::table('sessions')
+                        ->where('user_id', $userId)
+                        ->delete();
+                } catch (\Exception $e) {
+                    // Log but continue if session cleanup fails
+                    \Illuminate\Support\Facades\Log::warning('Failed to clean up sessions: ' . $e->getMessage());
+                }
+            }
+
             return redirect()->route('login')->with('success', 'You have been successfully logged out.');
         } catch (\Exception $e) {
             // Log the error
@@ -153,6 +224,14 @@ class UserController extends Controller
 
             // Force logout even if there was an error
             Auth::logout();
+
+            // Try to invalidate the session even if there was an error
+            try {
+                $request->session()->invalidate();
+                $request->session()->regenerateToken();
+            } catch (\Exception $sessionError) {
+                \Illuminate\Support\Facades\Log::error('Session invalidation error: ' . $sessionError->getMessage());
+            }
 
             return redirect()->route('login')->with('success', 'You have been logged out.');
         }

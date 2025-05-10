@@ -69,6 +69,5 @@ class Kernel extends HttpKernel
         'verified' => \Illuminate\Auth\Middleware\EnsureEmailIsVerified::class,
         'role' => \App\Http\Middleware\CheckRole::class,
         'two-factor.challenge' => \App\Http\Middleware\TwoFactorChallenge::class,
-        'prevent.concurrent.logins' => \App\Http\Middleware\PreventConcurrentLogins::class,
     ];
 }

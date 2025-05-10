@@ -49,7 +49,7 @@
     <form action="<?php echo e(route('login')); ?>" method="POST">
       <?php echo csrf_field(); ?>
       <h2 class="mb-6 text-2xl font-bold text-cyan-500">Welcome To Bright Path!</h2>
-      <input type="email" name="email" placeholder="Email" 
+      <input type="email" name="email" placeholder="Email"
         value="<?php echo e(old('email')); ?>"
         class="w-full p-3 mb-4 border border-cyan-300 rounded-md bg-white text-gray-700 focus:outline-none focus:ring-2 focus:ring-cyan-400 <?php $__errorArgs = ['email'];
 $__bag = $errors->getBag($__errorArgs[1] ?? 'default');
@@ -69,7 +69,7 @@ $message = $__bag->first($__errorArgs[0]); ?>
 if (isset($__messageOriginal)) { $message = $__messageOriginal; }
 endif;
 unset($__errorArgs, $__bag); ?>
-      <input type="password" name="password" placeholder="Password" 
+      <input type="password" name="password" placeholder="Password"
         class="w-full p-3 mb-4 border border-cyan-300 rounded-md bg-white text-gray-700 focus:outline-none focus:ring-2 focus:ring-cyan-400 <?php $__errorArgs = ['password'];
 $__bag = $errors->getBag($__errorArgs[1] ?? 'default');
 if ($__bag->has($__errorArgs[0])) :

@@ -79,7 +79,7 @@ class AdminController extends AgentController
 
     public function updateRole(Request $request, $id) {
         $request->validate([
-            'role' => 'required|in:admin,agent,user',
+            'role' => 'required|in:admin,agent,user,teacher',
         ]);
 
         $user = User::findOrFail($id);
