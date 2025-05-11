@@ -9,8 +9,15 @@ class Quiz extends Model
     protected $table = 'quizzes';
     protected $fillable = [
         'name',
+        'description',
         'course_id',
+        'duration',
+        'passing_score',
+        'attempts_allowed',
+        'is_published',
+        'requires_face_verification',
         'is_ai_generated',
+        'creator_id',
     ];
 
     public function course()
@@ -26,6 +33,11 @@ class Quiz extends Model
     public function results()
     {
         return $this->hasMany(QuizResult::class);
+    }
+
+    public function creator()
+    {
+        return $this->belongsTo(User::class, 'creator_id');
     }
 
 }
