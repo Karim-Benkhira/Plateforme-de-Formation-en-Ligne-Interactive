@@ -57,7 +57,11 @@ class CourseController extends Controller
                 'description' => 'required|string',
                 'category_id' => 'required|exists:categories,id',
                 'level' => 'required|string|in:beginner,intermediate,advanced',
+                'content_type' => 'required|string|in:text,pdf,video,youtube',
                 'content' => 'nullable|string',
+                'pdf_file' => 'nullable|file|mimes:pdf|max:10240',
+                'video_file' => 'nullable|file|mimes:mp4,webm,ogg|max:102400',
+                'youtube_link' => 'nullable|url',
                 'image' => 'nullable|image|max:2048',
                 'is_published' => 'nullable|boolean',
                 'score' => 'required|integer',
@@ -82,14 +86,43 @@ class CourseController extends Controller
 
             $course->save();
 
-            // Handle course content if provided
-            if ($request->filled('content')) {
-                $content = new Content();
-                $content->course_id = $course->id;
-                $content->type = 'text';
-                $content->content = $request->content;
-                $content->save();
+            // Handle course content based on content type
+            $content = new Content();
+            $content->course_id = $course->id;
+
+            switch ($request->content_type) {
+                case 'text':
+                    if ($request->filled('content')) {
+                        $content->type = 'text';
+                        $content->content = $request->content;
+                    }
+                    break;
+
+                case 'pdf':
+                    if ($request->hasFile('pdf_file')) {
+                        $path = $request->file('pdf_file')->store('course-pdfs', 'public');
+                        $content->type = 'pdf';
+                        $content->file = $path;
+                    }
+                    break;
+
+                case 'video':
+                    if ($request->hasFile('video_file')) {
+                        $path = $request->file('video_file')->store('course-videos', 'public');
+                        $content->type = 'video';
+                        $content->file = $path;
+                    }
+                    break;
+
+                case 'youtube':
+                    if ($request->filled('youtube_link')) {
+                        $content->type = 'youtube';
+                        $content->file = $request->youtube_link;
+                    }
+                    break;
             }
+
+            $content->save();
         }
 
         // Determine the redirect route based on user role
@@ -114,7 +147,11 @@ class CourseController extends Controller
             'description' => 'required|string',
             'category_id' => 'required|exists:categories,id',
             'level' => 'required|string|in:beginner,intermediate,advanced',
+            'content_type' => 'required|string|in:text,pdf,video,youtube',
             'content' => 'nullable|string',
+            'pdf_file' => 'nullable|file|mimes:pdf|max:10240',
+            'video_file' => 'nullable|file|mimes:mp4,webm,ogg|max:102400',
+            'youtube_link' => 'nullable|url',
             'image' => 'nullable|image|max:2048',
             'is_published' => 'nullable|boolean',
         ]);
@@ -134,21 +171,65 @@ class CourseController extends Controller
 
         $course->save();
 
-        // Handle course content if provided
-        if ($request->filled('content')) {
-            $content = $course->contents->first();
-
-            if ($content) {
-                $content->content = $request->content;
-                $content->save();
-            } else {
-                $content = new Content();
-                $content->course_id = $course->id;
-                $content->type = 'text';
-                $content->content = $request->content;
-                $content->save();
-            }
+        // Get existing content or create new one
+        $content = $course->contents->first();
+        if (!$content) {
+            $content = new Content();
+            $content->course_id = $course->id;
         }
+
+        // Update content based on content type
+        switch ($request->content_type) {
+            case 'text':
+                if ($request->filled('content')) {
+                    $content->type = 'text';
+                    $content->content = $request->content;
+                    // Clear file field if changing from another type
+                    if ($content->file) {
+                        $content->file = null;
+                    }
+                }
+                break;
+
+            case 'pdf':
+                if ($request->hasFile('pdf_file')) {
+                    $path = $request->file('pdf_file')->store('course-pdfs', 'public');
+                    $content->type = 'pdf';
+                    $content->file = $path;
+                    // Clear content field if changing from text
+                    if ($content->content) {
+                        $content->content = null;
+                    }
+                }
+                break;
+
+            case 'video':
+                if ($request->hasFile('video_file')) {
+                    $path = $request->file('video_file')->store('course-videos', 'public');
+                    $content->type = 'video';
+                    $content->file = $path;
+                    // Clear content field if changing from text
+                    if ($content->content) {
+                        $content->content = null;
+                    }
+                }
+                break;
+
+            case 'youtube':
+                if ($request->filled('youtube_link')) {
+                    $content->type = 'youtube';
+                    $content->file = $request->youtube_link;
+                    // Clear content field if changing from text
+                    if ($content->content) {
+                        $content->content = null;
+                    }
+                }
+                break;
+        }
+
+        // Always update the content type even if no new file is uploaded
+        $content->type = $request->content_type;
+        $content->save();
 
         // Determine the redirect route based on user role
         $redirectRoute = auth()->user()->role === 'admin' ? 'admin.courses' : 'teacher.courses';

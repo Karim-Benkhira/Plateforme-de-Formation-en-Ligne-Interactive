@@ -1,0 +1,80 @@
+/* Theme Colors for BrightPath Learning Platform */
+
+:root {
+  /* Primary Colors */
+  --primary-50: #f0f9ff;
+  --primary-100: #e0f2fe;
+  --primary-200: #bae6fd;
+  --primary-300: #7dd3fc;
+  --primary-400: #38bdf8;
+  --primary-500: #0ea5e9;
+  --primary-600: #0284c7;
+  --primary-700: #0369a1;
+  --primary-800: #075985;
+  --primary-900: #0c4a6e;
+  
+  /* Secondary Colors */
+  --secondary-50: #f5f3ff;
+  --secondary-100: #ede9fe;
+  --secondary-200: #ddd6fe;
+  --secondary-300: #c4b5fd;
+  --secondary-400: #a78bfa;
+  --secondary-500: #8b5cf6;
+  --secondary-600: #7c3aed;
+  --secondary-700: #6d28d9;
+  --secondary-800: #5b21b6;
+  --secondary-900: #4c1d95;
+  
+  /* Success Colors */
+  --success-50: #ecfdf5;
+  --success-100: #d1fae5;
+  --success-500: #10b981;
+  --success-600: #059669;
+  
+  /* Danger Colors */
+  --danger-50: #fef2f2;
+  --danger-100: #fee2e2;
+  --danger-500: #ef4444;
+  --danger-600: #dc2626;
+  
+  /* Warning Colors */
+  --warning-50: #fffbeb;
+  --warning-100: #fef3c7;
+  --warning-500: #f59e0b;
+  --warning-600: #d97706;
+  
+  /* Info Colors */
+  --info-50: #eff6ff;
+  --info-100: #dbeafe;
+  --info-500: #3b82f6;
+  --info-600: #2563eb;
+  
+  /* Gray Colors */
+  --gray-50: #f9fafb;
+  --gray-100: #f3f4f6;
+  --gray-200: #e5e7eb;
+  --gray-300: #d1d5db;
+  --gray-400: #9ca3af;
+  --gray-500: #6b7280;
+  --gray-600: #4b5563;
+  --gray-700: #374151;
+  --gray-800: #1f2937;
+  --gray-900: #111827;
+}
+
+/* Utility classes for background colors */
+.bg-primary-gradient {
+  background-image: linear-gradient(to right, var(--primary-600), var(--secondary-600));
+}
+
+.bg-secondary-gradient {
+  background-image: linear-gradient(to right, var(--secondary-600), var(--primary-600));
+}
+
+/* Text gradient utilities */
+.text-primary-gradient {
+  background-image: linear-gradient(to right, var(--primary-600), var(--secondary-600));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}

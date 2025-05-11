@@ -47,40 +47,96 @@
                             </a>
                         </div>
                     </div>
-                    
+
                     <h2 class="text-xl font-bold text-gray-800 dark:text-white mb-2">Description</h2>
                     <p class="text-gray-700 dark:text-gray-300 mb-6">{{ $course->description }}</p>
-                    
-                    <h2 class="text-xl font-bold text-gray-800 dark:text-white mb-2">Course Content</h2>
+
+                    <h2 class="text-xl font-bold text-gray-800 dark:text-white mb-4">Course Content</h2>
                     <div class="prose dark:prose-invert max-w-none">
                         @if($course->contents && $course->contents->count() > 0)
                             @foreach($course->contents as $content)
                                 @if($content->type == 'text')
-                                    <div class="bg-gray-50 dark:bg-gray-700 p-4 rounded-lg">
-                                        {{ $content->content }}
+                                    <div class="bg-gray-50 dark:bg-gray-700 p-6 rounded-xl mb-4 shadow-sm">
+                                        <div class="flex items-center mb-3">
+                                            <div class="w-10 h-10 rounded-full bg-blue-100 dark:bg-blue-900 flex items-center justify-center mr-3">
+                                                <i class="fas fa-file-alt text-blue-500"></i>
+                                            </div>
+                                            <h3 class="text-lg font-semibold text-gray-800 dark:text-white">Text Content</h3>
+                                        </div>
+                                        <div class="pl-13">
+                                            {{ $content->content }}
+                                        </div>
                                     </div>
                                 @elseif($content->type == 'pdf')
-                                    <div class="bg-gray-50 dark:bg-gray-700 p-4 rounded-lg">
-                                        <a href="{{ asset('storage/' . $content->file) }}" target="_blank" class="text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300 inline-flex items-center">
-                                            <i class="fas fa-file-pdf mr-2"></i> View PDF
-                                        </a>
+                                    <div class="bg-gray-50 dark:bg-gray-700 p-6 rounded-xl mb-4 shadow-sm">
+                                        <div class="flex items-center mb-3">
+                                            <div class="w-10 h-10 rounded-full bg-red-100 dark:bg-red-900 flex items-center justify-center mr-3">
+                                                <i class="fas fa-file-pdf text-red-500"></i>
+                                            </div>
+                                            <h3 class="text-lg font-semibold text-gray-800 dark:text-white">PDF Document</h3>
+                                        </div>
+                                        <div class="mt-3">
+                                            <a href="{{ asset('storage/' . $content->file) }}" target="_blank" class="inline-flex items-center px-4 py-2 bg-red-600 hover:bg-red-700 text-white font-medium rounded-lg transition-colors duration-200">
+                                                <i class="fas fa-file-pdf mr-2"></i> View PDF Document
+                                            </a>
+                                            <p class="text-sm text-gray-500 dark:text-gray-400 mt-2">Click the button above to open the PDF document in a new tab.</p>
+                                        </div>
+                                    </div>
+                                @elseif($content->type == 'video')
+                                    <div class="bg-gray-50 dark:bg-gray-700 p-6 rounded-xl mb-4 shadow-sm">
+                                        <div class="flex items-center mb-3">
+                                            <div class="w-10 h-10 rounded-full bg-purple-100 dark:bg-purple-900 flex items-center justify-center mr-3">
+                                                <i class="fas fa-video text-purple-500"></i>
+                                            </div>
+                                            <h3 class="text-lg font-semibold text-gray-800 dark:text-white">Video Content</h3>
+                                        </div>
+                                        <div class="mt-3">
+                                            <div class="aspect-w-16 aspect-h-9 bg-black rounded-lg overflow-hidden">
+                                                <video controls class="w-full h-full object-contain">
+                                                    <source src="{{ asset('storage/' . $content->file) }}" type="video/mp4">
+                                                    Your browser does not support the video tag.
+                                                </video>
+                                            </div>
+                                        </div>
                                     </div>
                                 @elseif($content->type == 'youtube')
-                                    <div class="bg-gray-50 dark:bg-gray-700 p-4 rounded-lg">
-                                        <div class="aspect-w-16 aspect-h-9">
-                                            <iframe src="{{ $content->file }}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen class="rounded-lg"></iframe>
+                                    <div class="bg-gray-50 dark:bg-gray-700 p-6 rounded-xl mb-4 shadow-sm">
+                                        <div class="flex items-center mb-3">
+                                            <div class="w-10 h-10 rounded-full bg-red-100 dark:bg-red-900 flex items-center justify-center mr-3">
+                                                <i class="fab fa-youtube text-red-500"></i>
+                                            </div>
+                                            <h3 class="text-lg font-semibold text-gray-800 dark:text-white">YouTube Video</h3>
+                                        </div>
+                                        <div class="mt-3">
+                                            <div class="aspect-w-16 aspect-h-9 bg-black rounded-lg overflow-hidden">
+                                                <iframe
+                                                    src="{{ str_replace('watch?v=', 'embed/', $content->file) }}"
+                                                    frameborder="0"
+                                                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                                                    allowfullscreen
+                                                    class="w-full h-full">
+                                                </iframe>
+                                            </div>
                                         </div>
                                     </div>
                                 @endif
                             @endforeach
                         @else
-                            <p class="text-gray-500 dark:text-gray-400 italic">No content available for this course.</p>
+                            <div class="bg-gray-50 dark:bg-gray-700 p-8 rounded-xl text-center">
+                                <div class="w-16 h-16 mx-auto bg-blue-100 dark:bg-blue-900 rounded-full flex items-center justify-center mb-4">
+                                    <i class="fas fa-book-open text-blue-500 text-2xl"></i>
+                                </div>
+                                <p class="text-gray-500 dark:text-gray-400 mb-4">No content available for this course yet.</p>
+                                <a href="{{ route('teacher.courses.edit', $course->id) }}" class="inline-flex items-center px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg transition-colors duration-200">
+                                    <i class="fas fa-plus mr-2"></i> Add Course Content
+                                </a>
+                            </div>
                         @endif
                     </div>
                 </div>
             </div>
         </div>
-        
+
         <!-- Sidebar -->
         <div>
             <!-- Course Stats -->
@@ -102,7 +158,7 @@
                     </a>
                 </div>
             </div>
-            
+
             <!-- Course Quizzes -->
             <div class="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6">
                 <div class="flex justify-between items-center mb-4">
@@ -111,7 +167,7 @@
                         <i class="fas fa-plus"></i>
                     </a>
                 </div>
-                
+
                 @if($quizzes->count() > 0)
                     <div class="space-y-4">
                         @foreach($quizzes as $quiz)
