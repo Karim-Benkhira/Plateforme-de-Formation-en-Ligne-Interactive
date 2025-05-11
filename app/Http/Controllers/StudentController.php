@@ -18,8 +18,15 @@ class StudentController extends UserController
     }
 
     public function showCourses(){
-        $courses = Course::all();
-        return view('student.courses', compact('courses'));
+        $courses = Course::with(['category', 'teacher'])->get();
+
+        // Get categories if the table exists
+        $categories = [];
+        if (class_exists('App\\Models\\Category')) {
+            $categories = \App\Models\Category::all();
+        }
+
+        return view('student.courses', compact('courses', 'categories'));
     }
 
     public function showMyCourses(){

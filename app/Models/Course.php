@@ -37,6 +37,11 @@ class Course extends Model
         return $this->belongsTo(User::class, 'creator_id');
     }
 
+    public function teacher()
+    {
+        return $this->belongsTo(User::class, 'creator_id');
+    }
+
     public function quizzes()
     {
         return $this->hasMany(Quiz::class);
