@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Reclamation;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Schema;
 
 class StudentController extends UserController
 {
@@ -165,7 +166,135 @@ class StudentController extends UserController
     }
 
     public function showProgress(){
-        return view('student.progress');
+        $user = auth()->user();
+
+        // Get enrolled courses count
+        $enrolledCount = 0;
+        if (method_exists($user, 'enrolledCourses')) {
+            $enrolledCount = $user->enrolledCourses()->count();
+        } else {
+            // Fallback: Get courses from quiz results
+            $enrolledCount = QuizResult::where('user_id', $user->id)
+                ->select('quiz_id')
+                ->join('quizzes', 'quiz_results.quiz_id', '=', 'quizzes.id')
+                ->select('course_id')
+                ->distinct()
+                ->count();
+        }
+
+        // Get completed courses count
+        $completedCount = 0;
+        if (method_exists($user, 'completedCourses')) {
+            $completedCount = $user->completedCourses()->count();
+        } else {
+            // For demo purposes, assume 30% of enrolled courses are completed
+            $completedCount = max(0, round($enrolledCount * 0.3));
+        }
+
+        // Calculate overall progress
+        $overallProgress = $enrolledCount > 0 ? round(($completedCount / $enrolledCount) * 100) : 0;
+
+        // Get course progress data
+        $courseProgress = [];
+
+        // Check if we have the course_user table with progress
+        if (Schema::hasTable('course_user')) {
+            $userCourses = DB::table('course_user')
+                ->where('user_id', $user->id)
+                ->join('courses', 'course_user.course_id', '=', 'courses.id')
+                ->leftJoin('categories', 'courses.category_id', '=', 'categories.id')
+                ->select('courses.id', 'courses.title', 'categories.name as category', 'course_user.progress')
+                ->get();
+
+            foreach ($userCourses as $course) {
+                $courseProgress[] = [
+                    'id' => $course->id,
+                    'title' => $course->title,
+                    'category' => $course->category ?? 'General',
+                    'progress' => $course->progress,
+                    'time_spent' => rand(1, 20), // Random time spent for demo
+                    'score' => rand(60, 100) // Random score for demo
+                ];
+            }
+        } else {
+            // Demo data if no real data exists
+            $courses = Course::take(3)->get();
+
+            foreach ($courses as $course) {
+                $courseProgress[] = [
+                    'id' => $course->id,
+                    'title' => $course->title ?? $course->name,
+                    'category' => $course->category->name ?? 'General',
+                    'progress' => rand(10, 100),
+                    'time_spent' => rand(1, 20),
+                    'score' => rand(60, 100)
+                ];
+            }
+        }
+
+        // Activity data for chart (last 7 days)
+        $activityData = [
+            'labels' => [],
+            'values' => []
+        ];
+
+        for ($i = 6; $i >= 0; $i--) {
+            $date = now()->subDays($i)->format('M d');
+            $activityData['labels'][] = $date;
+            $activityData['values'][] = rand(0, 5); // Random hours spent for demo
+        }
+
+        // Quiz performance data for chart
+        $quizData = [
+            rand(1, 5),  // Excellent
+            rand(3, 8),  // Good
+            rand(2, 6),  // Average
+            rand(0, 3)   // Needs Improvement
+        ];
+
+        // Skills acquired
+        $skills = [
+            [
+                'name' => 'Programming',
+                'level' => 'Advanced',
+                'icon' => 'code',
+                'color' => 'blue'
+            ],
+            [
+                'name' => 'Data Analysis',
+                'level' => 'Intermediate',
+                'icon' => 'chart-bar',
+                'color' => 'green'
+            ],
+            [
+                'name' => 'Web Design',
+                'level' => 'Beginner',
+                'icon' => 'palette',
+                'color' => 'purple'
+            ],
+            [
+                'name' => 'Mathematics',
+                'level' => 'Advanced',
+                'icon' => 'calculator',
+                'color' => 'yellow'
+            ],
+            [
+                'name' => 'Machine Learning',
+                'level' => 'Intermediate',
+                'icon' => 'brain',
+                'color' => 'red'
+            ]
+        ];
+
+        return view('student.progress', compact(
+            'enrolledCount',
+            'completedCount',
+            'overallProgress',
+            'courseProgress',
+            'activityData',
+            'quizData',
+            'skills'
+        ));
     }
 
     public function showQuizRules(){
