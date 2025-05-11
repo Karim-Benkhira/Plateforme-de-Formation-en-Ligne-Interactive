@@ -24,7 +24,8 @@ class User extends Authenticatable
         'role',
         'profile_image',
         'bio',
-        'specialization'
+        'specialization',
+        'points'
     ];
 
     /**
@@ -148,5 +149,48 @@ class User extends Authenticatable
             $this->twoFactorAuth->recovery_codes = null;
             $this->twoFactorAuth->save();
         }
+    }
+
+    /**
+     * Get the enrolled courses for the student.
+     */
+    public function enrolledCourses()
+    {
+        return $this->belongsToMany(Course::class, 'course_user', 'user_id', 'course_id')
+            ->withPivot('progress', 'completed')
+            ->withTimestamps();
+    }
+
+    /**
+     * Get the completed courses for the student.
+     */
+    public function completedCourses()
+    {
+        return $this->enrolledCourses()->wherePivot('completed', true);
+    }
+
+    /**
+     * Get the quiz results for the student.
+     */
+    public function quizResults()
+    {
+        return $this->hasMany(QuizResult::class);
+    }
+
+    /**
+     * Get the achievements for the student.
+     */
+    public function achievements()
+    {
+        return $this->belongsToMany(Achievement::class, 'user_achievements', 'user_id', 'achievement_id')
+            ->withTimestamps();
+    }
+
+    /**
+     * Get the recent activities for the student.
+     */
+    public function recentActivities()
+    {
+        return $this->hasMany(ActivityLog::class)->where('user_id', $this->id)->latest();
     }
 }
