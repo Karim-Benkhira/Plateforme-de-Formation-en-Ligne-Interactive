@@ -1,185 +1,239 @@
-@include('components.header')
+@extends('layouts.admin')
 
-<div class="bg-gray-50 min-h-screen">
-    <div class="container mx-auto px-4 py-8">
-        <div class="flex justify-between items-center mb-6">
-            <h1 class="text-2xl font-bold text-gray-800">Platform Analytics Dashboard</h1>
+@section('title', 'Analytics Dashboard')
+
+@section('content')
+<div class="bg-gradient-to-br from-gray-900 to-gray-800 rounded-xl shadow-lg p-6 mb-6">
+    <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+        <div>
+            <h1 class="text-3xl font-bold text-white mb-2">Platform Analytics</h1>
+            <p class="text-blue-100">Comprehensive insights into platform performance and user engagement.</p>
         </div>
-
-        <!-- Overall Stats -->
-        <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
-            <div class="bg-white rounded-lg shadow-md p-6">
-                <div class="flex items-center">
-                    <div class="p-3 rounded-full bg-blue-100 text-blue-600 mr-4">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
-                        </svg>
-                    </div>
-                    <div>
-                        <p class="text-gray-500 text-sm">Total Students</p>
-                        <p class="text-2xl font-bold text-gray-800">{{ $analytics['overall']['total_students'] }}</p>
-                    </div>
-                </div>
-            </div>
-            
-            <div class="bg-white rounded-lg shadow-md p-6">
-                <div class="flex items-center">
-                    <div class="p-3 rounded-full bg-green-100 text-green-600 mr-4">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
-                        </svg>
-                    </div>
-                    <div>
-                        <p class="text-gray-500 text-sm">Total Courses</p>
-                        <p class="text-2xl font-bold text-gray-800">{{ $analytics['overall']['total_courses'] }}</p>
-                    </div>
-                </div>
-            </div>
-            
-            <div class="bg-white rounded-lg shadow-md p-6">
-                <div class="flex items-center">
-                    <div class="p-3 rounded-full bg-purple-100 text-purple-600 mr-4">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
-                        </svg>
-                    </div>
-                    <div>
-                        <p class="text-gray-500 text-sm">Total Quizzes</p>
-                        <p class="text-2xl font-bold text-gray-800">{{ $analytics['overall']['total_quizzes'] }}</p>
-                    </div>
-                </div>
-            </div>
-            
-            <div class="bg-white rounded-lg shadow-md p-6">
-                <div class="flex items-center">
-                    <div class="p-3 rounded-full bg-yellow-100 text-yellow-600 mr-4">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 3.055A9.001 9.001 0 1020.945 13H11V3.055z" />
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.488 9H15V3.512A9.025 9.025 0 0120.488 9z" />
-                        </svg>
-                    </div>
-                    <div>
-                        <p class="text-gray-500 text-sm">Average Score</p>
-                        <p class="text-2xl font-bold text-gray-800">{{ $analytics['overall']['average_score'] }}%</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
-            <!-- Performance Distribution -->
-            <div class="bg-white rounded-lg shadow-md p-6">
-                <h2 class="text-xl font-semibold text-gray-800 mb-4">Student Performance Distribution</h2>
-                <div class="h-64">
-                    <canvas id="performanceDistributionChart"></canvas>
-                </div>
-            </div>
-
-            <!-- Quiz Difficulty -->
-            <div class="bg-white rounded-lg shadow-md p-6">
-                <div class="flex justify-between items-center mb-4">
-                    <h2 class="text-xl font-semibold text-gray-800">Quiz Difficulty Ranking</h2>
-                    <div class="text-sm text-gray-500">
-                        <span class="inline-block w-3 h-3 bg-red-500 rounded-full mr-1"></span> Hard
-                        <span class="inline-block w-3 h-3 bg-yellow-500 rounded-full mx-1"></span> Medium
-                        <span class="inline-block w-3 h-3 bg-green-500 rounded-full ml-1"></span> Easy
-                    </div>
-                </div>
-                
-                @if(count($analytics['quiz_difficulty']) > 0)
-                    <div class="overflow-x-auto">
-                        <table class="min-w-full divide-y divide-gray-200">
-                            <thead class="bg-gray-50">
-                                <tr>
-                                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Quiz</th>
-                                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Course</th>
-                                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Difficulty</th>
-                                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Avg. Score</th>
-                                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Attempts</th>
-                                </tr>
-                            </thead>
-                            <tbody class="bg-white divide-y divide-gray-200">
-                                @foreach($analytics['quiz_difficulty'] as $quiz)
-                                    <tr>
-                                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                                            <a href="{{ route('admin.analytics.quiz', $quiz['quiz_id']) }}" class="hover:text-blue-600">
-                                                {{ $quiz['quiz_name'] }}
-                                            </a>
-                                        </td>
-                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ $quiz['course_name'] }}</td>
-                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                            <div class="flex items-center">
-                                                <div class="w-full bg-gray-200 rounded-full h-2.5">
-                                                    <div class="h-2.5 rounded-full {{ $quiz['difficulty_rating'] > 70 ? 'bg-red-500' : ($quiz['difficulty_rating'] > 40 ? 'bg-yellow-500' : 'bg-green-500') }}" style="width: {{ $quiz['difficulty_rating'] }}%"></div>
-                                                </div>
-                                                <span class="ml-2">{{ $quiz['difficulty_rating'] }}%</span>
-                                            </div>
-                                        </td>
-                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ $quiz['average_score'] }}%</td>
-                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ $quiz['attempt_count'] }}</td>
-                                    </tr>
-                                @endforeach
-                            </tbody>
-                        </table>
-                    </div>
-                @else
-                    <p class="text-gray-500 text-center py-4">No quiz data available yet.</p>
-                @endif
-            </div>
-        </div>
-
-        <!-- Course Engagement -->
-        <div class="bg-white rounded-lg shadow-md p-6 mb-8">
-            <h2 class="text-xl font-semibold text-gray-800 mb-4">Course Engagement</h2>
-            
-            @if(count($analytics['course_engagement']) > 0)
-                <div class="overflow-x-auto">
-                    <table class="min-w-full divide-y divide-gray-200">
-                        <thead class="bg-gray-50">
-                            <tr>
-                                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Course</th>
-                                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Students</th>
-                                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Attempts</th>
-                                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Completion Rate</th>
-                                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Content</th>
-                                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody class="bg-white divide-y divide-gray-200">
-                            @foreach($analytics['course_engagement'] as $course)
-                                <tr>
-                                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{{ $course['course_name'] }}</td>
-                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ $course['student_count'] }}</td>
-                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ $course['attempt_count'] }}</td>
-                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                        <div class="flex items-center">
-                                            <div class="w-full bg-gray-200 rounded-full h-2.5">
-                                                <div class="bg-blue-600 h-2.5 rounded-full" style="width: {{ min($course['completion_rate'], 100) }}%"></div>
-                                            </div>
-                                            <span class="ml-2">{{ $course['completion_rate'] }}%</span>
-                                        </div>
-                                    </td>
-                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ $course['content_count'] }} items</td>
-                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                        <a href="{{ route('admin.analytics.course', $course['course_id']) }}" class="text-blue-600 hover:text-blue-900 mr-3">View Details</a>
-                                        <a href="{{ route('admin.analytics.course.report', $course['course_id']) }}" class="text-green-600 hover:text-green-900">Download Report</a>
-                                    </td>
-                                </tr>
-                            @endforeach
-                        </tbody>
-                    </table>
-                </div>
-            @else
-                <p class="text-gray-500 text-center py-4">No course data available yet.</p>
-            @endif
+        <div class="mt-4 md:mt-0 flex space-x-2">
+            <a href="#" class="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-lg shadow transition duration-200 inline-flex items-center">
+                <i class="fas fa-file-export mr-2"></i> Export All Data
+            </a>
         </div>
     </div>
 </div>
 
+<!-- Overall Stats -->
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-6">
+    <div class="data-card p-6">
+        <div class="flex items-center">
+            <div class="p-3 rounded-full bg-blue-900 text-blue-300 mr-4">
+                <i class="fas fa-user-graduate text-2xl"></i>
+            </div>
+            <div>
+                <p class="text-gray-400 text-sm">Total Students</p>
+                <p class="text-2xl font-bold text-white">{{ $analytics['overall']['total_students'] }}</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="data-card p-6">
+        <div class="flex items-center">
+            <div class="p-3 rounded-full bg-green-900 text-green-300 mr-4">
+                <i class="fas fa-book text-2xl"></i>
+            </div>
+            <div>
+                <p class="text-gray-400 text-sm">Total Courses</p>
+                <p class="text-2xl font-bold text-white">{{ $analytics['overall']['total_courses'] }}</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="data-card p-6">
+        <div class="flex items-center">
+            <div class="p-3 rounded-full bg-purple-900 text-purple-300 mr-4">
+                <i class="fas fa-question-circle text-2xl"></i>
+            </div>
+            <div>
+                <p class="text-gray-400 text-sm">Total Quizzes</p>
+                <p class="text-2xl font-bold text-white">{{ $analytics['overall']['total_quizzes'] }}</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="data-card p-6">
+        <div class="flex items-center">
+            <div class="p-3 rounded-full bg-yellow-900 text-yellow-300 mr-4">
+                <i class="fas fa-chart-pie text-2xl"></i>
+            </div>
+            <div>
+                <p class="text-gray-400 text-sm">Average Score</p>
+                <p class="text-2xl font-bold text-white">{{ $analytics['overall']['average_score'] }}%</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+    <!-- Performance Distribution -->
+    <div class="data-card p-6">
+        <h2 class="section-title flex items-center mb-4">
+            <i class="fas fa-chart-bar text-blue-500 mr-2"></i>
+            Student Performance Distribution
+        </h2>
+        <div class="h-64">
+            <canvas id="performanceDistributionChart"></canvas>
+        </div>
+    </div>
+
+    <!-- Quiz Difficulty -->
+    <div class="data-card p-6">
+        <div class="flex justify-between items-center mb-4">
+            <h2 class="section-title flex items-center">
+                <i class="fas fa-tachometer-alt text-purple-500 mr-2"></i>
+                Quiz Difficulty Ranking
+            </h2>
+            <div class="text-sm text-gray-400">
+                <span class="inline-block w-3 h-3 bg-red-500 rounded-full mr-1"></span> Hard
+                <span class="inline-block w-3 h-3 bg-yellow-500 rounded-full mx-1"></span> Medium
+                <span class="inline-block w-3 h-3 bg-green-500 rounded-full ml-1"></span> Easy
+            </div>
+        </div>
+
+        @if(count($analytics['quiz_difficulty']) > 0)
+            <div class="overflow-x-auto">
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>Quiz</th>
+                            <th>Course</th>
+                            <th>Difficulty</th>
+                            <th>Avg. Score</th>
+                            <th>Attempts</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach($analytics['quiz_difficulty'] as $quiz)
+                            <tr>
+                                <td>
+                                    <a href="{{ route('admin.analytics.quiz', $quiz['quiz_id']) }}" class="hover:text-blue-400 transition-colors">
+                                        {{ $quiz['quiz_name'] }}
+                                    </a>
+                                </td>
+                                <td>{{ $quiz['course_name'] }}</td>
+                                <td>
+                                    <div class="flex items-center">
+                                        <div class="w-full bg-gray-700 rounded-full h-2.5">
+                                            <div class="h-2.5 rounded-full {{ $quiz['difficulty_rating'] > 70 ? 'bg-red-500' : ($quiz['difficulty_rating'] > 40 ? 'bg-yellow-500' : 'bg-green-500') }}" style="width: {{ $quiz['difficulty_rating'] }}%"></div>
+                                        </div>
+                                        <span class="ml-2">{{ $quiz['difficulty_rating'] }}%</span>
+                                    </div>
+                                </td>
+                                <td>{{ $quiz['average_score'] }}%</td>
+                                <td>{{ $quiz['attempt_count'] }}</td>
+                            </tr>
+                        @endforeach
+                    </tbody>
+                </table>
+            </div>
+        @else
+            <div class="text-center py-8">
+                <div class="text-gray-400 mb-4">
+                    <i class="fas fa-chart-line text-5xl"></i>
+                </div>
+                <h3 class="text-xl font-semibold text-gray-300 mb-2">No quiz data available</h3>
+                <p class="text-gray-500">Quiz data will appear here once students start taking quizzes</p>
+            </div>
+        @endif
+    </div>
+</div>
+
+<!-- Course Engagement -->
+<div class="data-card p-6 mb-6">
+    <h2 class="section-title flex items-center mb-4">
+        <i class="fas fa-graduation-cap text-green-500 mr-2"></i>
+        Course Engagement
+    </h2>
+
+    @if(count($analytics['course_engagement']) > 0)
+        <div class="overflow-x-auto">
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>Course</th>
+                        <th>Students</th>
+                        <th>Attempts</th>
+                        <th>Completion Rate</th>
+                        <th>Content</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach($analytics['course_engagement'] as $course)
+                        <tr>
+                            <td>
+                                <div class="flex items-center">
+                                    <div class="w-10 h-10 rounded-lg bg-gradient-to-br from-blue-500 to-blue-700 flex items-center justify-center text-white font-bold mr-3">
+                                        {{ strtoupper(substr($course['course_name'], 0, 1)) }}
+                                    </div>
+                                    <span class="font-medium">{{ $course['course_name'] }}</span>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="flex items-center">
+                                    <i class="fas fa-users text-blue-400 mr-1"></i>
+                                    <span>{{ $course['student_count'] }}</span>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="flex items-center">
+                                    <i class="fas fa-clipboard-check text-green-400 mr-1"></i>
+                                    <span>{{ $course['attempt_count'] }}</span>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="flex items-center">
+                                    <div class="w-full bg-gray-700 rounded-full h-2.5">
+                                        <div class="bg-blue-600 h-2.5 rounded-full" style="width: {{ min($course['completion_rate'], 100) }}%"></div>
+                                    </div>
+                                    <span class="ml-2">{{ $course['completion_rate'] }}%</span>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="flex items-center">
+                                    <i class="fas fa-file-alt text-purple-400 mr-1"></i>
+                                    <span>{{ $course['content_count'] }} items</span>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="flex space-x-2">
+                                    <a href="{{ route('admin.analytics.course', $course['course_id']) }}" class="btn btn-sm bg-blue-600 hover:bg-blue-700 text-white rounded-md transition-colors" title="View Details">
+                                        <i class="fas fa-chart-line"></i>
+                                    </a>
+                                    <a href="{{ route('admin.analytics.course.report', $course['course_id']) }}" class="btn btn-sm bg-green-600 hover:bg-green-700 text-white rounded-md transition-colors" title="Download Report">
+                                        <i class="fas fa-file-download"></i>
+                                    </a>
+                                </div>
+                            </td>
+                        </tr>
+                    @endforeach
+                </tbody>
+            </table>
+        </div>
+    @else
+        <div class="text-center py-8">
+            <div class="text-gray-400 mb-4">
+                <i class="fas fa-book-reader text-5xl"></i>
+            </div>
+            <h3 class="text-xl font-semibold text-gray-300 mb-2">No course engagement data</h3>
+            <p class="text-gray-500">Course engagement data will appear here once students start interacting with courses</p>
+        </div>
+    @endif
+</div>
+
+@push('scripts')
 <!-- Chart.js -->
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
     document.addEventListener('DOMContentLoaded', function() {
+        // Set Chart.js defaults for dark theme
+        Chart.defaults.color = '#9ca3af';
+        Chart.defaults.borderColor = '#374151';
+
         // Performance Distribution Chart
         const distributionCtx = document.getElementById('performanceDistributionChart').getContext('2d');
         const distributionChart = new Chart(distributionCtx, {
@@ -214,6 +268,14 @@
                         beginAtZero: true,
                         ticks: {
                             precision: 0
+                        },
+                        grid: {
+                            color: 'rgba(75, 85, 99, 0.2)'
+                        }
+                    },
+                    x: {
+                        grid: {
+                            color: 'rgba(75, 85, 99, 0.2)'
                         }
                     }
                 },
@@ -222,6 +284,9 @@
                         display: false
                     },
                     tooltip: {
+                        backgroundColor: 'rgba(17, 24, 39, 0.9)',
+                        titleColor: '#f3f4f6',
+                        bodyColor: '#e5e7eb',
                         callbacks: {
                             title: function(context) {
                                 return 'Score Range: ' + context[0].label + '%';
@@ -233,5 +298,5 @@
         });
     });
 </script>
-
-@include('components.footer')
+@endpush
+@endsection
