@@ -313,9 +313,24 @@ class StudentController extends UserController
         $request->validate([
             'username' => 'required|string|max:255',
             'email' => 'required|email|max:255|unique:users,email,' . $user->id,
+            'profile_image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
+
         $user->username = $request->username;
         $user->email = $request->email;
+
+        // Handle profile image upload
+        if ($request->hasFile('profile_image')) {
+            // Delete old image if exists
+            if ($user->profile_image && file_exists(storage_path('app/public/' . $user->profile_image))) {
+                unlink(storage_path('app/public/' . $user->profile_image));
+            }
+
+            // Store new image
+            $imagePath = $request->file('profile_image')->store('profile_images', 'public');
+            $user->profile_image = $imagePath;
+        }
+
         $user->save();
 
         return back()->with('success', 'Profile updated successfully!');
