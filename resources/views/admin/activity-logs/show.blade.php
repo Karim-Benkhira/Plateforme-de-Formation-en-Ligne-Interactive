@@ -1,80 +1,102 @@
-@extends('layouts.app')
+@extends('layouts.admin')
+
+@section('title', 'Activity Log Details')
 
 @section('content')
-<div class="container mx-auto px-4 py-8">
-    <div class="mb-6">
-        <a href="{{ route('admin.activity-logs.index') }}" class="inline-flex items-center text-blue-600 hover:text-blue-900 dark:text-blue-400 dark:hover:text-blue-300">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-1" viewBox="0 0 20 20" fill="currentColor">
-                <path fill-rule="evenodd" d="M9.707 16.707a1 1 0 01-1.414 0l-6-6a1 1 0 010-1.414l6-6a1 1 0 011.414 1.414L5.414 9H17a1 1 0 110 2H5.414l4.293 4.293a1 1 0 010 1.414z" clip-rule="evenodd" />
-            </svg>
-            Back to Activity Logs
-        </a>
-    </div>
-    
-    <div class="bg-white dark:bg-gray-800 shadow-md rounded-lg overflow-hidden">
-        <div class="px-6 py-4 border-b border-gray-200 dark:border-gray-700">
-            <h2 class="text-xl font-semibold text-gray-900 dark:text-white">Activity Log Details</h2>
+<div class="bg-gradient-to-br from-gray-900 to-gray-800 rounded-xl shadow-lg p-6 mb-6">
+    <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+        <div>
+            <h1 class="text-3xl font-bold text-white mb-2">Activity Log Details</h1>
+            <p class="text-blue-100">Detailed information about this activity log entry.</p>
         </div>
-        
-        <div class="p-6">
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div>
-                    <h3 class="text-lg font-medium text-gray-900 dark:text-white mb-4">Basic Information</h3>
-                    
-                    <div class="space-y-4">
-                        <div>
-                            <h4 class="text-sm font-medium text-gray-500 dark:text-gray-400">Action</h4>
-                            <p class="mt-1 text-sm text-gray-900 dark:text-white">{{ $activityLog->action }}</p>
-                        </div>
-                        
-                        <div>
-                            <h4 class="text-sm font-medium text-gray-500 dark:text-gray-400">User</h4>
-                            <p class="mt-1 text-sm text-gray-900 dark:text-white">
-                                @if ($activityLog->user)
-                                    {{ $activityLog->user->username }} ({{ $activityLog->user->email }})
-                                @else
-                                    System
-                                @endif
-                            </p>
-                        </div>
-                        
-                        <div>
-                            <h4 class="text-sm font-medium text-gray-500 dark:text-gray-400">Date & Time</h4>
-                            <p class="mt-1 text-sm text-gray-900 dark:text-white">{{ $activityLog->created_at->format('F d, Y H:i:s') }}</p>
-                        </div>
-                        
-                        <div>
-                            <h4 class="text-sm font-medium text-gray-500 dark:text-gray-400">IP Address</h4>
-                            <p class="mt-1 text-sm text-gray-900 dark:text-white">{{ $activityLog->ip_address ?? 'N/A' }}</p>
-                        </div>
+        <div class="mt-4 md:mt-0">
+            <a href="{{ route('admin.activity-logs.index') }}" class="bg-gray-600 hover:bg-gray-700 text-white font-semibold py-2 px-4 rounded-lg shadow transition duration-200 inline-flex items-center">
+                <i class="fas fa-arrow-left mr-2"></i> Back to Activity Logs
+            </a>
+        </div>
+    </div>
+</div>
+
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+    <div class="lg:col-span-1">
+        <div class="data-card p-6">
+            <h2 class="section-title flex items-center mb-6">
+                <i class="fas fa-info-circle text-blue-500 mr-2"></i>
+                Basic Information
+            </h2>
+
+            @if ($activityLog->user)
+                <div class="flex items-center mb-6">
+                    <div class="w-16 h-16 bg-blue-900 rounded-full flex items-center justify-center mr-4">
+                        <span class="text-blue-300 font-bold text-2xl">{{ substr($activityLog->user->username, 0, 1) }}</span>
+                    </div>
+                    <div>
+                        <h3 class="text-lg font-medium text-white">{{ $activityLog->user->username }}</h3>
+                        <p class="text-gray-400">{{ $activityLog->user->email }}</p>
                     </div>
                 </div>
-                
-                <div>
-                    <h3 class="text-lg font-medium text-gray-900 dark:text-white mb-4">Additional Details</h3>
-                    
-                    <div class="space-y-4">
-                        <div>
-                            <h4 class="text-sm font-medium text-gray-500 dark:text-gray-400">User Agent</h4>
-                            <p class="mt-1 text-sm text-gray-900 dark:text-white break-words">{{ $activityLog->user_agent ?? 'N/A' }}</p>
-                        </div>
-                        
-                        <div>
-                            <h4 class="text-sm font-medium text-gray-500 dark:text-gray-400">Description</h4>
-                            <p class="mt-1 text-sm text-gray-900 dark:text-white">{{ $activityLog->description ?? 'N/A' }}</p>
-                        </div>
-                        
-                        @if ($activityLog->properties)
-                            <div>
-                                <h4 class="text-sm font-medium text-gray-500 dark:text-gray-400">Properties</h4>
-                                <div class="mt-1 bg-gray-50 dark:bg-gray-700 p-3 rounded-md">
-                                    <pre class="text-xs text-gray-900 dark:text-white overflow-auto">{{ json_encode($activityLog->properties, JSON_PRETTY_PRINT) }}</pre>
-                                </div>
-                            </div>
-                        @endif
+            @else
+                <div class="flex items-center mb-6">
+                    <div class="w-16 h-16 bg-gray-800 rounded-full flex items-center justify-center mr-4">
+                        <i class="fas fa-cogs text-gray-400 text-2xl"></i>
                     </div>
+                    <div>
+                        <h3 class="text-lg font-medium text-white">System</h3>
+                        <p class="text-gray-400">Automated action</p>
+                    </div>
+                </div>
+            @endif
+
+            <div class="py-3 px-4 bg-gray-800 rounded-lg mb-4">
+                <div class="flex items-center justify-between py-2 border-b border-gray-700">
+                    <span class="text-gray-400">Action</span>
+                    <span class="text-white font-medium">{{ $activityLog->action }}</span>
+                </div>
+                <div class="flex items-center justify-between py-2 border-b border-gray-700">
+                    <span class="text-gray-400">Date</span>
+                    <span class="text-white">{{ $activityLog->created_at->format('F d, Y') }}</span>
+                </div>
+                <div class="flex items-center justify-between py-2 border-b border-gray-700">
+                    <span class="text-gray-400">Time</span>
+                    <span class="text-white">{{ $activityLog->created_at->format('H:i:s') }}</span>
+                </div>
+                <div class="flex items-center justify-between py-2">
+                    <span class="text-gray-400">IP Address</span>
+                    <span class="text-white">{{ $activityLog->ip_address ?? 'N/A' }}</span>
                 </div>
             </div>
+        </div>
+    </div>
+
+    <div class="lg:col-span-2">
+        <div class="data-card p-6 mb-6">
+            <h2 class="section-title flex items-center mb-6">
+                <i class="fas fa-file-alt text-purple-500 mr-2"></i>
+                Activity Details
+            </h2>
+
+            <div class="mb-6">
+                <h3 class="text-gray-300 font-medium mb-2">Description</h3>
+                <div class="p-4 bg-gray-800 rounded-lg text-white">
+                    {{ $activityLog->description ?? 'No description available' }}
+                </div>
+            </div>
+
+            <div class="mb-6">
+                <h3 class="text-gray-300 font-medium mb-2">User Agent</h3>
+                <div class="p-4 bg-gray-800 rounded-lg text-gray-300 text-sm break-words">
+                    {{ $activityLog->user_agent ?? 'Not available' }}
+                </div>
+            </div>
+
+            @if ($activityLog->properties)
+                <div>
+                    <h3 class="text-gray-300 font-medium mb-2">Properties</h3>
+                    <div class="p-4 bg-gray-800 rounded-lg">
+                        <pre class="text-sm text-blue-300 overflow-auto">{{ json_encode($activityLog->properties, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE) }}</pre>
+                    </div>
+                </div>
+            @endif
         </div>
     </div>
 </div>
