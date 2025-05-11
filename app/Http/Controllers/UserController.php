@@ -247,10 +247,29 @@ class UserController extends Controller
         $request->validate([
             'username' => 'required|string|max:255|unique:users,username,' . $user->id,
             'email' => 'required|string|email|max:255|unique:users,email,' . $user->id,
+            'profile_image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'bio' => 'nullable|string|max:500',
         ]);
 
         $user->username = $request->username;
         $user->email = $request->email;
+
+        if ($request->hasFile('profile_image')) {
+            // Delete old image if exists
+            if ($user->profile_image && file_exists(public_path('storage/profile_images/' . $user->profile_image))) {
+                unlink(public_path('storage/profile_images/' . $user->profile_image));
+            }
+
+            // Store new image
+            $imageName = time() . '.' . $request->profile_image->extension();
+            $request->profile_image->storeAs('public/profile_images', $imageName);
+            $user->profile_image = $imageName;
+        }
+
+        if ($request->has('bio')) {
+            $user->bio = $request->bio;
+        }
+
         $user->save();
 
         // Log the activity

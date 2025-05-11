@@ -1,154 +1,263 @@
-@extends('layouts.app')
+@extends('layouts.admin')
+
+@section('title', 'Profile Settings')
 
 @section('content')
-<div class="container mx-auto px-4 py-8">
-    <div class="max-w-3xl mx-auto">
-        <h1 class="text-2xl font-bold text-gray-900 dark:text-white mb-6">Profile Settings</h1>
-
-        @if (session('status'))
-            <div class="mb-6 bg-green-100 dark:bg-green-900 border border-green-200 dark:border-green-800 text-green-700 dark:text-green-300 px-4 py-3 rounded">
-                {{ session('status') }}
-            </div>
-        @endif
-
-        <div class="bg-white dark:bg-gray-800 shadow-md rounded-lg overflow-hidden mb-6">
-            <div class="p-6">
-                <h2 class="text-xl font-semibold text-gray-900 dark:text-white mb-4">Profile Information</h2>
-                <p class="text-gray-600 dark:text-gray-400 mb-4">
-                    Update your account's profile information and email address.
-                </p>
-
-                <form action="{{ route('profile.update') }}" method="POST" class="mt-6">
-                    @csrf
-                    @method('PATCH')
-
-                    <div class="mb-4">
-                        <label for="username" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Username</label>
-                        <input type="text" id="username" name="username" value="{{ old('username', auth()->user()->username) }}" required class="w-full px-3 py-2 border border-gray-300 dark:border-gray-700 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white">
-                        @error('username')
-                            <p class="mt-1 text-sm text-red-600 dark:text-red-400">{{ $message }}</p>
-                        @enderror
-                    </div>
-
-                    <div class="mb-4">
-                        <label for="email" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Email</label>
-                        <input type="email" id="email" name="email" value="{{ old('email', auth()->user()->email) }}" required class="w-full px-3 py-2 border border-gray-300 dark:border-gray-700 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white">
-                        @error('email')
-                            <p class="mt-1 text-sm text-red-600 dark:text-red-400">{{ $message }}</p>
-                        @enderror
-                    </div>
-
-                    <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors duration-300">
-                        Save
-                    </button>
-                </form>
-            </div>
+<div class="bg-gradient-to-br from-gray-900 to-gray-800 rounded-xl shadow-lg p-6 mb-6">
+    <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+        <div>
+            <h1 class="text-3xl font-bold text-white mb-2">Profile Settings</h1>
+            <p class="text-blue-100">Manage your account settings and preferences.</p>
         </div>
-
-        <div class="bg-white dark:bg-gray-800 shadow-md rounded-lg overflow-hidden mb-6">
-            <div class="p-6">
-                <h2 class="text-xl font-semibold text-gray-900 dark:text-white mb-4">Update Password</h2>
-                <p class="text-gray-600 dark:text-gray-400 mb-4">
-                    Ensure your account is using a long, random password to stay secure.
-                </p>
-
-                <form action="{{ route('profile.password.update') }}" method="POST" class="mt-6">
-                    @csrf
-                    @method('PUT')
-
-                    <div class="mb-4">
-                        <label for="current_password" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Current Password</label>
-                        <input type="password" id="current_password" name="current_password" required class="w-full px-3 py-2 border border-gray-300 dark:border-gray-700 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white">
-                        @error('current_password')
-                            <p class="mt-1 text-sm text-red-600 dark:text-red-400">{{ $message }}</p>
-                        @enderror
-                    </div>
-
-                    <div class="mb-4">
-                        <label for="password" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">New Password</label>
-                        <input type="password" id="password" name="password" required class="w-full px-3 py-2 border border-gray-300 dark:border-gray-700 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white">
-                        @error('password')
-                            <p class="mt-1 text-sm text-red-600 dark:text-red-400">{{ $message }}</p>
-                        @enderror
-                    </div>
-
-                    <div class="mb-4">
-                        <label for="password_confirmation" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Confirm Password</label>
-                        <input type="password" id="password_confirmation" name="password_confirmation" required class="w-full px-3 py-2 border border-gray-300 dark:border-gray-700 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white">
-                    </div>
-
-                    <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors duration-300">
-                        Update Password
-                    </button>
-                </form>
-            </div>
+        <div class="mt-4 md:mt-0">
+            <a href="{{ auth()->user()->role === 'admin' ? route('admin.dashboard') : (auth()->user()->role === 'teacher' ? route('teacher.dashboard') : route('student.dashboard')) }}" class="bg-gray-600 hover:bg-gray-700 text-white font-semibold py-2 px-4 rounded-lg shadow transition duration-200 inline-flex items-center">
+                <i class="fas fa-arrow-left mr-2"></i> Back to Dashboard
+            </a>
         </div>
+    </div>
+</div>
 
-        <div class="bg-white dark:bg-gray-800 shadow-md rounded-lg overflow-hidden mb-6">
-            <div class="p-6">
-                <h2 class="text-xl font-semibold text-gray-900 dark:text-white mb-4">Two-Factor Authentication</h2>
-                <p class="text-gray-600 dark:text-gray-400 mb-4">
-                    Add additional security to your account using two-factor authentication.
-                </p>
+@if (session('status'))
+    <div class="mb-6 bg-green-900 border border-green-800 text-green-300 px-4 py-3 rounded-lg flex items-center">
+        <i class="fas fa-check-circle text-green-500 mr-2 text-xl"></i>
+        <span>{{ session('status') }}</span>
+    </div>
+@endif
 
-                <div class="mt-6">
-                    @if (auth()->user()->hasTwoFactorEnabled())
-                        <div class="flex items-center mb-4">
-                            <div class="w-10 h-10 bg-green-100 dark:bg-green-900 rounded-full flex items-center justify-center mr-4">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-green-600 dark:text-green-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
-                                </svg>
-                            </div>
-                            <div>
-                                <h3 class="text-lg font-medium text-gray-900 dark:text-white">You have enabled two-factor authentication.</h3>
-                                <p class="text-sm text-gray-600 dark:text-gray-400">Your account is secured with two-factor authentication.</p>
-                            </div>
-                        </div>
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+    <div class="lg:col-span-1">
+        <div class="data-card p-6 text-center">
+            <div class="relative mx-auto mb-6 group">
+                <div class="w-32 h-32 mx-auto rounded-full overflow-hidden bg-gray-700 border-4 border-gray-600">
+                    @if(auth()->user()->profile_image)
+                        <img src="{{ asset('storage/profile_images/' . auth()->user()->profile_image) }}" alt="Profile" class="w-full h-full object-cover">
                     @else
-                        <div class="flex items-center mb-4">
-                            <div class="w-10 h-10 bg-yellow-100 dark:bg-yellow-900 rounded-full flex items-center justify-center mr-4">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-yellow-600 dark:text-yellow-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
-                                </svg>
-                            </div>
-                            <div>
-                                <h3 class="text-lg font-medium text-gray-900 dark:text-white">You have not enabled two-factor authentication.</h3>
-                                <p class="text-sm text-gray-600 dark:text-gray-400">When two-factor authentication is enabled, you will be prompted for a secure, random token during authentication.</p>
-                            </div>
+                        <div class="w-full h-full flex items-center justify-center bg-blue-900 text-blue-300">
+                            <i class="fas fa-user text-4xl"></i>
                         </div>
                     @endif
+                </div>
+                <label for="profile_image_upload" class="absolute bottom-0 right-0 w-10 h-10 bg-blue-600 hover:bg-blue-700 text-white rounded-full flex items-center justify-center cursor-pointer shadow-lg transition-colors">
+                    <i class="fas fa-camera"></i>
+                </label>
+            </div>
 
-                    <a href="{{ route('profile.two-factor.show') }}" class="inline-flex items-center px-4 py-2 bg-blue-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-blue-700 active:bg-blue-900 focus:outline-none focus:border-blue-900 focus:ring ring-blue-300 disabled:opacity-25 transition ease-in-out duration-150">
-                        {{ auth()->user()->hasTwoFactorEnabled() ? 'Manage Two-Factor Authentication' : 'Enable Two-Factor Authentication' }}
-                    </a>
+            <h2 class="text-xl font-semibold text-white mb-1">{{ auth()->user()->username }}</h2>
+            <p class="text-gray-400 mb-4">{{ auth()->user()->email }}</p>
+
+            <div class="py-3 px-4 bg-gray-800 rounded-lg mb-4 text-left">
+                <h3 class="text-sm font-medium text-gray-400 uppercase tracking-wider mb-2">Account Info</h3>
+                <div class="flex items-center justify-between py-2 border-b border-gray-700">
+                    <span class="text-gray-400">Role</span>
+                    <span class="text-white capitalize">{{ auth()->user()->role }}</span>
+                </div>
+                <div class="flex items-center justify-between py-2 border-b border-gray-700">
+                    <span class="text-gray-400">Member Since</span>
+                    <span class="text-white">{{ auth()->user()->created_at->format('M d, Y') }}</span>
+                </div>
+                <div class="flex items-center justify-between py-2">
+                    <span class="text-gray-400">Last Updated</span>
+                    <span class="text-white">{{ auth()->user()->updated_at->format('M d, Y') }}</span>
                 </div>
             </div>
         </div>
+    </div>
 
-        <div class="bg-white dark:bg-gray-800 shadow-md rounded-lg overflow-hidden mb-6">
-            <div class="p-6">
-                <h2 class="text-xl font-semibold text-gray-900 dark:text-white mb-4">Activity Log</h2>
-                <p class="text-gray-600 dark:text-gray-400 mb-4">
+    <div class="lg:col-span-2">
+        <div class="data-card p-6 mb-6">
+            <h2 class="section-title flex items-center mb-6">
+                <i class="fas fa-user-circle text-blue-500 mr-2"></i>
+                Profile Information
+            </h2>
+
+            <form action="{{ route('profile.update') }}" method="POST" enctype="multipart/form-data" class="space-y-6">
+                @csrf
+                @method('PATCH')
+
+                <input type="file" id="profile_image_upload" name="profile_image" class="hidden" accept="image/*" onchange="document.getElementById('profile_form').submit()">
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                        <label for="username" class="block text-gray-300 font-medium mb-2">Username <span class="text-red-500">*</span></label>
+                        <div class="relative">
+                            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                <i class="fas fa-user text-gray-500"></i>
+                            </div>
+                            <input type="text" id="username" name="username" value="{{ old('username', auth()->user()->username) }}" required
+                                class="w-full pl-10 p-3 bg-gray-700 border border-gray-600 rounded-lg text-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent" />
+                        </div>
+                        @error('username')
+                            <p class="mt-1 text-sm text-red-400">{{ $message }}</p>
+                        @enderror
+                    </div>
+
+                    <div>
+                        <label for="email" class="block text-gray-300 font-medium mb-2">Email <span class="text-red-500">*</span></label>
+                        <div class="relative">
+                            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                <i class="fas fa-envelope text-gray-500"></i>
+                            </div>
+                            <input type="email" id="email" name="email" value="{{ old('email', auth()->user()->email) }}" required
+                                class="w-full pl-10 p-3 bg-gray-700 border border-gray-600 rounded-lg text-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent" />
+                        </div>
+                        @error('email')
+                            <p class="mt-1 text-sm text-red-400">{{ $message }}</p>
+                        @enderror
+                    </div>
+                </div>
+
+                <div>
+                    <label for="bio" class="block text-gray-300 font-medium mb-2">Bio</label>
+                    <div class="relative">
+                        <textarea id="bio" name="bio" rows="4"
+                            class="w-full p-3 bg-gray-700 border border-gray-600 rounded-lg text-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                            placeholder="Tell us a little about yourself">{{ old('bio', auth()->user()->bio) }}</textarea>
+                    </div>
+                    <p class="text-sm text-gray-400 mt-1">Brief description for your profile (optional)</p>
+                    @error('bio')
+                        <p class="mt-1 text-sm text-red-400">{{ $message }}</p>
+                    @enderror
+                </div>
+
+                <div class="flex justify-end">
+                    <button type="submit" id="profile_form" class="px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg transition duration-200 flex items-center">
+                        <i class="fas fa-save mr-2"></i> Save Changes
+                    </button>
+                </div>
+            </form>
+        </div>
+
+        <div class="data-card p-6 mb-6">
+            <h2 class="section-title flex items-center mb-6">
+                <i class="fas fa-lock text-purple-500 mr-2"></i>
+                Security Settings
+            </h2>
+            <p class="text-gray-400 mb-6">
+                Ensure your account is using a strong password to stay secure.
+            </p>
+
+            <form action="{{ route('profile.password.update') }}" method="POST" class="space-y-6">
+                @csrf
+                @method('PUT')
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <div>
+                        <label for="current_password" class="block text-gray-300 font-medium mb-2">Current Password <span class="text-red-500">*</span></label>
+                        <div class="relative">
+                            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                <i class="fas fa-key text-gray-500"></i>
+                            </div>
+                            <input type="password" id="current_password" name="current_password" required
+                                class="w-full pl-10 p-3 bg-gray-700 border border-gray-600 rounded-lg text-gray-200 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent" />
+                        </div>
+                        @error('current_password')
+                            <p class="mt-1 text-sm text-red-400">{{ $message }}</p>
+                        @enderror
+                    </div>
+
+                    <div>
+                        <label for="password" class="block text-gray-300 font-medium mb-2">New Password <span class="text-red-500">*</span></label>
+                        <div class="relative">
+                            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                <i class="fas fa-lock text-gray-500"></i>
+                            </div>
+                            <input type="password" id="password" name="password" required
+                                class="w-full pl-10 p-3 bg-gray-700 border border-gray-600 rounded-lg text-gray-200 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent" />
+                        </div>
+                        @error('password')
+                            <p class="mt-1 text-sm text-red-400">{{ $message }}</p>
+                        @enderror
+                    </div>
+
+                    <div>
+                        <label for="password_confirmation" class="block text-gray-300 font-medium mb-2">Confirm Password <span class="text-red-500">*</span></label>
+                        <div class="relative">
+                            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                <i class="fas fa-check-circle text-gray-500"></i>
+                            </div>
+                            <input type="password" id="password_confirmation" name="password_confirmation" required
+                                class="w-full pl-10 p-3 bg-gray-700 border border-gray-600 rounded-lg text-gray-200 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent" />
+                        </div>
+                    </div>
+                </div>
+
+                <div class="flex justify-end">
+                    <button type="submit" class="px-6 py-3 bg-purple-600 hover:bg-purple-700 text-white font-medium rounded-lg transition duration-200 flex items-center">
+                        <i class="fas fa-shield-alt mr-2"></i> Update Password
+                    </button>
+                </div>
+            </form>
+        </div>
+
+        <div class="data-card p-6 mb-6">
+            <h2 class="section-title flex items-center mb-6">
+                <i class="fas fa-shield-alt text-green-500 mr-2"></i>
+                Two-Factor Authentication
+            </h2>
+            <p class="text-gray-400 mb-6">
+                Add additional security to your account using two-factor authentication.
+            </p>
+
+            <div class="bg-gray-800 rounded-lg p-6 mb-6">
+                @if (auth()->user()->hasTwoFactorEnabled())
+                    <div class="flex items-center mb-6">
+                        <div class="w-12 h-12 bg-green-900 rounded-full flex items-center justify-center mr-4 text-green-400">
+                            <i class="fas fa-check-circle text-2xl"></i>
+                        </div>
+                        <div>
+                            <h3 class="text-lg font-medium text-white">Two-factor authentication is enabled</h3>
+                            <p class="text-gray-400">Your account has an extra layer of security.</p>
+                        </div>
+                    </div>
+                @else
+                    <div class="flex items-center mb-6">
+                        <div class="w-12 h-12 bg-yellow-900 rounded-full flex items-center justify-center mr-4 text-yellow-400">
+                            <i class="fas fa-exclamation-triangle text-2xl"></i>
+                        </div>
+                        <div>
+                            <h3 class="text-lg font-medium text-white">Two-factor authentication is not enabled</h3>
+                            <p class="text-gray-400">Add an extra layer of security to your account by enabling 2FA.</p>
+                        </div>
+                    </div>
+                @endif
+
+                <a href="{{ route('profile.two-factor.show') }}" class="inline-flex items-center px-5 py-3 bg-green-600 hover:bg-green-700 text-white font-medium rounded-lg transition duration-200">
+                    <i class="fas fa-{{ auth()->user()->hasTwoFactorEnabled() ? 'cog' : 'plus' }} mr-2"></i>
+                    {{ auth()->user()->hasTwoFactorEnabled() ? 'Manage Two-Factor Authentication' : 'Enable Two-Factor Authentication' }}
+                </a>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+            <div class="data-card p-6">
+                <h2 class="section-title flex items-center mb-6">
+                    <i class="fas fa-history text-blue-500 mr-2"></i>
+                    Activity Log
+                </h2>
+                <p class="text-gray-400 mb-6">
                     View a log of your recent account activity.
                 </p>
 
-                <div class="mt-6">
-                    <a href="{{ route('profile.activity') }}" class="inline-flex items-center px-4 py-2 bg-blue-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-blue-700 active:bg-blue-900 focus:outline-none focus:border-blue-900 focus:ring ring-blue-300 disabled:opacity-25 transition ease-in-out duration-150">
+                <div class="flex justify-center">
+                    <a href="{{ route('profile.activity') }}" class="inline-flex items-center px-5 py-3 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg transition duration-200">
+                        <i class="fas fa-list-alt mr-2"></i>
                         View Activity Log
                     </a>
                 </div>
             </div>
-        </div>
 
-        <div class="bg-white dark:bg-gray-800 shadow-md rounded-lg overflow-hidden mb-6">
-            <div class="p-6">
-                <h2 class="text-xl font-semibold text-gray-900 dark:text-white mb-4">Browser Sessions</h2>
-                <p class="text-gray-600 dark:text-gray-400 mb-4">
+            <div class="data-card p-6">
+                <h2 class="section-title flex items-center mb-6">
+                    <i class="fas fa-laptop text-indigo-500 mr-2"></i>
+                    Browser Sessions
+                </h2>
+                <p class="text-gray-400 mb-6">
                     Manage and log out your active sessions on other browsers and devices.
                 </p>
 
-                <div class="mt-6">
-                    <a href="{{ route('profile.sessions') }}" class="inline-flex items-center px-4 py-2 bg-blue-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-blue-700 active:bg-blue-900 focus:outline-none focus:border-blue-900 focus:ring ring-blue-300 disabled:opacity-25 transition ease-in-out duration-150">
+                <div class="flex justify-center">
+                    <a href="{{ route('profile.sessions') }}" class="inline-flex items-center px-5 py-3 bg-indigo-600 hover:bg-indigo-700 text-white font-medium rounded-lg transition duration-200">
+                        <i class="fas fa-sign-out-alt mr-2"></i>
                         Manage Sessions
                     </a>
                 </div>
