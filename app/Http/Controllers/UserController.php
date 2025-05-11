@@ -22,7 +22,7 @@ class UserController extends Controller
     }
 
     public function showAbout(){
-        return view('public.about');
+        return view('public.about-new');
     }
 
     public function showCourses(){
