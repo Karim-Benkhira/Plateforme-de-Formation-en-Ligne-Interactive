@@ -67,7 +67,7 @@ class AdminController extends AgentController
     }
 
     public function showQuizzes() {
-        $quizzes = Quiz::with('course.category' )->get();
+        $quizzes = Quiz::with(['course.category', 'questions'])->get();
 
         return view('admin.quizzes', compact('quizzes'));
     }
