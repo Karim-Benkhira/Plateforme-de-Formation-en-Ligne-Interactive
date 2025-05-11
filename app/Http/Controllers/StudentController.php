@@ -31,7 +31,7 @@ class StudentController extends UserController
 
     public function showMyCourses(){
         $userId = auth()->id();
-        $results = QuizResult::with('quiz.course')
+        $results = QuizResult::with(['quiz.course.creator', 'quiz.course.category'])
             ->where('user_id', $userId)
             ->get();
 
