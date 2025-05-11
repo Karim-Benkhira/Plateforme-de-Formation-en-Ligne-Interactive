@@ -53,18 +53,16 @@ class UserController extends Controller
             $user->email = $request->email;
             $user->password = bcrypt($request->password);
 
-            // Check if there are any users in the database
-            $usersCount = User::count();
+            // Check if there are any admin users in the database
+            $adminCount = User::where('role', 'admin')->count();
 
-            if($usersCount === 0){
-                // First user is always admin, regardless of selected role
-                $user->role = 'admin';
-                \Illuminate\Support\Facades\Log::info('First user registered as admin: ' . $request->email);
-            } else {
-                // Use the selected role (student or teacher)
-                $user->role = $request->role;
-                \Illuminate\Support\Facades\Log::info('User registered as ' . $request->role . ': ' . $request->email);
-            }
+            // Use the selected role (user or teacher)
+            // Note: 'user' is the database value for students
+            $user->role = $request->role === 'teacher' ? 'teacher' : 'user';
+
+            // Log the registration
+            $roleLabel = $request->role === 'teacher' ? 'teacher' : 'student';
+            \Illuminate\Support\Facades\Log::info('User registered as ' . $roleLabel . ': ' . $request->email);
 
             $user->save();
             return redirect()->route('login')->with('success', 'Registration successful. Please log in.');
@@ -217,7 +215,7 @@ class UserController extends Controller
                 }
             }
 
-            return redirect()->route('login')->with('success', 'You have been successfully logged out.');
+            return redirect()->route('login')->with('logout_success', 'You have been successfully logged out.');
         } catch (\Exception $e) {
             // Log the error
             \Illuminate\Support\Facades\Log::error('Logout error: ' . $e->getMessage());
@@ -233,7 +231,7 @@ class UserController extends Controller
                 \Illuminate\Support\Facades\Log::error('Session invalidation error: ' . $sessionError->getMessage());
             }
 
-            return redirect()->route('login')->with('success', 'You have been logged out.');
+            return redirect()->route('login')->with('logout_success', 'You have been logged out.');
         }
     }
 

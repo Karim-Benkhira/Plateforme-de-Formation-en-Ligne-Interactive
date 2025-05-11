@@ -18,7 +18,7 @@ use App\Http\Controllers\TeacherController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
-    return view('public.welcome');
+    return view('public.welcome_new');
 });
 
 Route::middleware('guest')->group(function () {
