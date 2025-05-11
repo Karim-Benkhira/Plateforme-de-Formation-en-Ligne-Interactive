@@ -1,8 +1,6 @@
-@extends('layouts.student')
+<?php $__env->startSection('title', 'Leaderboard'); ?>
 
-@section('title', 'Leaderboard')
-
-@section('content')
+<?php $__env->startSection('content'); ?>
 <div class="bg-gradient-to-br from-gray-900 to-gray-800 rounded-xl shadow-lg p-6 mb-6">
     <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
         <div>
@@ -21,7 +19,7 @@
 
 <!-- Top 3 Winners -->
 <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-    @if(count($leaders) >= 3)
+    <?php if(count($leaders) >= 3): ?>
         <!-- Second Place -->
         <div class="order-2 md:order-1">
             <div class="data-card p-6 text-center relative">
@@ -32,14 +30,14 @@
                 </div>
                 <div class="mt-8">
                     <div class="w-20 h-20 rounded-full bg-gray-800 mx-auto mb-4 flex items-center justify-center">
-                        <span class="text-white text-2xl font-bold">{{ substr($leaders[1]->username, 0, 1) }}</span>
+                        <span class="text-white text-2xl font-bold"><?php echo e(substr($leaders[1]->username, 0, 1)); ?></span>
                     </div>
-                    <h3 class="text-white text-xl font-bold mb-1">{{ $leaders[1]->username }}</h3>
+                    <h3 class="text-white text-xl font-bold mb-1"><?php echo e($leaders[1]->username); ?></h3>
                     <p class="text-gray-400 text-sm mb-4">2nd Place</p>
                     <div class="bg-gray-500 text-white text-xl font-bold py-2 px-4 rounded-lg inline-block">
-                        {{ $leaders[1]->total_score }} pts
+                        <?php echo e($leaders[1]->total_score); ?> pts
                     </div>
-                    <p class="text-gray-400 text-sm mt-2">{{ $leaders[1]->quizzes_count }} Quizzes</p>
+                    <p class="text-gray-400 text-sm mt-2"><?php echo e($leaders[1]->quizzes_count); ?> Quizzes</p>
                 </div>
             </div>
         </div>
@@ -54,14 +52,14 @@
                 </div>
                 <div class="mt-10">
                     <div class="w-24 h-24 rounded-full bg-gray-800 mx-auto mb-4 flex items-center justify-center">
-                        <span class="text-white text-3xl font-bold">{{ substr($leaders[0]->username, 0, 1) }}</span>
+                        <span class="text-white text-3xl font-bold"><?php echo e(substr($leaders[0]->username, 0, 1)); ?></span>
                     </div>
-                    <h3 class="text-white text-2xl font-bold mb-1">{{ $leaders[0]->username }}</h3>
+                    <h3 class="text-white text-2xl font-bold mb-1"><?php echo e($leaders[0]->username); ?></h3>
                     <p class="text-yellow-400 text-sm mb-4">1st Place</p>
                     <div class="bg-yellow-500 text-white text-2xl font-bold py-2 px-6 rounded-lg inline-block">
-                        {{ $leaders[0]->total_score }} pts
+                        <?php echo e($leaders[0]->total_score); ?> pts
                     </div>
-                    <p class="text-gray-400 text-sm mt-2">{{ $leaders[0]->quizzes_count }} Quizzes</p>
+                    <p class="text-gray-400 text-sm mt-2"><?php echo e($leaders[0]->quizzes_count); ?> Quizzes</p>
                 </div>
             </div>
         </div>
@@ -76,18 +74,18 @@
                 </div>
                 <div class="mt-8">
                     <div class="w-20 h-20 rounded-full bg-gray-800 mx-auto mb-4 flex items-center justify-center">
-                        <span class="text-white text-2xl font-bold">{{ substr($leaders[2]->username, 0, 1) }}</span>
+                        <span class="text-white text-2xl font-bold"><?php echo e(substr($leaders[2]->username, 0, 1)); ?></span>
                     </div>
-                    <h3 class="text-white text-xl font-bold mb-1">{{ $leaders[2]->username }}</h3>
+                    <h3 class="text-white text-xl font-bold mb-1"><?php echo e($leaders[2]->username); ?></h3>
                     <p class="text-gray-400 text-sm mb-4">3rd Place</p>
                     <div class="bg-yellow-700 text-white text-xl font-bold py-2 px-4 rounded-lg inline-block">
-                        {{ $leaders[2]->total_score }} pts
+                        <?php echo e($leaders[2]->total_score); ?> pts
                     </div>
-                    <p class="text-gray-400 text-sm mt-2">{{ $leaders[2]->quizzes_count }} Quizzes</p>
+                    <p class="text-gray-400 text-sm mt-2"><?php echo e($leaders[2]->quizzes_count); ?> Quizzes</p>
                 </div>
             </div>
         </div>
-    @else
+    <?php else: ?>
         <div class="col-span-3 data-card p-6 text-center">
             <div class="w-20 h-20 bg-gray-800 rounded-full flex items-center justify-center mx-auto mb-4">
                 <i class="fas fa-trophy text-gray-600 text-3xl"></i>
@@ -95,7 +93,7 @@
             <h3 class="text-xl font-bold text-white mb-2">No Leaderboard Data</h3>
             <p class="text-gray-400">There are not enough participants yet. Start taking quizzes to appear on the leaderboard!</p>
         </div>
-    @endif
+    <?php endif; ?>
 </div>
 
 <!-- Full Leaderboard -->
@@ -105,7 +103,7 @@
         Full Ranking
     </h2>
 
-    @if(count($leaders) > 0)
+    <?php if(count($leaders) > 0): ?>
         <div class="overflow-x-auto">
             <table class="w-full">
                 <thead>
@@ -118,63 +116,63 @@
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach($leaders as $index => $user)
-                        <tr class="{{ $index % 2 === 0 ? 'bg-gray-800 bg-opacity-40' : 'bg-gray-800 bg-opacity-20' }} {{ auth()->id() == $user->id ? 'bg-blue-900 bg-opacity-40' : '' }}">
+                    <?php $__currentLoopData = $leaders; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $index => $user): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                        <tr class="<?php echo e($index % 2 === 0 ? 'bg-gray-800 bg-opacity-40' : 'bg-gray-800 bg-opacity-20'); ?> <?php echo e(auth()->id() == $user->id ? 'bg-blue-900 bg-opacity-40' : ''); ?>">
                             <td class="py-4 px-4 text-left">
-                                @if($index < 3)
-                                    <div class="w-8 h-8 rounded-full {{ $index === 0 ? 'bg-yellow-500' : ($index === 1 ? 'bg-gray-500' : 'bg-yellow-700') }} flex items-center justify-center">
-                                        <span class="text-white font-bold">{{ $index + 1 }}</span>
+                                <?php if($index < 3): ?>
+                                    <div class="w-8 h-8 rounded-full <?php echo e($index === 0 ? 'bg-yellow-500' : ($index === 1 ? 'bg-gray-500' : 'bg-yellow-700')); ?> flex items-center justify-center">
+                                        <span class="text-white font-bold"><?php echo e($index + 1); ?></span>
                                     </div>
-                                @else
+                                <?php else: ?>
                                     <div class="w-8 h-8 rounded-full bg-gray-700 flex items-center justify-center">
-                                        <span class="text-white">{{ $index + 1 }}</span>
+                                        <span class="text-white"><?php echo e($index + 1); ?></span>
                                     </div>
-                                @endif
+                                <?php endif; ?>
                             </td>
                             <td class="py-4 px-4 text-left">
                                 <div class="flex items-center">
                                     <div class="w-10 h-10 rounded-full bg-gray-700 flex items-center justify-center mr-3">
-                                        <span class="text-white font-bold">{{ substr($user->username, 0, 1) }}</span>
+                                        <span class="text-white font-bold"><?php echo e(substr($user->username, 0, 1)); ?></span>
                                     </div>
                                     <div>
-                                        <div class="text-white font-semibold">{{ $user->username }}</div>
-                                        @if(auth()->id() == $user->id)
+                                        <div class="text-white font-semibold"><?php echo e($user->username); ?></div>
+                                        <?php if(auth()->id() == $user->id): ?>
                                             <div class="text-blue-400 text-xs">You</div>
-                                        @endif
+                                        <?php endif; ?>
                                     </div>
                                 </div>
                             </td>
-                            <td class="py-4 px-4 text-center text-gray-400">{{ $user->quizzes_count }}</td>
+                            <td class="py-4 px-4 text-center text-gray-400"><?php echo e($user->quizzes_count); ?></td>
                             <td class="py-4 px-4 text-center">
-                                @php
+                                <?php
                                     $avgScore = $user->quizzes_count > 0 ? round($user->total_score / $user->quizzes_count) : 0;
-                                @endphp
+                                ?>
                                 <div class="flex items-center justify-center">
                                     <div class="w-full max-w-[100px] bg-gray-700 rounded-full h-2.5 mr-2">
-                                        <div class="bg-blue-600 h-2.5 rounded-full" style="width: {{ min(100, $avgScore) }}%"></div>
+                                        <div class="bg-blue-600 h-2.5 rounded-full" style="width: <?php echo e(min(100, $avgScore)); ?>%"></div>
                                     </div>
-                                    <span class="text-white">{{ $avgScore }}%</span>
+                                    <span class="text-white"><?php echo e($avgScore); ?>%</span>
                                 </div>
                             </td>
                             <td class="py-4 px-4 text-right">
-                                <span class="text-white font-bold text-lg">{{ $user->total_score }}</span>
+                                <span class="text-white font-bold text-lg"><?php echo e($user->total_score); ?></span>
                                 <span class="text-gray-400 text-sm">pts</span>
                             </td>
                         </tr>
-                    @endforeach
+                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                 </tbody>
             </table>
         </div>
-    @else
+    <?php else: ?>
         <div class="text-center py-8">
             <p class="text-gray-400">No leaderboard data available yet. Start taking quizzes to appear on the leaderboard!</p>
         </div>
-    @endif
+    <?php endif; ?>
 </div>
 
 <!-- Your Position -->
-@if(count($leaders) > 0)
-    @php
+<?php if(count($leaders) > 0): ?>
+    <?php
         $currentUser = null;
         $userRank = 0;
 
@@ -185,9 +183,9 @@
                 break;
             }
         }
-    @endphp
+    ?>
 
-    @if($currentUser)
+    <?php if($currentUser): ?>
         <div class="data-card p-6 mb-8">
             <h2 class="section-title flex items-center mb-6">
                 <i class="fas fa-user text-blue-500 mr-2"></i>
@@ -198,41 +196,41 @@
                 <div class="flex flex-col md:flex-row md:items-center md:justify-between">
                     <div class="flex items-center mb-4 md:mb-0">
                         <div class="w-16 h-16 rounded-full bg-blue-900 flex items-center justify-center mr-4">
-                            <span class="text-white text-2xl font-bold">{{ substr($currentUser->username, 0, 1) }}</span>
+                            <span class="text-white text-2xl font-bold"><?php echo e(substr($currentUser->username, 0, 1)); ?></span>
                         </div>
                         <div>
-                            <h3 class="text-white text-xl font-bold">{{ $currentUser->username }}</h3>
-                            <p class="text-blue-300">Rank #{{ $userRank }} of {{ count($leaders) }}</p>
+                            <h3 class="text-white text-xl font-bold"><?php echo e($currentUser->username); ?></h3>
+                            <p class="text-blue-300">Rank #<?php echo e($userRank); ?> of <?php echo e(count($leaders)); ?></p>
                         </div>
                     </div>
 
                     <div class="text-center md:text-right">
-                        <div class="text-3xl font-bold text-white">{{ $currentUser->total_score }}</div>
+                        <div class="text-3xl font-bold text-white"><?php echo e($currentUser->total_score); ?></div>
                         <p class="text-blue-300">Total Points</p>
                     </div>
                 </div>
 
-                @if($userRank > 1)
-                    @php
+                <?php if($userRank > 1): ?>
+                    <?php
                         $pointsToNextRank = $leaders[$userRank - 2]->total_score - $currentUser->total_score;
-                    @endphp
+                    ?>
                     <div class="mt-6">
-                        <p class="text-gray-400 mb-2">You need <span class="text-blue-300 font-bold">{{ $pointsToNextRank }}</span> more points to reach rank #{{ $userRank - 1 }}</p>
+                        <p class="text-gray-400 mb-2">You need <span class="text-blue-300 font-bold"><?php echo e($pointsToNextRank); ?></span> more points to reach rank #<?php echo e($userRank - 1); ?></p>
                         <div class="w-full bg-gray-700 rounded-full h-2.5">
-                            @php
+                            <?php
                                 $progressToNext = $pointsToNextRank > 0 ?
                                     (($currentUser->total_score / ($currentUser->total_score + $pointsToNextRank)) * 100) : 100;
-                            @endphp
-                            <div class="bg-blue-600 h-2.5 rounded-full" style="width: {{ $progressToNext }}%"></div>
+                            ?>
+                            <div class="bg-blue-600 h-2.5 rounded-full" style="width: <?php echo e($progressToNext); ?>%"></div>
                         </div>
                     </div>
-                @endif
+                <?php endif; ?>
             </div>
         </div>
-    @endif
-@endif
+    <?php endif; ?>
+<?php endif; ?>
 
-@push('scripts')
+<?php $__env->startPush('scripts'); ?>
 <script>
     document.addEventListener('DOMContentLoaded', function() {
         // Time filter functionality
@@ -243,5 +241,6 @@
         });
     });
 </script>
-@endpush
-@endsection
+<?php $__env->stopPush(); ?>
+<?php $__env->stopSection(); ?>
+<?php echo $__env->make('layouts.student', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?><?php /**PATH /home/karim/Plateforme-de-Formation-en-Ligne-Interactive/resources/views/student/leaderboard.blade.php ENDPATH**/ ?>
