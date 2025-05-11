@@ -13,6 +13,7 @@ use App\Services\AnalyticsService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash;
 
 class TeacherController extends Controller
 {
@@ -213,5 +214,116 @@ class TeacherController extends Controller
             'quizzes' => $quizzes,
             'quizPerformance' => $quizPerformance
         ]);
+    }
+
+    /**
+     * Show the teacher profile page.
+     */
+    public function showProfile()
+    {
+        $user = Auth::user();
+        $coursesCount = Course::where('creator_id', $user->id)->count();
+        $quizzesCount = Quiz::whereIn('course_id', function($query) use ($user) {
+            $query->select('id')->from('courses')->where('creator_id', $user->id);
+        })->count();
+
+        $studentCount = DB::table('quiz_results')
+            ->join('quizzes', 'quiz_results.quiz_id', '=', 'quizzes.id')
+            ->join('courses', 'quizzes.course_id', '=', 'courses.id')
+            ->where('courses.creator_id', $user->id)
+            ->distinct('quiz_results.user_id')
+            ->count('quiz_results.user_id');
+
+        return view('teacher.profile', [
+            'user' => $user,
+            'coursesCount' => $coursesCount,
+            'quizzesCount' => $quizzesCount,
+            'studentCount' => $studentCount
+        ]);
+    }
+
+    /**
+     * Update the teacher's profile information.
+     */
+    public function updateProfile(Request $request)
+    {
+        $user = Auth::user();
+
+        $request->validate([
+            'username' => 'required|string|max:255|unique:users,username,' . $user->id,
+            'email' => 'required|string|email|max:255|unique:users,email,' . $user->id,
+            'bio' => 'nullable|string|max:500',
+            'specialization' => 'nullable|string|max:255',
+        ]);
+
+        $user->username = $request->username;
+        $user->email = $request->email;
+        $user->bio = $request->bio;
+        $user->specialization = $request->specialization;
+        $user->save();
+
+        // Log the activity
+        if (class_exists('\App\Models\ActivityLog')) {
+            \App\Models\ActivityLog::log('profile.update', 'Updated profile information');
+        }
+
+        return redirect()->route('teacher.profile')->with('success', 'Profile updated successfully.');
+    }
+
+    /**
+     * Update the teacher's password.
+     */
+    public function updatePassword(Request $request)
+    {
+        $request->validate([
+            'current_password' => 'required|string',
+            'password' => 'required|string|min:8|confirmed',
+        ]);
+
+        $user = Auth::user();
+
+        // Check if the current password matches
+        if (!Hash::check($request->current_password, $user->password)) {
+            return back()->withErrors(['current_password' => 'The provided password does not match your current password.']);
+        }
+
+        $user->password = Hash::make($request->password);
+        $user->save();
+
+        // Log the activity
+        if (class_exists('\App\Models\ActivityLog')) {
+            \App\Models\ActivityLog::log('password.update', 'Updated password');
+        }
+
+        return redirect()->route('teacher.profile')->with('success', 'Password updated successfully.');
+    }
+
+    /**
+     * Update the teacher's profile image.
+     */
+    public function updateProfileImage(Request $request)
+    {
+        $request->validate([
+            'profile_image' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
+        ]);
+
+        $user = Auth::user();
+
+        // Delete old profile image if exists
+        if ($user->profile_image && file_exists(storage_path('app/public/' . $user->profile_image))) {
+            unlink(storage_path('app/public/' . $user->profile_image));
+        }
+
+        // Store the new image
+        $path = $request->file('profile_image')->store('profile-images', 'public');
+        $user->profile_image = $path;
+        $user->save();
+
+        // Log the activity
+        if (class_exists('\App\Models\ActivityLog')) {
+            \App\Models\ActivityLog::log('profile.image.update', 'Updated profile image');
+        }
+
+        return redirect()->route('teacher.profile')->with('success', 'Profile image updated successfully.');
     }
 }

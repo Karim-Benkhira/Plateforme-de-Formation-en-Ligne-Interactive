@@ -218,6 +218,12 @@ Route::middleware(['auth','role:teacher'])->group(function () {
     // Dashboard
     Route::get('/teacher', [TeacherController::class, 'index'])->name('teacher.dashboard');
 
+    // Teacher Profile
+    Route::get('/teacher/profile', [TeacherController::class, 'showProfile'])->name('teacher.profile');
+    Route::post('/teacher/profile', [TeacherController::class, 'updateProfile'])->name('teacher.profile.update');
+    Route::post('/teacher/profile/password', [TeacherController::class, 'updatePassword'])->name('teacher.profile.password');
+    Route::post('/teacher/profile/image', [TeacherController::class, 'updateProfileImage'])->name('teacher.profile.image');
+
     // Courses
     Route::get('/teacher/courses', [TeacherController::class, 'showCourses'])->name('teacher.courses');
     Route::get('/teacher/courses/create', [TeacherController::class, 'createCourse'])->name('teacher.courses.create');

@@ -83,6 +83,7 @@
                         <a href="{{ route('teacher.courses') }}" class="dashboard-nav-link {{ request()->routeIs('teacher.courses*') ? 'active' : '' }}">Courses</a>
                         <a href="{{ route('teacher.quizzes') }}" class="dashboard-nav-link {{ request()->routeIs('teacher.quizzes*') ? 'active' : '' }}">Quizzes</a>
                         <a href="{{ route('teacher.analytics') }}" class="dashboard-nav-link {{ request()->routeIs('teacher.analytics*') ? 'active' : '' }}">Analytics</a>
+                        <a href="{{ route('teacher.profile') }}" class="dashboard-nav-link {{ request()->routeIs('teacher.profile') ? 'active' : '' }}">Profile</a>
                         <a href="{{ url('/about') }}" class="dashboard-nav-link">About</a>
                     </nav>
 
@@ -90,20 +91,44 @@
                     <div class="flex items-center">
                         <div class="relative" x-data="{ open: false }">
                             <button @click="open = !open" class="flex items-center space-x-2 focus:outline-none">
-                                <span class="inline-flex items-center justify-center h-8 w-8 rounded-full bg-primary-600 text-white">
-                                    {{ substr(Auth::user()->username, 0, 1) }}
+                                <span class="inline-flex items-center justify-center h-10 w-10 rounded-full overflow-hidden border-2 border-blue-500 shadow-md">
+                                    @if(Auth::user()->profile_image)
+                                        <img src="{{ asset('storage/' . Auth::user()->profile_image) }}" alt="{{ Auth::user()->username }}" class="h-full w-full object-cover">
+                                    @else
+                                        <div class="h-full w-full bg-primary-600 flex items-center justify-center text-white font-bold">
+                                            {{ strtoupper(substr(Auth::user()->username, 0, 1)) }}
+                                        </div>
+                                    @endif
                                 </span>
-                                <span class="text-gray-300 hidden md:inline-block">{{ Auth::user()->username }}</span>
+                                <span class="text-gray-300 hidden md:inline-block font-medium">{{ Auth::user()->username }}</span>
                                 <svg class="h-5 w-5 text-gray-300" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
                                     <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
                                 </svg>
                             </button>
-                            <div x-show="open" @click.away="open = false" class="absolute right-0 mt-2 w-48 bg-gray-800 rounded-md shadow-lg py-1 z-50">
-                                <a href="#" class="block px-4 py-2 text-sm text-gray-300 hover:bg-gray-700">Profile</a>
-                                <a href="#" class="block px-4 py-2 text-sm text-gray-300 hover:bg-gray-700">Settings</a>
+                            <div x-show="open" @click.away="open = false" class="absolute right-0 mt-2 w-56 bg-gray-800 rounded-lg shadow-xl py-2 border border-gray-700 z-50">
+                                <div class="px-4 py-3 border-b border-gray-700">
+                                    <p class="text-sm text-gray-400">Signed in as</p>
+                                    <p class="text-sm font-medium text-white truncate">{{ Auth::user()->email }}</p>
+                                </div>
+                                <a href="{{ route('teacher.profile') }}" class="block px-4 py-2 text-sm text-gray-300 hover:bg-gray-700 hover:text-white transition-colors flex items-center">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2 text-blue-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                                    </svg>
+                                    My Profile
+                                </a>
+                                <a href="{{ route('teacher.profile') }}#password" class="block px-4 py-2 text-sm text-gray-300 hover:bg-gray-700 hover:text-white transition-colors flex items-center">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2 text-purple-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z" />
+                                    </svg>
+                                    Change Password
+                                </a>
+                                <div class="border-t border-gray-700 my-1"></div>
                                 <form method="POST" action="{{ route('logout') }}">
                                     @csrf
-                                    <button type="submit" class="block w-full text-left px-4 py-2 text-sm text-gray-300 hover:bg-gray-700">
+                                    <button type="submit" class="block w-full text-left px-4 py-2 text-sm text-gray-300 hover:bg-gray-700 hover:text-white transition-colors flex items-center">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2 text-red-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+                                        </svg>
                                         Sign out
                                     </button>
                                 </form>
@@ -129,6 +154,7 @@
                     <a href="{{ route('teacher.courses') }}" class="block px-3 py-2 rounded-md text-base font-medium text-gray-300 hover:text-white hover:bg-gray-700">Courses</a>
                     <a href="{{ route('teacher.quizzes') }}" class="block px-3 py-2 rounded-md text-base font-medium text-gray-300 hover:text-white hover:bg-gray-700">Quizzes</a>
                     <a href="{{ route('teacher.analytics') }}" class="block px-3 py-2 rounded-md text-base font-medium text-gray-300 hover:text-white hover:bg-gray-700">Analytics</a>
+                    <a href="{{ route('teacher.profile') }}" class="block px-3 py-2 rounded-md text-base font-medium text-gray-300 hover:text-white hover:bg-gray-700">Profile</a>
                     <a href="{{ url('/about') }}" class="block px-3 py-2 rounded-md text-base font-medium text-gray-300 hover:text-white hover:bg-gray-700">About</a>
                 </div>
             </div>
