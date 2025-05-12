@@ -139,16 +139,50 @@ class AIQuizService
     {
         $content = '';
 
-        // Get course description
-        $content .= $course->description . "\n\n";
+        // Get course title and description
+        $content .= "Course Title: " . $course->title . "\n\n";
+        $content .= "Course Description: " . $course->description . "\n\n";
 
         // Get course contents
+        $content .= "Course Content:\n";
+
+        $hasContent = false;
         foreach ($course->contents as $courseContent) {
             if ($courseContent->type === 'text') {
-                $content .= $courseContent->file . "\n\n";
+                $content .= "- " . $courseContent->file . "\n\n";
+                $hasContent = true;
+            } elseif ($courseContent->type === 'youtube') {
+                $content .= "- Video content: " . $courseContent->title . "\n\n";
+                $hasContent = true;
+            } elseif ($courseContent->type === 'video') {
+                $content .= "- Video content: " . $courseContent->title . "\n\n";
+                $hasContent = true;
+            } elseif ($courseContent->type === 'pdf') {
+                $content .= "- PDF document: " . $courseContent->title . "\n\n";
+                $hasContent = true;
             }
-            // For PDF and other file types, we would need a text extraction service
-            // For YouTube links, we might need a transcript service
+        }
+
+        // If no content was found, add a fallback message
+        if (!$hasContent) {
+            $content .= "This course covers topics related to " . $course->title . ".\n";
+
+            // Add some generic content based on the course title
+            $keywords = explode(' ', strtolower($course->title));
+
+            if (in_array('programming', $keywords) || in_array('coding', $keywords) || in_array('development', $keywords)) {
+                $content .= "Programming concepts include variables, functions, loops, and data structures.\n";
+                $content .= "Software development involves planning, coding, testing, and deployment phases.\n";
+            } elseif (in_array('math', $keywords) || in_array('mathematics', $keywords) || in_array('calculus', $keywords)) {
+                $content .= "Mathematical concepts include algebra, geometry, calculus, and statistics.\n";
+                $content .= "Problem-solving techniques involve analyzing problems and applying appropriate formulas.\n";
+            } elseif (in_array('science', $keywords) || in_array('biology', $keywords) || in_array('chemistry', $keywords) || in_array('physics', $keywords)) {
+                $content .= "Scientific principles include observation, hypothesis formation, experimentation, and analysis.\n";
+                $content .= "The scientific method is a systematic approach to understanding natural phenomena.\n";
+            } else {
+                $content .= "Key concepts in this field include theoretical foundations and practical applications.\n";
+                $content .= "Learning objectives focus on understanding core principles and developing relevant skills.\n";
+            }
         }
 
         return $content;
