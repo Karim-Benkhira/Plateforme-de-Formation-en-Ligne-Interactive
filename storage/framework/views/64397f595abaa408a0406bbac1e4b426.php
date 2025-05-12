@@ -35,7 +35,7 @@
                     <p class="text-2xl font-bold text-gray-800 dark:text-white"><?php echo e(isset($quizPerformance['average_score']) ? $quizPerformance['average_score'] . '%' : 'N/A'); ?></p>
                 </div>
             </div>
-            
+
             <div class="mt-6">
                 <canvas id="courseOverviewChart" height="300"></canvas>
             </div>
@@ -74,7 +74,7 @@
                                             </td>
                                             <td class="px-6 py-4 whitespace-nowrap">
                                                 <div class="text-sm text-gray-900 dark:text-white">
-                                                    <?php echo e(isset($quizPerformance[$quiz->id]) ? $quizPerformance[$quiz->id]['attempts'] : 0); ?>
+                                                    <?php echo e(isset($quizPerformance[$quiz->id]) ? $quizPerformance[$quiz->id]['attempt_count'] : 0); ?>
 
                                                 </div>
                                             </td>
@@ -88,7 +88,7 @@
                                                 </div>
                                             </td>
                                             <td class="px-6 py-4 whitespace-nowrap">
-                                                <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full 
+                                                <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full
                                                     <?php echo e(isset($quizPerformance[$quiz->id]) && $quizPerformance[$quiz->id]['pass_rate'] >= 70 ? 'bg-green-100 text-green-800' : (isset($quizPerformance[$quiz->id]) && $quizPerformance[$quiz->id]['pass_rate'] >= 50 ? 'bg-yellow-100 text-yellow-800' : 'bg-red-100 text-red-800')); ?>">
                                                     <?php echo e(isset($quizPerformance[$quiz->id]) ? $quizPerformance[$quiz->id]['pass_rate'] . '%' : 'N/A'); ?>
 
@@ -137,7 +137,7 @@
                                 <div class="bg-gray-50 dark:bg-gray-700 p-4 rounded-lg">
                                     <div class="flex justify-between items-start mb-2">
                                         <h3 class="font-medium text-gray-800 dark:text-white"><?php echo e($question['text']); ?></h3>
-                                        <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full 
+                                        <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full
                                             <?php echo e($question['correct_rate'] >= 70 ? 'bg-green-100 text-green-800' : ($question['correct_rate'] >= 50 ? 'bg-yellow-100 text-yellow-800' : 'bg-red-100 text-red-800')); ?>">
                                             <?php echo e($question['correct_rate']); ?>% correct
                                         </span>

@@ -142,6 +142,16 @@ class AnalyticsService
 
             $result = [];
             foreach ($quizPerformance as $item) {
+                // Calculate pass rate (percentage of scores >= 60)
+                $passRate = 0;
+                if ($item->attempt_count > 0) {
+                    $passCount = DB::table('quiz_results')
+                        ->where('quiz_id', $item->quiz_id)
+                        ->where('score', '>=', 60)
+                        ->count();
+                    $passRate = ($passCount / $item->attempt_count) * 100;
+                }
+
                 $result[] = [
                     'quiz_id' => $item->quiz_id,
                     'quiz_name' => $quizzes[$item->quiz_id] ?? 'Unknown Quiz',
@@ -149,6 +159,7 @@ class AnalyticsService
                     'average_score' => round($item->average_score, 2),
                     'min_score' => round($item->min_score, 2),
                     'max_score' => round($item->max_score, 2),
+                    'pass_rate' => round($passRate, 2),
                 ];
             }
 
@@ -170,6 +181,7 @@ class AnalyticsService
                         'average_score' => 0,
                         'min_score' => 0,
                         'max_score' => 0,
+                        'pass_rate' => 0,
                     ];
                 }
             }
