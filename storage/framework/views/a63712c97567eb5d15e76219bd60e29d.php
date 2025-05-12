@@ -2,11 +2,25 @@
 
 <?php $__env->startSection('content'); ?>
 <div class="container mx-auto px-4 py-8">
-    <div class="flex items-center mb-6">
-        <a href="<?php echo e(route('teacher.courses')); ?>" class="mr-4 text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300">
-            <i class="fas fa-arrow-left"></i>
+    <div class="flex items-center mb-8">
+        <a href="<?php echo e(route('teacher.courses')); ?>" class="mr-4 text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300 transition-colors duration-200 flex items-center">
+            <i class="fas fa-arrow-left mr-2"></i>
+            <span>Back to Courses</span>
         </a>
-        <h1 class="text-3xl font-bold text-gray-800 dark:text-white"><?php echo e($course->title); ?></h1>
+    </div>
+
+    <div class="bg-gradient-to-r from-blue-600 to-purple-600 rounded-xl p-6 mb-8 shadow-lg">
+        <h1 class="text-3xl font-bold text-white mb-2"><?php echo e($course->title); ?></h1>
+        <div class="flex items-center text-blue-100">
+            <i class="fas fa-graduation-cap mr-2"></i>
+            <span><?php echo e($course->category ? $course->category->name : 'Uncategorized'); ?></span>
+            <span class="mx-2">•</span>
+            <i class="fas fa-signal mr-2"></i>
+            <span><?php echo e(ucfirst($course->level ?? 'Beginner')); ?></span>
+            <span class="mx-2">•</span>
+            <i class="fas fa-calendar-alt mr-2"></i>
+            <span>Created <?php echo e($course->created_at->format('M d, Y')); ?></span>
+        </div>
     </div>
 
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
@@ -38,11 +52,11 @@
                             <span class="text-sm text-gray-500 dark:text-gray-400">Category: <?php echo e($course->category ? $course->category->name : 'Uncategorized'); ?></span>
                             <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">Created: <?php echo e($course->created_at->format('M d, Y')); ?></p>
                         </div>
-                        <div class="flex space-x-2">
-                            <a href="<?php echo e(route('teacher.courses.edit', $course->id)); ?>" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded inline-flex items-center text-sm">
+                        <div class="flex space-x-3">
+                            <a href="<?php echo e(route('teacher.courses.edit', $course->id)); ?>" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-lg inline-flex items-center text-sm transition-all duration-200 shadow-md hover:shadow-lg transform hover:-translate-y-1">
                                 <i class="fas fa-edit mr-2"></i> Edit Course
                             </a>
-                            <a href="<?php echo e(route('teacher.generate-quiz', $course->id)); ?>" class="bg-purple-600 hover:bg-purple-700 text-white font-bold py-2 px-4 rounded inline-flex items-center text-sm">
+                            <a href="<?php echo e(route('teacher.generate-quiz', $course->id)); ?>" class="bg-gradient-to-r from-purple-600 to-purple-500 hover:from-purple-700 hover:to-purple-600 text-white font-bold py-2 px-4 rounded-lg inline-flex items-center text-sm transition-all duration-200 shadow-md hover:shadow-lg transform hover:-translate-y-1">
                                 <i class="fas fa-magic mr-2"></i> Generate Quiz
                             </a>
                         </div>
@@ -92,10 +106,12 @@
                                             <h3 class="text-lg font-semibold text-gray-800 dark:text-white">Video Content</h3>
                                         </div>
                                         <div class="mt-3">
-                                            <div class="aspect-w-16 aspect-h-9 bg-black rounded-lg overflow-hidden">
-                                                <video controls class="w-full h-full object-contain">
+                                            <div class="aspect-w-16 aspect-h-9 bg-black rounded-lg overflow-hidden video-container">
+                                                <video controls class="w-full h-full object-contain" preload="metadata">
                                                     <source src="<?php echo e(asset('storage/' . $content->file)); ?>" type="video/mp4">
-                                                    Your browser does not support the video tag.
+                                                    <source src="<?php echo e(asset('storage/' . $content->file)); ?>" type="video/webm">
+                                                    <source src="<?php echo e(asset('storage/' . $content->file)); ?>" type="video/ogg">
+                                                    <p class="text-white text-center p-4">Your browser does not support the video tag.</p>
                                                 </video>
                                             </div>
                                         </div>
@@ -109,14 +125,43 @@
                                             <h3 class="text-lg font-semibold text-gray-800 dark:text-white">YouTube Video</h3>
                                         </div>
                                         <div class="mt-3">
-                                            <div class="aspect-w-16 aspect-h-9 bg-black rounded-lg overflow-hidden">
-                                                <iframe
-                                                    src="<?php echo e(str_replace('watch?v=', 'embed/', $content->file)); ?>"
-                                                    frameborder="0"
-                                                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                                                    allowfullscreen
-                                                    class="w-full h-full">
-                                                </iframe>
+                                            <div class="aspect-w-16 aspect-h-9 bg-black rounded-lg overflow-hidden video-container">
+                                                <?php
+                                                    $youtubeId = null;
+                                                    $url = $content->file;
+
+                                                    // Extract YouTube video ID from different URL formats
+                                                    if (preg_match('/youtube\.com\/watch\?v=([^\&\?\/]+)/', $url, $matches)) {
+                                                        $youtubeId = $matches[1];
+                                                    } elseif (preg_match('/youtube\.com\/embed\/([^\&\?\/]+)/', $url, $matches)) {
+                                                        $youtubeId = $matches[1];
+                                                    } elseif (preg_match('/youtube\.com\/v\/([^\&\?\/]+)/', $url, $matches)) {
+                                                        $youtubeId = $matches[1];
+                                                    } elseif (preg_match('/youtu\.be\/([^\&\?\/]+)/', $url, $matches)) {
+                                                        $youtubeId = $matches[1];
+                                                    }
+
+                                                    $embedUrl = $youtubeId ? "https://www.youtube.com/embed/{$youtubeId}" : "";
+                                                ?>
+
+                                                <?php if($youtubeId): ?>
+                                                    <iframe
+                                                        src="<?php echo e($embedUrl); ?>"
+                                                        frameborder="0"
+                                                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                                                        allowfullscreen
+                                                        class="w-full h-full"
+                                                        style="min-height: 315px;">
+                                                    </iframe>
+                                                <?php else: ?>
+                                                    <div class="flex items-center justify-center h-full bg-gray-800 text-white p-4 text-center">
+                                                        <div>
+                                                            <i class="fas fa-exclamation-triangle text-yellow-500 text-3xl mb-2"></i>
+                                                            <p>Unable to embed this YouTube video. Please check the URL format.</p>
+                                                            <p class="text-sm text-gray-400 mt-2">Original URL: <?php echo e($url); ?></p>
+                                                        </div>
+                                                    </div>
+                                                <?php endif; ?>
                                             </div>
                                         </div>
                                     </div>
@@ -212,5 +257,87 @@
     </div>
 </div>
 <?php $__env->stopSection(); ?>
+
+<?php $__env->startPush('styles'); ?>
+<style>
+    body {
+        background-color: #111827;
+        color: #f3f4f6;
+    }
+
+    /* Fix for aspect ratio containers */
+    .aspect-w-16 {
+        position: relative;
+        padding-bottom: 56.25%; /* 16:9 Aspect Ratio */
+        height: 0;
+        width: 100%;
+    }
+
+    .aspect-w-16 iframe,
+    .aspect-w-16 video {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        min-height: 315px;
+    }
+
+    /* Dark mode improvements */
+    .dark .bg-gray-800 {
+        background-color: #1a202c;
+    }
+
+    .dark .text-white {
+        color: #f7fafc;
+    }
+
+    /* Improved video container */
+    .video-container {
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        border-radius: 0.5rem;
+        overflow: hidden;
+    }
+
+    /* Card hover effects */
+    .card-hover {
+        transition: all 0.3s ease;
+    }
+
+    .card-hover:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+    }
+
+    /* Improved content sections */
+    .content-section {
+        border-left: 4px solid #3b82f6;
+        transition: all 0.2s ease;
+    }
+
+    .content-section:hover {
+        border-left-color: #6366f1;
+    }
+
+    /* Button animations */
+    .btn-animated {
+        transition: all 0.3s ease;
+    }
+
+    .btn-animated:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    }
+
+    /* Gradient text */
+    .gradient-text {
+        background: linear-gradient(to right, #3b82f6, #8b5cf6);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        text-fill-color: transparent;
+    }
+</style>
+<?php $__env->stopPush(); ?>
 
 <?php echo $__env->make('layouts.app', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?><?php /**PATH /home/karim/Plateforme-de-Formation-en-Ligne-Interactive/resources/views/teacher/courseDetails.blade.php ENDPATH**/ ?>
