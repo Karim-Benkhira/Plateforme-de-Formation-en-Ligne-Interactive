@@ -264,10 +264,10 @@
         Chart.defaults.borderColor = '#334155'; // border color
 
         // Sample data for charts - replace with actual data from backend
-        const courseLabels = <?php echo json_encode(array_map(function($course) { return $course->title; }, $courses->toArray()), 512) ?>;
-        const courseScores = <?php echo json_encode(array_map(function($course) use ($coursePerformance) {
+        const courseLabels = <?php echo json_encode($courses->pluck('title')->toArray(), 15, 512) ?>;
+        const courseScores = <?php echo json_encode($courses->map(function($course) use ($coursePerformance) {
             return isset($coursePerformance[$course->id]) ? $coursePerformance[$course->id]['average_score'] : 0;
-        }, $courses->toArray()), 512) ?>;
+        })->toArray(), 15, 512) ?>;
 
         // Course Performance Chart
         if (document.getElementById('coursePerformanceChart')) {
