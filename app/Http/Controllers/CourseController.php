@@ -75,7 +75,7 @@ class CourseController extends Controller
             $course->creator_id = $user;
             $course->category_id = $request->category_id;
             $course->level = $request->level;
-            $course->is_published = $request->has('is_published');
+            $course->is_published = (bool)$request->is_published;
             $course->score = $request->score;
 
             // Handle image upload
@@ -161,7 +161,7 @@ class CourseController extends Controller
         $course->description = $request->description;
         $course->category_id = $request->category_id;
         $course->level = $request->level;
-        $course->is_published = $request->has('is_published');
+        $course->is_published = (bool)$request->is_published;
 
         // Handle image upload
         if ($request->hasFile('image')) {

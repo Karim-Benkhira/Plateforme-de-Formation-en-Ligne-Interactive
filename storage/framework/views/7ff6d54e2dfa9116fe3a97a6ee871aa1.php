@@ -20,10 +20,24 @@
             <i class="fas fa-edit mr-2"></i> Course Details
         </div>
         <div class="section-content bg-gray-900">
-            <form action="<?php echo e(route('teacher.courses.store')); ?>" method="POST" enctype="multipart/form-data">
+            <form action="<?php echo e(route('teacher.courses.store')); ?>" method="POST" enctype="multipart/form-data" id="course-form">
             <?php echo csrf_field(); ?>
             <input type="hidden" name="creator_id" value="<?php echo e(Auth::id()); ?>">
             <input type="hidden" name="score" value="100">
+
+            <?php if($errors->any()): ?>
+            <div class="bg-red-900/50 border border-red-700 text-red-300 p-4 rounded-lg mb-6">
+                <div class="flex items-start mb-2">
+                    <i class="fas fa-exclamation-triangle text-red-400 mt-1 mr-3"></i>
+                    <h4 class="font-semibold">Please fix the following errors:</h4>
+                </div>
+                <ul class="list-disc pl-10 space-y-1">
+                    <?php $__currentLoopData = $errors->all(); $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $error): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                        <li><?php echo e($error); ?></li>
+                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                </ul>
+            </div>
+            <?php endif; ?>
 
             <!-- Course Basic Information -->
             <div class="mb-8">
@@ -151,9 +165,9 @@ unset($__errorArgs, $__bag); ?>
                         <div class="flex flex-col md:flex-row items-start md:items-center">
                             <div class="w-full md:w-1/2 mb-6 md:mb-0">
                                 <div class="relative">
-                                    <input type="file" name="image" id="image" class="hidden" accept="image/*">
-                                    <label for="image" class="flex items-center justify-center px-6 py-3 bg-gradient-to-r from-blue-600 to-blue-500 text-white rounded-lg cursor-pointer hover:from-blue-700 hover:to-blue-600 transition-all shadow-lg hover:shadow-blue-500/20">
-                                        <i class="fas fa-cloud-upload-alt text-xl mr-2"></i>
+                                    <input type="file" name="image" id="image" class="hidden" accept="image/*" aria-label="Course image" aria-describedby="image-requirements">
+                                    <label for="image" class="flex items-center justify-center px-6 py-3 bg-gradient-to-r from-blue-600 to-blue-500 text-white rounded-lg cursor-pointer hover:from-blue-700 hover:to-blue-600 transition-all shadow-lg hover:shadow-blue-500/20" role="button" tabindex="0">
+                                        <i class="fas fa-cloud-upload-alt text-xl mr-2" aria-hidden="true"></i>
                                         <span class="font-medium">Choose File</span>
                                     </label>
                                     <div id="file-name" class="mt-3 text-gray-300 flex items-center">
@@ -161,9 +175,9 @@ unset($__errorArgs, $__bag); ?>
                                         <span>No file chosen</span>
                                     </div>
                                 </div>
-                                <div class="mt-4 bg-gray-900/50 p-3 rounded-lg border border-gray-700">
+                                <div id="image-requirements" class="mt-4 bg-gray-900/50 p-3 rounded-lg border border-gray-700">
                                     <p class="text-sm text-gray-300 flex items-start">
-                                        <i class="fas fa-info-circle text-blue-400 mr-2 mt-1"></i>
+                                        <i class="fas fa-info-circle text-blue-400 mr-2 mt-1" aria-hidden="true"></i>
                                         <span>
                                             <strong class="block text-white mb-1">Image Requirements:</strong>
                                             Recommended size: 1280x720 pixels (16:9 ratio). Maximum file size: 2MB.
@@ -307,9 +321,9 @@ unset($__errorArgs, $__bag); ?>
                             <i class="fas fa-file-pdf text-5xl text-red-400 mb-6"></i>
                             <p class="text-gray-400 mb-6 text-center">Upload your PDF document to share with students</p>
                             <div class="relative mb-4">
-                                <input type="file" name="pdf_file" id="pdf_file" accept=".pdf" class="hidden">
-                                <label for="pdf_file" class="flex items-center justify-center px-6 py-3 bg-gradient-to-r from-red-600 to-red-500 text-white rounded-lg cursor-pointer hover:from-red-700 hover:to-red-600 transition-all shadow-lg hover:shadow-red-500/20">
-                                    <i class="fas fa-cloud-upload-alt text-xl mr-2"></i>
+                                <input type="file" name="pdf_file" id="pdf_file" accept=".pdf" class="hidden" aria-label="PDF document" aria-describedby="pdf-requirements">
+                                <label for="pdf_file" class="flex items-center justify-center px-6 py-3 bg-gradient-to-r from-red-600 to-red-500 text-white rounded-lg cursor-pointer hover:from-red-700 hover:to-red-600 transition-all shadow-lg hover:shadow-red-500/20" role="button" tabindex="0">
+                                    <i class="fas fa-cloud-upload-alt text-xl mr-2" aria-hidden="true"></i>
                                     <span class="font-medium">Choose PDF File</span>
                                 </label>
                             </div>
@@ -318,9 +332,9 @@ unset($__errorArgs, $__bag); ?>
                                 <span>No file chosen</span>
                             </div>
                         </div>
-                        <div class="bg-gray-900/50 p-4 rounded-lg border border-gray-700 mt-6">
+                        <div id="pdf-requirements" class="bg-gray-900/50 p-4 rounded-lg border border-gray-700 mt-6">
                             <p class="text-sm text-gray-300 flex items-start">
-                                <i class="fas fa-info-circle text-red-400 mr-3 text-xl mt-1"></i>
+                                <i class="fas fa-info-circle text-red-400 mr-3 text-xl mt-1" aria-hidden="true"></i>
                                 <span>
                                     <strong class="block text-white text-base mb-2">PDF Requirements:</strong>
                                     <ul class="list-disc pl-5 space-y-1 text-gray-300">
@@ -357,9 +371,9 @@ unset($__errorArgs, $__bag); ?>
                             <i class="fas fa-film text-5xl text-green-400 mb-6"></i>
                             <p class="text-gray-400 mb-6 text-center">Upload your video file to share with students</p>
                             <div class="relative mb-4">
-                                <input type="file" name="video_file" id="video_file" accept="video/*" class="hidden">
-                                <label for="video_file" class="flex items-center justify-center px-6 py-3 bg-gradient-to-r from-green-600 to-green-500 text-white rounded-lg cursor-pointer hover:from-green-700 hover:to-green-600 transition-all shadow-lg hover:shadow-green-500/20">
-                                    <i class="fas fa-cloud-upload-alt text-xl mr-2"></i>
+                                <input type="file" name="video_file" id="video_file" accept="video/*" class="hidden" aria-label="Video file" aria-describedby="video-requirements">
+                                <label for="video_file" class="flex items-center justify-center px-6 py-3 bg-gradient-to-r from-green-600 to-green-500 text-white rounded-lg cursor-pointer hover:from-green-700 hover:to-green-600 transition-all shadow-lg hover:shadow-green-500/20" role="button" tabindex="0">
+                                    <i class="fas fa-cloud-upload-alt text-xl mr-2" aria-hidden="true"></i>
                                     <span class="font-medium">Choose Video File</span>
                                 </label>
                             </div>
@@ -368,9 +382,9 @@ unset($__errorArgs, $__bag); ?>
                                 <span>No file chosen</span>
                             </div>
                         </div>
-                        <div class="bg-gray-900/50 p-4 rounded-lg border border-gray-700 mt-6">
+                        <div id="video-requirements" class="bg-gray-900/50 p-4 rounded-lg border border-gray-700 mt-6">
                             <p class="text-sm text-gray-300 flex items-start">
-                                <i class="fas fa-info-circle text-green-400 mr-3 text-xl mt-1"></i>
+                                <i class="fas fa-info-circle text-green-400 mr-3 text-xl mt-1" aria-hidden="true"></i>
                                 <span>
                                     <strong class="block text-white text-base mb-2">Video Requirements:</strong>
                                     <ul class="list-disc pl-5 space-y-1 text-gray-300">
@@ -418,12 +432,14 @@ unset($__errorArgs, $__bag); ?>
                                     </span>
                                     <input type="url" name="youtube_link" id="youtube_link"
                                         class="w-full bg-gray-800 text-white border-2 border-gray-700 rounded-lg py-3 pl-10 pr-4 focus:outline-none focus:border-red-500 focus:ring-2 focus:ring-red-500 transition-colors"
-                                        placeholder="https://www.youtube.com/watch?v=...">
+                                        placeholder="https://www.youtube.com/watch?v=..."
+                                        aria-label="YouTube video URL"
+                                        aria-describedby="youtube-tips">
                                 </div>
                             </div>
-                            <div class="bg-gray-900/80 p-4 rounded-lg border border-gray-700 mt-4">
+                            <div id="youtube-tips" class="bg-gray-900/80 p-4 rounded-lg border border-gray-700 mt-4">
                                 <p class="text-sm text-gray-300 flex items-start">
-                                    <i class="fas fa-info-circle text-red-400 mr-3 text-xl mt-1"></i>
+                                    <i class="fas fa-info-circle text-red-400 mr-3 text-xl mt-1" aria-hidden="true"></i>
                                     <span>
                                         <strong class="block text-white text-base mb-2">YouTube Tips:</strong>
                                         <ul class="list-disc pl-5 space-y-1 text-gray-300">
@@ -481,10 +497,11 @@ unset($__errorArgs, $__bag); ?>
                             </p>
                             <div class="flex items-center p-5 bg-gray-900/70 rounded-lg border-2 border-gray-700 hover:border-blue-600 transition-colors">
                                 <div class="toggle-switch">
-                                    <input type="checkbox" name="is_published" id="is_published" class="toggle-input">
-                                    <label for="is_published" class="toggle-label"></label>
+                                    <input type="checkbox" id="is_published_toggle" class="toggle-input" onchange="updatePublishValue(this)">
+                                    <input type="hidden" name="is_published" id="is_published" value="0">
+                                    <label for="is_published_toggle" class="toggle-label"></label>
                                 </div>
-                                <label for="is_published" class="ml-3 block text-white font-medium text-lg cursor-pointer">Publish course immediately</label>
+                                <label for="is_published_toggle" class="ml-3 block text-white font-medium text-lg cursor-pointer">Publish course immediately</label>
                             </div>
                             <div class="mt-4 bg-gray-900/50 p-4 rounded-lg border border-gray-700">
                                 <p class="text-sm text-gray-300 flex items-start">
@@ -518,10 +535,13 @@ unset($__errorArgs, $__bag); ?>
                             <i class="fas fa-arrow-left mr-2"></i>
                             <span class="font-medium">Cancel</span>
                         </a>
-                        <button type="submit"
+                        <button type="submit" id="submit-button"
                             class="px-8 py-4 bg-gradient-to-r from-blue-600 to-blue-500 text-white rounded-lg hover:from-blue-700 hover:to-blue-600 transition-all flex items-center justify-center font-medium shadow-lg hover:shadow-blue-500/30 transform hover:-translate-y-1">
                             <i class="fas fa-save mr-2"></i>
                             <span>Create Course</span>
+                            <span class="loading-spinner ml-2 hidden">
+                                <i class="fas fa-circle-notch fa-spin"></i>
+                            </span>
                         </button>
                     </div>
                 </div>
@@ -682,6 +702,12 @@ unset($__errorArgs, $__bag); ?>
         to { opacity: 1; transform: translateY(0); }
     }
 
+    @keyframes pulse {
+        0% { box-shadow: 0 0 0 0 rgba(220, 38, 38, 0.4); }
+        70% { box-shadow: 0 0 0 10px rgba(220, 38, 38, 0); }
+        100% { box-shadow: 0 0 0 0 rgba(220, 38, 38, 0); }
+    }
+
     .content-section {
         animation: fadeIn 0.3s ease-out;
     }
@@ -704,6 +730,22 @@ unset($__errorArgs, $__bag); ?>
 
         imageInput.addEventListener('change', function() {
             if (this.files && this.files[0]) {
+                // Validate file size
+                const fileSize = this.files[0].size / 1024 / 1024; // in MB
+                if (fileSize > 2) {
+                    showError('Image file size must be less than 2MB');
+                    this.value = ''; // Clear the input
+                    return;
+                }
+
+                // Validate file type
+                const fileType = this.files[0].type;
+                if (!fileType.match('image.*')) {
+                    showError('Please select an image file');
+                    this.value = ''; // Clear the input
+                    return;
+                }
+
                 const reader = new FileReader();
                 reader.onload = function(e) {
                     // Fade out placeholder
@@ -734,14 +776,29 @@ unset($__errorArgs, $__bag); ?>
             }
         });
 
-        // Enhanced file input handling
-        function setupFileInput(inputId, fileNameId) {
+        // Enhanced file input handling with validation
+        function setupFileInput(inputId, fileNameId, maxSize, fileType) {
             const input = document.getElementById(inputId);
             const fileNameElement = document.getElementById(fileNameId);
 
             if (input && fileNameElement) {
                 input.addEventListener('change', function() {
                     if (this.files && this.files[0]) {
+                        // Validate file size
+                        const fileSize = this.files[0].size / 1024 / 1024; // in MB
+                        if (fileSize > maxSize) {
+                            showError(`File size must be less than ${maxSize}MB`);
+                            this.value = ''; // Clear the input
+                            return;
+                        }
+
+                        // Validate file type if specified
+                        if (fileType && !this.files[0].type.match(fileType)) {
+                            showError(`Please select a valid ${fileType.replace('.*', '')} file`);
+                            this.value = ''; // Clear the input
+                            return;
+                        }
+
                         // Animate filename change
                         fileNameElement.style.opacity = '0';
                         setTimeout(() => {
@@ -759,9 +816,9 @@ unset($__errorArgs, $__bag); ?>
             }
         }
 
-        // Setup file inputs
-        setupFileInput('pdf_file', 'pdf-file-name');
-        setupFileInput('video_file', 'video-file-name');
+        // Setup file inputs with validation
+        setupFileInput('pdf_file', 'pdf-file-name', 10, 'application/pdf');
+        setupFileInput('video_file', 'video-file-name', 100, 'video.*');
 
         // YouTube preview functionality
         const youtubeInput = document.getElementById('youtube_link');
@@ -880,6 +937,116 @@ unset($__errorArgs, $__bag); ?>
         document.querySelectorAll('.file-name').forEach(el => {
             el.style.transition = 'opacity 0.3s ease, color 0.3s ease';
         });
+
+        // Function to update the hidden is_published field
+        window.updatePublishValue = function(checkbox) {
+            document.getElementById('is_published').value = checkbox.checked ? '1' : '0';
+        };
+
+        // Form submission handling
+        const form = document.getElementById('course-form');
+        const submitButton = document.getElementById('submit-button');
+        const loadingSpinner = document.querySelector('.loading-spinner');
+
+        if (form && submitButton) {
+            form.addEventListener('submit', function(e) {
+                // Basic form validation
+                const title = document.getElementById('title').value.trim();
+                const description = document.getElementById('description').value.trim();
+                const category = document.getElementById('category_id').value;
+
+                let isValid = true;
+                let errorMessage = '';
+
+                if (!title) {
+                    isValid = false;
+                    errorMessage = 'Course title is required';
+                } else if (!description) {
+                    isValid = false;
+                    errorMessage = 'Course description is required';
+                } else if (!category) {
+                    isValid = false;
+                    errorMessage = 'Please select a category';
+                }
+
+                // Content type specific validation
+                const selectedContentType = document.querySelector('input[name="content_type"]:checked').value;
+
+                if (selectedContentType === 'text') {
+                    const content = document.getElementById('content').value.trim();
+                    if (!content) {
+                        isValid = false;
+                        errorMessage = 'Please enter some text content for your course';
+                    }
+                } else if (selectedContentType === 'pdf') {
+                    const pdfFile = document.getElementById('pdf_file').files[0];
+                    if (!pdfFile) {
+                        isValid = false;
+                        errorMessage = 'Please upload a PDF file';
+                    }
+                } else if (selectedContentType === 'video') {
+                    const videoFile = document.getElementById('video_file').files[0];
+                    if (!videoFile) {
+                        isValid = false;
+                        errorMessage = 'Please upload a video file';
+                    }
+                } else if (selectedContentType === 'youtube') {
+                    const youtubeLink = document.getElementById('youtube_link').value.trim();
+                    if (!youtubeLink || !isValidYouTubeUrl(youtubeLink)) {
+                        isValid = false;
+                        errorMessage = 'Please enter a valid YouTube URL';
+                    }
+                }
+
+                if (!isValid) {
+                    e.preventDefault();
+                    showError(errorMessage);
+                    return;
+                }
+
+                // Show loading state
+                submitButton.disabled = true;
+                submitButton.classList.add('opacity-75');
+                loadingSpinner.classList.remove('hidden');
+            });
+        }
+
+        // Error message display
+        function showError(message) {
+            // Create error element if it doesn't exist
+            let errorContainer = document.getElementById('form-error-container');
+            if (!errorContainer) {
+                errorContainer = document.createElement('div');
+                errorContainer.id = 'form-error-container';
+                errorContainer.className = 'bg-red-900/50 border border-red-700 text-red-300 p-4 rounded-lg mb-6 flex items-start';
+
+                const icon = document.createElement('i');
+                icon.className = 'fas fa-exclamation-triangle text-red-400 mt-1 mr-3';
+
+                const textContainer = document.createElement('div');
+                const errorText = document.createElement('p');
+                errorText.id = 'form-error-message';
+
+                textContainer.appendChild(errorText);
+                errorContainer.appendChild(icon);
+                errorContainer.appendChild(textContainer);
+
+                // Insert at the top of the form
+                form.insertBefore(errorContainer, form.firstChild);
+            }
+
+            // Update error message
+            document.getElementById('form-error-message').textContent = message;
+
+            // Scroll to error
+            errorContainer.scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+            // Highlight error with animation
+            errorContainer.style.animation = 'none';
+            setTimeout(() => {
+                errorContainer.style.animation = 'pulse 2s';
+            }, 10);
+        }
     });
 </script>
 <?php $__env->stopPush(); ?>
