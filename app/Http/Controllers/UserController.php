@@ -22,6 +22,12 @@ class UserController extends Controller
     }
 
     public function showAbout(){
+        if (auth()->check()) {
+            $user = auth()->user();
+            if ($user->role === 'teacher') {
+                return view('about');
+            }
+        }
         return view('public.about-new');
     }
 
