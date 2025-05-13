@@ -1,0 +1,61 @@
+/* Student Courses Styles */
+
+/* Action Buttons */
+.action-button {
+    @apply flex justify-center items-center px-4 py-2 rounded-lg font-medium transition-colors;
+}
+
+.action-button.primary {
+    @apply bg-primary-600 hover:bg-primary-700 text-white;
+}
+
+.action-button.secondary {
+    @apply bg-secondary-600 hover:bg-secondary-700 text-white;
+}
+
+.action-button.disabled {
+    @apply bg-gray-600 text-gray-300 cursor-not-allowed;
+}
+
+/* Course Content */
+.prose-dark {
+    @apply text-gray-300;
+}
+
+.prose-dark h1, .prose-dark h2, .prose-dark h3, .prose-dark h4, .prose-dark h5, .prose-dark h6 {
+    @apply text-white;
+}
+
+.prose-dark a {
+    @apply text-primary-400 hover:text-primary-300;
+}
+
+.prose-dark strong {
+    @apply text-white;
+}
+
+.prose-dark ul, .prose-dark ol {
+    @apply text-gray-300;
+}
+
+.prose-dark blockquote {
+    @apply border-gray-600 text-gray-400;
+}
+
+.prose-dark hr {
+    @apply border-gray-700;
+}
+
+.prose-dark code {
+    @apply bg-gray-800 text-gray-300;
+}
+
+/* Aspect Ratio Container */
+.aspect-w-16 {
+    position: relative;
+    width: 100%;
+}
+
+.aspect-h-9 {
+    height: auto;
+}

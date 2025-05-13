@@ -1,0 +1,59 @@
+/* Student Dashboard Styles */
+
+/* Tip Cards */
+.tip-card {
+    @apply bg-gray-800 rounded-lg p-4 flex items-center;
+}
+
+.tip-icon {
+    @apply w-12 h-12 rounded-full flex items-center justify-center mr-4 flex-shrink-0;
+}
+
+.tip-text {
+    @apply text-gray-300 text-sm;
+}
+
+/* Course Cards */
+.course-card {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.course-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.3);
+}
+
+/* Category Buttons */
+.category-btn {
+    @apply bg-gray-800 text-gray-400 font-medium px-4 py-2 rounded-lg transition-colors;
+}
+
+.category-btn:hover {
+    @apply bg-gray-700 text-white;
+}
+
+.category-btn.active {
+    @apply bg-primary-600 text-white;
+}
+
+/* Line Clamp */
+.line-clamp-1 {
+    display: -webkit-box;
+    -webkit-line-clamp: 1;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.line-clamp-2 {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.line-clamp-3 {
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}

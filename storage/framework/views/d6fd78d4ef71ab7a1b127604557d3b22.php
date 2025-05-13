@@ -9,6 +9,8 @@
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="<?php echo e(asset('css/teacher-dashboard.css')); ?>" rel="stylesheet">
+    <link href="<?php echo e(asset('css/student-dashboard.css')); ?>" rel="stylesheet">
+    <link href="<?php echo e(asset('css/student-courses.css')); ?>" rel="stylesheet">
     <script>
         tailwind.config = {
             darkMode: 'class',

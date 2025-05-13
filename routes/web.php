@@ -170,6 +170,7 @@ Route::middleware(['auth','role:user'])->group(function () {
     Route::get('/student', [StudentController::class, 'index'])->name('student.dashboard');
     Route::get('/student/courses', [StudentController::class, 'showCourses'])->name('student.courses');
     Route::get('/student/courses/{id}', [StudentController::class, 'showCourse'])->name('student.showCourse');
+    Route::post('/student/courses/{id}/enroll', [StudentController::class, 'enrollCourse'])->name('student.enrollCourse');
     Route::get('/student/myCourses', [StudentController::class, 'showMyCourses'])->name('student.myCourses');
     Route::get('/student/course-content', [StudentController::class, 'showCourseContent'])->name('student.courseContent');
 

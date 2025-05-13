@@ -27,7 +27,7 @@ class StudentController extends UserController
             $categories = \App\Models\Category::all();
         }
 
-        return view('student.courses', compact('courses', 'categories'));
+        return view('student.courses-new', compact('courses', 'categories'));
     }
 
     public function showMyCourses(){
@@ -303,8 +303,40 @@ class StudentController extends UserController
 
     public function showCourse($id) {
         $course = Course::with(['contents', 'quizzes'])->findOrFail($id);
+        $isEnrolled = false;
 
-        return view('student.courseDetails', compact('course'));
+        if (auth()->check()) {
+            $user = auth()->user();
+            $isEnrolled = $user->enrolledCourses()->where('course_id', $id)->exists();
+        }
+
+        return view('student.courseDetails-new', compact('course', 'isEnrolled'));
+    }
+
+    public function enrollCourse($id) {
+        $course = Course::findOrFail($id);
+        $user = auth()->user();
+
+        // Check if already enrolled
+        if (!$user->enrolledCourses()->where('course_id', $id)->exists()) {
+            $user->enrolledCourses()->attach($id, [
+                'progress' => 0,
+                'completed' => false
+            ]);
+
+            // Log activity if the model exists
+            if (class_exists('App\\Models\\ActivityLog')) {
+                \App\Models\ActivityLog::create([
+                    'user_id' => $user->id,
+                    'type' => 'course',
+                    'description' => "Enrolled in course: {$course->title}",
+                ]);
+            }
+
+            return redirect()->route('student.showCourse', $id)->with('success', 'You have successfully enrolled in this course!');
+        }
+
+        return redirect()->route('student.showCourse', $id)->with('info', 'You are already enrolled in this course.');
     }
 
     public function updateProfile(Request $request)
