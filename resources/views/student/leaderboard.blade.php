@@ -3,14 +3,15 @@
 @section('title', 'Leaderboard')
 
 @section('content')
-<div class="bg-gradient-to-br from-gray-900 to-gray-800 rounded-xl shadow-lg p-6 mb-6">
-    <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+<!-- Page Header -->
+<div class="welcome-banner bg-gradient-to-r from-primary-600 to-secondary-600 rounded-xl shadow-lg p-6 mb-8">
+    <div class="flex flex-col md:flex-row justify-between items-center">
         <div>
             <h1 class="text-3xl font-bold text-white mb-2">Leaderboard</h1>
             <p class="text-blue-100">See how you rank against other students and compete for the top spot.</p>
         </div>
-        <div class="flex items-center space-x-4">
-            <select id="timeFilter" class="bg-gray-700 border border-gray-600 text-white rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+        <div class="mt-4 md:mt-0 flex items-center space-x-4">
+            <select id="timeFilter" class="bg-white/20 border border-white/30 text-white rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-white/50 focus:border-transparent">
                 <option value="all">All Time</option>
                 <option value="month">This Month</option>
                 <option value="week">This Week</option>
@@ -20,156 +21,167 @@
 </div>
 
 <!-- Top 3 Winners -->
-<div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-    @if(count($leaders) >= 3)
-        <!-- Second Place -->
-        <div class="order-2 md:order-1">
-            <div class="data-card p-6 text-center relative">
-                <div class="absolute top-0 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
-                    <div class="w-16 h-16 rounded-full bg-gray-500 border-4 border-gray-700 flex items-center justify-center">
-                        <i class="fas fa-medal text-white text-2xl"></i>
+<div class="section-card mb-8">
+    <div class="section-header">
+        <i class="fas fa-trophy mr-2"></i> Top Performers
+    </div>
+    <div class="section-content">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            @if(count($leaders) >= 3)
+                <!-- Second Place -->
+                <div class="order-2 md:order-1">
+                    <div class="bg-gray-800 rounded-xl p-6 text-center relative shadow-lg transition-transform hover:scale-105">
+                        <div class="absolute top-0 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
+                            <div class="w-16 h-16 rounded-full bg-gray-500 border-4 border-gray-700 flex items-center justify-center shadow-lg">
+                                <i class="fas fa-medal text-white text-2xl"></i>
+                            </div>
+                        </div>
+                        <div class="mt-8">
+                            <div class="w-20 h-20 rounded-full bg-gray-700 mx-auto mb-4 flex items-center justify-center border-4 border-gray-600">
+                                <span class="text-white text-2xl font-bold">{{ substr($leaders[1]->username, 0, 1) }}</span>
+                            </div>
+                            <h3 class="text-white text-xl font-bold mb-1">{{ $leaders[1]->username }}</h3>
+                            <p class="text-gray-400 text-sm mb-4">2nd Place</p>
+                            <div class="bg-gray-600 text-white text-xl font-bold py-2 px-4 rounded-lg inline-block shadow-md">
+                                {{ $leaders[1]->total_score }} pts
+                            </div>
+                            <p class="text-gray-400 text-sm mt-2">{{ $leaders[1]->quizzes_count }} Quizzes</p>
+                        </div>
                     </div>
                 </div>
-                <div class="mt-8">
-                    <div class="w-20 h-20 rounded-full bg-gray-800 mx-auto mb-4 flex items-center justify-center">
-                        <span class="text-white text-2xl font-bold">{{ substr($leaders[1]->username, 0, 1) }}</span>
-                    </div>
-                    <h3 class="text-white text-xl font-bold mb-1">{{ $leaders[1]->username }}</h3>
-                    <p class="text-gray-400 text-sm mb-4">2nd Place</p>
-                    <div class="bg-gray-500 text-white text-xl font-bold py-2 px-4 rounded-lg inline-block">
-                        {{ $leaders[1]->total_score }} pts
-                    </div>
-                    <p class="text-gray-400 text-sm mt-2">{{ $leaders[1]->quizzes_count }} Quizzes</p>
-                </div>
-            </div>
-        </div>
 
-        <!-- First Place -->
-        <div class="order-1 md:order-2">
-            <div class="data-card p-6 text-center relative transform md:scale-110 z-10">
-                <div class="absolute top-0 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
-                    <div class="w-20 h-20 rounded-full bg-yellow-500 border-4 border-yellow-700 flex items-center justify-center">
-                        <i class="fas fa-crown text-white text-3xl"></i>
+                <!-- First Place -->
+                <div class="order-1 md:order-2">
+                    <div class="bg-gradient-to-b from-primary-900 to-secondary-900 rounded-xl p-6 text-center relative transform md:scale-110 z-10 shadow-xl transition-transform hover:scale-105">
+                        <div class="absolute top-0 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
+                            <div class="w-20 h-20 rounded-full bg-yellow-500 border-4 border-yellow-600 flex items-center justify-center shadow-lg">
+                                <i class="fas fa-crown text-white text-3xl"></i>
+                            </div>
+                        </div>
+                        <div class="mt-10">
+                            <div class="w-24 h-24 rounded-full bg-gray-700 mx-auto mb-4 flex items-center justify-center border-4 border-yellow-500">
+                                <span class="text-white text-3xl font-bold">{{ substr($leaders[0]->username, 0, 1) }}</span>
+                            </div>
+                            <h3 class="text-white text-2xl font-bold mb-1">{{ $leaders[0]->username }}</h3>
+                            <p class="text-yellow-400 text-sm mb-4">1st Place</p>
+                            <div class="bg-yellow-500 text-white text-2xl font-bold py-2 px-6 rounded-lg inline-block shadow-md">
+                                {{ $leaders[0]->total_score }} pts
+                            </div>
+                            <p class="text-gray-400 text-sm mt-2">{{ $leaders[0]->quizzes_count }} Quizzes</p>
+                        </div>
                     </div>
                 </div>
-                <div class="mt-10">
-                    <div class="w-24 h-24 rounded-full bg-gray-800 mx-auto mb-4 flex items-center justify-center">
-                        <span class="text-white text-3xl font-bold">{{ substr($leaders[0]->username, 0, 1) }}</span>
-                    </div>
-                    <h3 class="text-white text-2xl font-bold mb-1">{{ $leaders[0]->username }}</h3>
-                    <p class="text-yellow-400 text-sm mb-4">1st Place</p>
-                    <div class="bg-yellow-500 text-white text-2xl font-bold py-2 px-6 rounded-lg inline-block">
-                        {{ $leaders[0]->total_score }} pts
-                    </div>
-                    <p class="text-gray-400 text-sm mt-2">{{ $leaders[0]->quizzes_count }} Quizzes</p>
-                </div>
-            </div>
-        </div>
 
-        <!-- Third Place -->
-        <div class="order-3">
-            <div class="data-card p-6 text-center relative">
-                <div class="absolute top-0 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
-                    <div class="w-16 h-16 rounded-full bg-yellow-700 border-4 border-yellow-900 flex items-center justify-center">
-                        <i class="fas fa-medal text-white text-2xl"></i>
+                <!-- Third Place -->
+                <div class="order-3">
+                    <div class="bg-gray-800 rounded-xl p-6 text-center relative shadow-lg transition-transform hover:scale-105">
+                        <div class="absolute top-0 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
+                            <div class="w-16 h-16 rounded-full bg-yellow-700 border-4 border-yellow-800 flex items-center justify-center shadow-lg">
+                                <i class="fas fa-medal text-white text-2xl"></i>
+                            </div>
+                        </div>
+                        <div class="mt-8">
+                            <div class="w-20 h-20 rounded-full bg-gray-700 mx-auto mb-4 flex items-center justify-center border-4 border-gray-600">
+                                <span class="text-white text-2xl font-bold">{{ substr($leaders[2]->username, 0, 1) }}</span>
+                            </div>
+                            <h3 class="text-white text-xl font-bold mb-1">{{ $leaders[2]->username }}</h3>
+                            <p class="text-gray-400 text-sm mb-4">3rd Place</p>
+                            <div class="bg-yellow-700 text-white text-xl font-bold py-2 px-4 rounded-lg inline-block shadow-md">
+                                {{ $leaders[2]->total_score }} pts
+                            </div>
+                            <p class="text-gray-400 text-sm mt-2">{{ $leaders[2]->quizzes_count }} Quizzes</p>
+                        </div>
                     </div>
                 </div>
-                <div class="mt-8">
-                    <div class="w-20 h-20 rounded-full bg-gray-800 mx-auto mb-4 flex items-center justify-center">
-                        <span class="text-white text-2xl font-bold">{{ substr($leaders[2]->username, 0, 1) }}</span>
+            @else
+                <div class="col-span-3 bg-gray-800 rounded-xl p-6 text-center shadow-lg">
+                    <div class="w-20 h-20 bg-gray-700 rounded-full flex items-center justify-center mx-auto mb-4 border-4 border-gray-600">
+                        <i class="fas fa-trophy text-gray-500 text-3xl"></i>
                     </div>
-                    <h3 class="text-white text-xl font-bold mb-1">{{ $leaders[2]->username }}</h3>
-                    <p class="text-gray-400 text-sm mb-4">3rd Place</p>
-                    <div class="bg-yellow-700 text-white text-xl font-bold py-2 px-4 rounded-lg inline-block">
-                        {{ $leaders[2]->total_score }} pts
-                    </div>
-                    <p class="text-gray-400 text-sm mt-2">{{ $leaders[2]->quizzes_count }} Quizzes</p>
+                    <h3 class="text-xl font-bold text-white mb-2">No Leaderboard Data</h3>
+                    <p class="text-gray-400">There are not enough participants yet. Start taking quizzes to appear on the leaderboard!</p>
                 </div>
-            </div>
+            @endif
         </div>
-    @else
-        <div class="col-span-3 data-card p-6 text-center">
-            <div class="w-20 h-20 bg-gray-800 rounded-full flex items-center justify-center mx-auto mb-4">
-                <i class="fas fa-trophy text-gray-600 text-3xl"></i>
-            </div>
-            <h3 class="text-xl font-bold text-white mb-2">No Leaderboard Data</h3>
-            <p class="text-gray-400">There are not enough participants yet. Start taking quizzes to appear on the leaderboard!</p>
-        </div>
-    @endif
+    </div>
 </div>
 
 <!-- Full Leaderboard -->
-<div class="data-card p-6 mb-8">
-    <h2 class="section-title flex items-center mb-6">
-        <i class="fas fa-list-ol text-blue-500 mr-2"></i>
-        Full Ranking
-    </h2>
-
-    @if(count($leaders) > 0)
-        <div class="overflow-x-auto">
-            <table class="w-full">
-                <thead>
-                    <tr class="bg-gray-800 text-gray-400 text-sm uppercase">
-                        <th class="py-3 px-4 text-left rounded-tl-lg">Rank</th>
-                        <th class="py-3 px-4 text-left">Student</th>
-                        <th class="py-3 px-4 text-center">Quizzes</th>
-                        <th class="py-3 px-4 text-center">Avg. Score</th>
-                        <th class="py-3 px-4 text-right rounded-tr-lg">Total Points</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach($leaders as $index => $user)
-                        <tr class="{{ $index % 2 === 0 ? 'bg-gray-800 bg-opacity-40' : 'bg-gray-800 bg-opacity-20' }} {{ auth()->id() == $user->id ? 'bg-blue-900 bg-opacity-40' : '' }}">
-                            <td class="py-4 px-4 text-left">
-                                @if($index < 3)
-                                    <div class="w-8 h-8 rounded-full {{ $index === 0 ? 'bg-yellow-500' : ($index === 1 ? 'bg-gray-500' : 'bg-yellow-700') }} flex items-center justify-center">
-                                        <span class="text-white font-bold">{{ $index + 1 }}</span>
-                                    </div>
-                                @else
-                                    <div class="w-8 h-8 rounded-full bg-gray-700 flex items-center justify-center">
-                                        <span class="text-white">{{ $index + 1 }}</span>
-                                    </div>
-                                @endif
-                            </td>
-                            <td class="py-4 px-4 text-left">
-                                <div class="flex items-center">
-                                    <div class="w-10 h-10 rounded-full bg-gray-700 flex items-center justify-center mr-3">
-                                        <span class="text-white font-bold">{{ substr($user->username, 0, 1) }}</span>
-                                    </div>
-                                    <div>
-                                        <div class="text-white font-semibold">{{ $user->username }}</div>
-                                        @if(auth()->id() == $user->id)
-                                            <div class="text-blue-400 text-xs">You</div>
-                                        @endif
-                                    </div>
-                                </div>
-                            </td>
-                            <td class="py-4 px-4 text-center text-gray-400">{{ $user->quizzes_count }}</td>
-                            <td class="py-4 px-4 text-center">
-                                @php
-                                    $avgScore = $user->quizzes_count > 0 ? round($user->total_score / $user->quizzes_count) : 0;
-                                @endphp
-                                <div class="flex items-center justify-center">
-                                    <div class="w-full max-w-[100px] bg-gray-700 rounded-full h-2.5 mr-2">
-                                        <div class="bg-blue-600 h-2.5 rounded-full" style="width: {{ min(100, $avgScore) }}%"></div>
-                                    </div>
-                                    <span class="text-white">{{ $avgScore }}%</span>
-                                </div>
-                            </td>
-                            <td class="py-4 px-4 text-right">
-                                <span class="text-white font-bold text-lg">{{ $user->total_score }}</span>
-                                <span class="text-gray-400 text-sm">pts</span>
-                            </td>
+<div class="section-card mb-8">
+    <div class="section-header">
+        <i class="fas fa-list-ol mr-2"></i> Full Ranking
+    </div>
+    <div class="section-content">
+        @if(count($leaders) > 0)
+            <div class="overflow-x-auto">
+                <table class="w-full">
+                    <thead>
+                        <tr class="bg-gray-800 text-gray-400 text-sm uppercase">
+                            <th class="py-3 px-4 text-left rounded-tl-lg">Rank</th>
+                            <th class="py-3 px-4 text-left">Student</th>
+                            <th class="py-3 px-4 text-center">Quizzes</th>
+                            <th class="py-3 px-4 text-center">Avg. Score</th>
+                            <th class="py-3 px-4 text-right rounded-tr-lg">Total Points</th>
                         </tr>
-                    @endforeach
-                </tbody>
-            </table>
-        </div>
-    @else
-        <div class="text-center py-8">
-            <p class="text-gray-400">No leaderboard data available yet. Start taking quizzes to appear on the leaderboard!</p>
-        </div>
-    @endif
+                    </thead>
+                    <tbody>
+                        @foreach($leaders as $index => $user)
+                            <tr class="{{ $index % 2 === 0 ? 'bg-gray-800 bg-opacity-40' : 'bg-gray-800 bg-opacity-20' }} {{ auth()->id() == $user->id ? 'bg-primary-900 bg-opacity-40' : '' }} hover:bg-gray-700 transition-colors">
+                                <td class="py-4 px-4 text-left">
+                                    @if($index < 3)
+                                        <div class="w-8 h-8 rounded-full {{ $index === 0 ? 'bg-yellow-500' : ($index === 1 ? 'bg-gray-500' : 'bg-yellow-700') }} flex items-center justify-center shadow-md">
+                                            <span class="text-white font-bold">{{ $index + 1 }}</span>
+                                        </div>
+                                    @else
+                                        <div class="w-8 h-8 rounded-full bg-gray-700 flex items-center justify-center">
+                                            <span class="text-white">{{ $index + 1 }}</span>
+                                        </div>
+                                    @endif
+                                </td>
+                                <td class="py-4 px-4 text-left">
+                                    <div class="flex items-center">
+                                        <div class="w-10 h-10 rounded-full bg-gray-700 flex items-center justify-center mr-3 border-2 {{ auth()->id() == $user->id ? 'border-primary-500' : 'border-gray-600' }}">
+                                            <span class="text-white font-bold">{{ substr($user->username, 0, 1) }}</span>
+                                        </div>
+                                        <div>
+                                            <div class="text-white font-semibold">{{ $user->username }}</div>
+                                            @if(auth()->id() == $user->id)
+                                                <div class="text-primary-400 text-xs">You</div>
+                                            @endif
+                                        </div>
+                                    </div>
+                                </td>
+                                <td class="py-4 px-4 text-center text-gray-400">{{ $user->quizzes_count }}</td>
+                                <td class="py-4 px-4 text-center">
+                                    @php
+                                        $avgScore = $user->quizzes_count > 0 ? round($user->total_score / $user->quizzes_count) : 0;
+                                    @endphp
+                                    <div class="flex items-center justify-center">
+                                        <div class="w-full max-w-[100px] bg-gray-700 rounded-full h-2.5 mr-2">
+                                            <div class="bg-primary-600 h-2.5 rounded-full" style="width: {{ min(100, $avgScore) }}%"></div>
+                                        </div>
+                                        <span class="text-white">{{ $avgScore }}%</span>
+                                    </div>
+                                </td>
+                                <td class="py-4 px-4 text-right">
+                                    <span class="text-white font-bold text-lg">{{ $user->total_score }}</span>
+                                    <span class="text-gray-400 text-sm">pts</span>
+                                </td>
+                            </tr>
+                        @endforeach
+                    </tbody>
+                </table>
+            </div>
+        @else
+            <div class="text-center py-8">
+                <div class="inline-flex items-center justify-center w-16 h-16 rounded-full bg-gray-700 mb-4">
+                    <i class="fas fa-chart-bar text-gray-500 text-2xl"></i>
+                </div>
+                <p class="text-gray-400">No leaderboard data available yet.</p>
+                <p class="text-sm text-gray-500 mt-2">Start taking quizzes to appear on the leaderboard!</p>
+            </div>
+        @endif
+    </div>
 </div>
 
 <!-- Your Position -->
@@ -188,45 +200,51 @@
     @endphp
 
     @if($currentUser)
-        <div class="data-card p-6 mb-8">
-            <h2 class="section-title flex items-center mb-6">
-                <i class="fas fa-user text-blue-500 mr-2"></i>
-                Your Position
-            </h2>
-
-            <div class="bg-blue-900 bg-opacity-30 rounded-lg p-6">
-                <div class="flex flex-col md:flex-row md:items-center md:justify-between">
-                    <div class="flex items-center mb-4 md:mb-0">
-                        <div class="w-16 h-16 rounded-full bg-blue-900 flex items-center justify-center mr-4">
-                            <span class="text-white text-2xl font-bold">{{ substr($currentUser->username, 0, 1) }}</span>
+        <div class="section-card mb-8">
+            <div class="section-header">
+                <i class="fas fa-user mr-2"></i> Your Position
+            </div>
+            <div class="section-content">
+                <div class="bg-gradient-to-r from-primary-900 to-secondary-900 bg-opacity-30 rounded-xl p-6 shadow-lg">
+                    <div class="flex flex-col md:flex-row md:items-center md:justify-between">
+                        <div class="flex items-center mb-4 md:mb-0">
+                            <div class="w-16 h-16 rounded-full bg-primary-700 border-4 border-primary-600 flex items-center justify-center mr-4 shadow-md">
+                                <span class="text-white text-2xl font-bold">{{ substr($currentUser->username, 0, 1) }}</span>
+                            </div>
+                            <div>
+                                <h3 class="text-white text-xl font-bold">{{ $currentUser->username }}</h3>
+                                <p class="text-primary-300">Rank #{{ $userRank }} of {{ count($leaders) }}</p>
+                            </div>
                         </div>
-                        <div>
-                            <h3 class="text-white text-xl font-bold">{{ $currentUser->username }}</h3>
-                            <p class="text-blue-300">Rank #{{ $userRank }} of {{ count($leaders) }}</p>
+
+                        <div class="text-center md:text-right">
+                            <div class="text-3xl font-bold text-white">{{ $currentUser->total_score }}</div>
+                            <p class="text-primary-300">Total Points</p>
                         </div>
                     </div>
 
-                    <div class="text-center md:text-right">
-                        <div class="text-3xl font-bold text-white">{{ $currentUser->total_score }}</div>
-                        <p class="text-blue-300">Total Points</p>
+                    @if($userRank > 1)
+                        @php
+                            $pointsToNextRank = $leaders[$userRank - 2]->total_score - $currentUser->total_score;
+                        @endphp
+                        <div class="mt-6">
+                            <p class="text-gray-300 mb-2">You need <span class="text-primary-300 font-bold">{{ $pointsToNextRank }}</span> more points to reach rank #{{ $userRank - 1 }}</p>
+                            <div class="w-full bg-gray-700 rounded-full h-2.5 overflow-hidden">
+                                @php
+                                    $progressToNext = $pointsToNextRank > 0 ?
+                                        (($currentUser->total_score / ($currentUser->total_score + $pointsToNextRank)) * 100) : 100;
+                                @endphp
+                                <div class="bg-primary-600 h-2.5 rounded-full" style="width: {{ $progressToNext }}%"></div>
+                            </div>
+                        </div>
+                    @endif
+
+                    <div class="mt-6 text-center">
+                        <a href="{{ route('student.courses') }}" class="inline-flex items-center px-4 py-2 bg-white/10 hover:bg-white/20 text-white rounded-lg transition-colors shadow-md">
+                            <i class="fas fa-book-open mr-2"></i> Explore Courses
+                        </a>
                     </div>
                 </div>
-
-                @if($userRank > 1)
-                    @php
-                        $pointsToNextRank = $leaders[$userRank - 2]->total_score - $currentUser->total_score;
-                    @endphp
-                    <div class="mt-6">
-                        <p class="text-gray-400 mb-2">You need <span class="text-blue-300 font-bold">{{ $pointsToNextRank }}</span> more points to reach rank #{{ $userRank - 1 }}</p>
-                        <div class="w-full bg-gray-700 rounded-full h-2.5">
-                            @php
-                                $progressToNext = $pointsToNextRank > 0 ?
-                                    (($currentUser->total_score / ($currentUser->total_score + $pointsToNextRank)) * 100) : 100;
-                            @endphp
-                            <div class="bg-blue-600 h-2.5 rounded-full" style="width: {{ $progressToNext }}%"></div>
-                        </div>
-                    </div>
-                @endif
             </div>
         </div>
     @endif
