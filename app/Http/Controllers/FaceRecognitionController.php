@@ -40,6 +40,12 @@ class FaceRecognitionController extends Controller
         $user = Auth::user();
         $hasFaceRegistered = $user->hasFaceRegistered();
 
+        // If the user is a student, use the student layout
+        if ($user->hasRole('user')) {
+            return view('face-recognition.student-register', compact('hasFaceRegistered'));
+        }
+
+        // Otherwise use the default layout
         return view('face-recognition.register', compact('hasFaceRegistered'));
     }
 

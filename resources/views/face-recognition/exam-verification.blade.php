@@ -178,7 +178,7 @@
                 faceRecognition.startVerification(30, 3);
 
                 // Redirect to exam
-                window.location.href = '{{ route("student.quiz", ["id" => $quizId]) }}';
+                window.location.href = '{{ route("student.quiz", ["id" => $quiz->id]) }}';
             }
         });
 

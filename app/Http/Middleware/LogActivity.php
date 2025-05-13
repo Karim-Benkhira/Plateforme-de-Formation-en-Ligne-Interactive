@@ -44,6 +44,11 @@ class LogActivity
             return false;
         }
 
+        // Don't log face recognition requests
+        if ($this->isFaceRecognitionRequest($request)) {
+            return false;
+        }
+
         return true;
     }
 
@@ -53,7 +58,7 @@ class LogActivity
     protected function isAssetRequest(Request $request): bool
     {
         $path = $request->path();
-        
+
         return preg_match('/\.(css|js|jpg|jpeg|png|gif|ico|svg|woff|woff2|ttf|eot)$/i', $path);
     }
 
@@ -66,12 +71,20 @@ class LogActivity
     }
 
     /**
+     * Check if the request is for face recognition.
+     */
+    protected function isFaceRecognitionRequest(Request $request): bool
+    {
+        return $request->is('face-recognition*');
+    }
+
+    /**
      * Log the request.
      */
     protected function logRequest(Request $request, Response $response): void
     {
         $action = $this->determineAction($request);
-        
+
         if (!$action) {
             return;
         }
@@ -86,7 +99,7 @@ class LogActivity
         if ($request->method() !== 'GET') {
             // Filter out sensitive data
             $input = $request->except(['password', 'password_confirmation', 'current_password', 'token', '_token']);
-            
+
             if (!empty($input)) {
                 $properties['request_data'] = $input;
             }
@@ -121,7 +134,7 @@ class LogActivity
             if ($method === 'POST' || $method === 'PUT' || $method === 'PATCH') {
                 return 'profile.update';
             }
-            
+
             if ($method === 'DELETE') {
                 return 'profile.delete';
             }
@@ -132,7 +145,7 @@ class LogActivity
             if ($method === 'POST') {
                 return 'two-factor.enable';
             }
-            
+
             if ($method === 'DELETE') {
                 return 'two-factor.disable';
             }
@@ -150,11 +163,11 @@ class LogActivity
             if ($method === 'POST') {
                 return 'course.create';
             }
-            
+
             if ($method === 'PUT' || $method === 'PATCH') {
                 return 'course.update';
             }
-            
+
             if ($method === 'DELETE') {
                 return 'course.delete';
             }
@@ -165,11 +178,11 @@ class LogActivity
             if ($method === 'POST') {
                 return 'quiz.create';
             }
-            
+
             if ($method === 'PUT' || $method === 'PATCH') {
                 return 'quiz.update';
             }
-            
+
             if ($method === 'DELETE') {
                 return 'quiz.delete';
             }
