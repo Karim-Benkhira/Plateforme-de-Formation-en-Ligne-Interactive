@@ -44,7 +44,7 @@ class StudentController extends UserController
                 return $courseResults->sortByDesc('created_at')->first();
             });
 
-        return view('student.MyCourses', ['courses' => $courses]);
+        return view('student.myCourses-new', ['courses' => $courses]);
     }
 
     public function showProfile(){
