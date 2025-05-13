@@ -49,7 +49,7 @@ class StudentController extends UserController
 
     public function showProfile(){
         $user = auth()->user();
-        return view('student.profile', compact('user'));
+        return view('student.profile-new', compact('user'));
     }
 
     public function showLeaderboard(){

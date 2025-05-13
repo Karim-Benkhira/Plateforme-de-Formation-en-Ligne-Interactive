@@ -1,4 +1,4 @@
-<?php $__env->startSection('title', 'Teacher Profile'); ?>
+<?php $__env->startSection('title', 'My Profile'); ?>
 
 <?php $__env->startSection('content'); ?>
 <div class="container mx-auto px-4 py-8">
@@ -26,16 +26,12 @@
                 <p class="text-blue-100 mb-4"><?php echo e($user->email); ?></p>
                 <div class="flex flex-wrap justify-center md:justify-start gap-4">
                     <div class="bg-white/20 rounded-lg px-4 py-2 text-white">
-                        <span class="font-bold text-xl"><?php echo e($coursesCount); ?></span>
-                        <span class="block text-sm">Courses</span>
+                        <span class="font-bold text-xl"><?php echo e($user->quizResults()->count() ?? 0); ?></span>
+                        <span class="block text-sm">Quizzes Taken</span>
                     </div>
                     <div class="bg-white/20 rounded-lg px-4 py-2 text-white">
-                        <span class="font-bold text-xl"><?php echo e($quizzesCount); ?></span>
-                        <span class="block text-sm">Quizzes</span>
-                    </div>
-                    <div class="bg-white/20 rounded-lg px-4 py-2 text-white">
-                        <span class="font-bold text-xl"><?php echo e($studentCount); ?></span>
-                        <span class="block text-sm">Students</span>
+                        <span class="font-bold text-xl"><?php echo e($user->quizResults()->avg('score') ? round($user->quizResults()->avg('score')) : 0); ?></span>
+                        <span class="block text-sm">Avg. Score</span>
                     </div>
                 </div>
             </div>
@@ -71,7 +67,7 @@
                     </h2>
                 </div>
                 <div class="p-6">
-                    <form action="<?php echo e(route('teacher.profile.update')); ?>" method="POST" class="space-y-6">
+                    <form action="<?php echo e(route('student.profile.update')); ?>" method="POST" class="space-y-6">
                         <?php echo csrf_field(); ?>
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                             <div>
@@ -103,34 +99,6 @@ endif;
 unset($__errorArgs, $__bag); ?>
                             </div>
                         </div>
-                        <div>
-                            <label for="specialization" class="block text-sm font-medium text-gray-300 mb-1">Specialization</label>
-                            <input type="text" name="specialization" id="specialization" value="<?php echo e(old('specialization', $user->specialization)); ?>" class="w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-white">
-                            <?php $__errorArgs = ['specialization'];
-$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
-if ($__bag->has($__errorArgs[0])) :
-if (isset($message)) { $__messageOriginal = $message; }
-$message = $__bag->first($__errorArgs[0]); ?>
-                                <p class="mt-1 text-sm text-red-500"><?php echo e($message); ?></p>
-                            <?php unset($message);
-if (isset($__messageOriginal)) { $message = $__messageOriginal; }
-endif;
-unset($__errorArgs, $__bag); ?>
-                        </div>
-                        <div>
-                            <label for="bio" class="block text-sm font-medium text-gray-300 mb-1">Bio</label>
-                            <textarea name="bio" id="bio" rows="4" class="w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-white"><?php echo e(old('bio', $user->bio)); ?></textarea>
-                            <?php $__errorArgs = ['bio'];
-$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
-if ($__bag->has($__errorArgs[0])) :
-if (isset($message)) { $__messageOriginal = $message; }
-$message = $__bag->first($__errorArgs[0]); ?>
-                                <p class="mt-1 text-sm text-red-500"><?php echo e($message); ?></p>
-                            <?php unset($message);
-if (isset($__messageOriginal)) { $message = $__messageOriginal; }
-endif;
-unset($__errorArgs, $__bag); ?>
-                        </div>
                         <div class="flex justify-end">
                             <button type="submit" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-md shadow-md transition-colors">
                                 Save Changes
@@ -154,12 +122,12 @@ unset($__errorArgs, $__bag); ?>
                     </h2>
                 </div>
                 <div class="p-6">
-                    <form action="<?php echo e(route('teacher.profile.password')); ?>" method="POST" class="space-y-6">
+                    <form action="<?php echo e(route('student.profile.password')); ?>" method="POST" class="space-y-6">
                         <?php echo csrf_field(); ?>
                         <div>
-                            <label for="current_password" class="block text-sm font-medium text-gray-300 mb-1">Current Password</label>
-                            <input type="password" name="current_password" id="current_password" class="w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-purple-500 text-white">
-                            <?php $__errorArgs = ['current_password'];
+                            <label for="old_password" class="block text-sm font-medium text-gray-300 mb-1">Current Password</label>
+                            <input type="password" name="old_password" id="old_password" class="w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-purple-500 text-white">
+                            <?php $__errorArgs = ['old_password'];
 $__bag = $errors->getBag($__errorArgs[1] ?? 'default');
 if ($__bag->has($__errorArgs[0])) :
 if (isset($message)) { $__messageOriginal = $message; }
@@ -171,9 +139,9 @@ endif;
 unset($__errorArgs, $__bag); ?>
                         </div>
                         <div>
-                            <label for="password" class="block text-sm font-medium text-gray-300 mb-1">New Password</label>
-                            <input type="password" name="password" id="password" class="w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-purple-500 text-white">
-                            <?php $__errorArgs = ['password'];
+                            <label for="new_password" class="block text-sm font-medium text-gray-300 mb-1">New Password</label>
+                            <input type="password" name="new_password" id="new_password" class="w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-purple-500 text-white">
+                            <?php $__errorArgs = ['new_password'];
 $__bag = $errors->getBag($__errorArgs[1] ?? 'default');
 if ($__bag->has($__errorArgs[0])) :
 if (isset($message)) { $__messageOriginal = $message; }
@@ -185,8 +153,8 @@ endif;
 unset($__errorArgs, $__bag); ?>
                         </div>
                         <div>
-                            <label for="password_confirmation" class="block text-sm font-medium text-gray-300 mb-1">Confirm New Password</label>
-                            <input type="password" name="password_confirmation" id="password_confirmation" class="w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-purple-500 text-white">
+                            <label for="new_password_confirmation" class="block text-sm font-medium text-gray-300 mb-1">Confirm New Password</label>
+                            <input type="password" name="new_password_confirmation" id="new_password_confirmation" class="w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-purple-500 text-white">
                         </div>
                         <div class="flex justify-end">
                             <button type="submit" class="px-4 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded-md shadow-md transition-colors">
@@ -209,23 +177,23 @@ unset($__errorArgs, $__bag); ?>
                 </div>
                 <div class="p-6">
                     <div class="space-y-4">
-                        <a href="<?php echo e(route('teacher.courses')); ?>" class="flex items-center p-3 bg-gray-700 hover:bg-gray-600 rounded-lg transition-colors">
+                        <a href="<?php echo e(route('student.myCourses')); ?>" class="flex items-center p-3 bg-gray-700 hover:bg-gray-600 rounded-lg transition-colors">
                             <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-blue-400 mr-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
                             </svg>
                             <span class="text-white">My Courses</span>
                         </a>
-                        <a href="<?php echo e(route('teacher.quizzes')); ?>" class="flex items-center p-3 bg-gray-700 hover:bg-gray-600 rounded-lg transition-colors">
+                        <a href="<?php echo e(route('student.progress')); ?>" class="flex items-center p-3 bg-gray-700 hover:bg-gray-600 rounded-lg transition-colors">
                             <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-purple-400 mr-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01" />
-                            </svg>
-                            <span class="text-white">My Quizzes</span>
-                        </a>
-                        <a href="<?php echo e(route('teacher.analytics')); ?>" class="flex items-center p-3 bg-gray-700 hover:bg-gray-600 rounded-lg transition-colors">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-green-400 mr-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
                             </svg>
-                            <span class="text-white">Analytics</span>
+                            <span class="text-white">My Progress</span>
+                        </a>
+                        <a href="<?php echo e(route('student.achievements')); ?>" class="flex items-center p-3 bg-gray-700 hover:bg-gray-600 rounded-lg transition-colors">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-green-400 mr-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" />
+                            </svg>
+                            <span class="text-white">Achievements</span>
                         </a>
                     </div>
                 </div>
@@ -246,7 +214,7 @@ unset($__errorArgs, $__bag); ?>
             </button>
         </div>
         <div class="p-6">
-            <form action="<?php echo e(route('teacher.profile.image')); ?>" method="POST" enctype="multipart/form-data" class="space-y-6">
+            <form action="<?php echo e(route('student.profile.update')); ?>" method="POST" enctype="multipart/form-data" class="space-y-6">
                 <?php echo csrf_field(); ?>
                 <div class="flex flex-col items-center">
                     <div class="w-32 h-32 rounded-full overflow-hidden border-4 border-gray-700 mb-4">
@@ -305,4 +273,4 @@ unset($__errorArgs, $__bag); ?>
 </script>
 <?php $__env->stopPush(); ?>
 
-<?php echo $__env->make('layouts.teacher', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?><?php /**PATH /home/karim/Plateforme-de-Formation-en-Ligne-Interactive/resources/views/teacher/profile.blade.php ENDPATH**/ ?>
+<?php echo $__env->make('layouts.student', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?><?php /**PATH /home/karim/Plateforme-de-Formation-en-Ligne-Interactive/resources/views/student/profile-new.blade.php ENDPATH**/ ?>

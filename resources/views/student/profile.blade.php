@@ -19,9 +19,9 @@
             <div class="relative group mb-6">
                 <div class="w-32 h-32 rounded-full overflow-hidden bg-gray-800 border-4 border-gray-700">
                     @if($user->profile_image)
-                        <img src="{{ asset('storage/' . $user->profile_image) }}" alt="{{ $user->username }}" class="w-full h-full object-cover">
+                        <img src="{{ asset('storage/' . $user->profile_image) }}" alt="{{ $user->username }}" class="w-full h-full object-cover" id="profile_preview">
                     @else
-                        <div class="w-full h-full flex items-center justify-center text-gray-500">
+                        <div class="w-full h-full flex items-center justify-center text-gray-500" id="profile_placeholder">
                             <i class="fas fa-user text-5xl"></i>
                         </div>
                     @endif
@@ -29,6 +29,9 @@
                 <label for="profile_image_upload" class="absolute bottom-0 right-0 w-10 h-10 bg-blue-600 rounded-full flex items-center justify-center cursor-pointer border-4 border-gray-800 hover:bg-blue-700 transition-colors">
                     <i class="fas fa-camera text-white"></i>
                 </label>
+                <div class="absolute -bottom-6 left-0 right-0 text-center text-xs text-blue-400 opacity-0 transition-opacity duration-300" id="upload_indicator">
+                    <i class="fas fa-check-circle mr-1"></i> Image selected
+                </div>
             </div>
 
             <h2 class="text-2xl font-bold text-white mb-1">{{ $user->username }}</h2>
@@ -94,7 +97,7 @@
 
             <form action="{{ route('student.profile.update') }}" method="POST" enctype="multipart/form-data" class="space-y-6">
                 @csrf
-                <input type="file" id="profile_image_upload" name="profile_image" class="hidden" accept="image/*" onchange="document.getElementById('submit_profile').click()">
+                <input type="file" id="profile_image_upload" name="profile_image" class="hidden" accept="image/*" onchange="handleProfileImageChange(this)">
 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div>
@@ -246,6 +249,44 @@
             input.type = 'password';
             icon.classList.remove('fa-eye-slash');
             icon.classList.add('fa-eye');
+        }
+    }
+
+    function handleProfileImageChange(input) {
+        const indicator = document.getElementById('upload_indicator');
+        const placeholder = document.getElementById('profile_placeholder');
+        const preview = document.getElementById('profile_preview');
+
+        if (input.files && input.files[0]) {
+            // Show the indicator
+            indicator.classList.remove('opacity-0');
+            indicator.classList.add('opacity-100');
+
+            // Create preview
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                if (preview) {
+                    preview.src = e.target.result;
+                } else {
+                    // Create preview if it doesn't exist
+                    const img = document.createElement('img');
+                    img.src = e.target.result;
+                    img.id = 'profile_preview';
+                    img.className = 'w-full h-full object-cover';
+                    img.alt = '{{ $user->username }}';
+
+                    // Replace placeholder with preview
+                    if (placeholder) {
+                        placeholder.parentNode.replaceChild(img, placeholder);
+                    }
+                }
+            }
+            reader.readAsDataURL(input.files[0]);
+
+            // Submit form after a short delay to allow preview to show
+            setTimeout(function() {
+                document.getElementById('submit_profile').click();
+            }, 1000);
         }
     }
 </script>

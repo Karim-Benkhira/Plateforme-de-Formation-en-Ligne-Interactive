@@ -277,7 +277,7 @@
                             <button @click="open = !open" class="flex items-center space-x-2 focus:outline-none">
                                 <span class="inline-flex items-center justify-center h-10 w-10 rounded-full overflow-hidden border-2 border-blue-500 shadow-md">
                                     @if(Auth::user()->profile_image)
-                                        <img src="{{ asset('storage/profile_images/' . Auth::user()->profile_image) }}" alt="{{ Auth::user()->username }}" class="h-full w-full object-cover">
+                                        <img src="{{ asset('storage/' . Auth::user()->profile_image) }}" alt="{{ Auth::user()->username }}" class="h-full w-full object-cover">
                                     @else
                                         <div class="h-full w-full bg-blue-600 flex items-center justify-center text-white font-bold">
                                             {{ strtoupper(substr(Auth::user()->username, 0, 1)) }}
