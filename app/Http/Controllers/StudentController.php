@@ -15,7 +15,7 @@ use Illuminate\Support\Facades\Schema;
 class StudentController extends UserController
 {
     public function index(){
-        return view('student.LearnerDashboard');
+        return view('student.dashboard-new');
     }
 
     public function showCourses(){

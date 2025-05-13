@@ -8,6 +8,7 @@
 
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
+    <link href="{{ asset('css/teacher-dashboard.css') }}" rel="stylesheet">
     <script>
         tailwind.config = {
             darkMode: 'class',
