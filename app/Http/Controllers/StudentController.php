@@ -286,7 +286,7 @@ class StudentController extends UserController
             ]
         ];
 
-        return view('student.progress', compact(
+        return view('student.progress-new', compact(
             'enrolledCount',
             'completedCount',
             'overallProgress',
