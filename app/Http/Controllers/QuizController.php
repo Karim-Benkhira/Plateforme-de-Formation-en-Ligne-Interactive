@@ -273,8 +273,8 @@ class QuizController extends Controller
     }
 
     public function takeQuiz($id) {
-        $quiz = Quiz::with('questions')->findOrFail($id);
-        return view('student.quiz', compact('quiz'));
+        $quiz = Quiz::with(['questions', 'course', 'creator'])->findOrFail($id);
+        return view('student.quiz-new', compact('quiz'));
     }
 
     public function submitQuiz(Request $request)
@@ -333,7 +333,7 @@ class QuizController extends Controller
         $result->details = json_encode($questionDetails); // Store detailed results
         $result->save();
 
-        return view('student.QuizResults', [
+        return view('student.QuizResults-new', [
             'quizName' => $quiz->name,
             'score' => $totalScore,
             'correctAnswers' => $correctAnswersCount,
