@@ -1,8 +1,6 @@
-@extends('layouts.student')
+<?php $__env->startSection('title', 'Support Center'); ?>
 
-@section('title', 'Support Center')
-
-@section('content')
+<?php $__env->startSection('content'); ?>
 <!-- Page Header -->
 <div class="welcome-banner bg-gradient-to-r from-primary-600 to-secondary-600 rounded-xl shadow-lg p-6 mb-8">
     <div class="flex flex-col md:flex-row justify-between items-center">
@@ -26,7 +24,7 @@
         </div>
         <div>
             <p class="text-gray-400 text-sm">Total Requests</p>
-            <p class="text-white text-2xl font-bold">{{ count($reclamations) }}</p>
+            <p class="text-white text-2xl font-bold"><?php echo e(count($reclamations)); ?></p>
         </div>
     </div>
 
@@ -36,7 +34,7 @@
         </div>
         <div>
             <p class="text-gray-400 text-sm">Resolved</p>
-            <p class="text-white text-2xl font-bold">{{ $reclamations->where('status', 'resolved')->count() }}</p>
+            <p class="text-white text-2xl font-bold"><?php echo e($reclamations->where('status', 'resolved')->count()); ?></p>
         </div>
     </div>
 
@@ -46,7 +44,7 @@
         </div>
         <div>
             <p class="text-gray-400 text-sm">Pending</p>
-            <p class="text-white text-2xl font-bold">{{ $reclamations->where('status', 'pending')->count() }}</p>
+            <p class="text-white text-2xl font-bold"><?php echo e($reclamations->where('status', 'pending')->count()); ?></p>
         </div>
     </div>
 </div>
@@ -134,30 +132,30 @@
                 <i class="fas fa-paper-plane mr-2"></i> Submit a Support Request
             </div>
             <div class="section-content">
-                @if(session('success'))
+                <?php if(session('success')): ?>
                     <div class="mb-6 p-4 bg-green-900 bg-opacity-40 border border-green-700 text-green-300 rounded-lg flex items-start">
                         <i class="fas fa-check-circle text-green-400 mt-1 mr-3"></i>
                         <div>
                             <h4 class="font-semibold">Success!</h4>
-                            <p>{{ session('success') }}</p>
+                            <p><?php echo e(session('success')); ?></p>
                         </div>
                     </div>
-                @endif
+                <?php endif; ?>
 
-                @if($errors->any())
+                <?php if($errors->any()): ?>
                     <div class="mb-6 p-4 bg-red-900 bg-opacity-40 border border-red-700 text-red-300 rounded-lg flex items-start">
                         <i class="fas fa-exclamation-circle text-red-400 mt-1 mr-3"></i>
                         <div>
                             <h4 class="font-semibold">Error</h4>
-                            @foreach($errors->all() as $error)
-                                <p>{{ $error }}</p>
-                            @endforeach
+                            <?php $__currentLoopData = $errors->all(); $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $error): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                <p><?php echo e($error); ?></p>
+                            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                         </div>
                     </div>
-                @endif
+                <?php endif; ?>
 
-                <form action="{{ route('student.support.submit') }}" method="POST" class="space-y-6">
-                    @csrf
+                <form action="<?php echo e(route('student.support.submit')); ?>" method="POST" class="space-y-6">
+                    <?php echo csrf_field(); ?>
                     <div>
                         <label for="message" class="block text-gray-300 mb-2 font-medium">Describe your issue or suggestion</label>
                         <textarea
@@ -186,7 +184,7 @@
                 <i class="fas fa-history mr-2"></i> Request History
             </div>
             <div class="section-content">
-                @if(count($reclamations) > 0)
+                <?php if(count($reclamations) > 0): ?>
                     <div class="overflow-x-auto">
                         <table class="w-full">
                             <thead>
@@ -198,48 +196,51 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                @foreach($reclamations as $rec)
-                                    <tr class="{{ $loop->even ? 'bg-gray-800 bg-opacity-40' : 'bg-gray-800 bg-opacity-20' }} hover:bg-gray-700 transition-colors">
+                                <?php $__currentLoopData = $reclamations; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $rec): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                    <tr class="<?php echo e($loop->even ? 'bg-gray-800 bg-opacity-40' : 'bg-gray-800 bg-opacity-20'); ?> hover:bg-gray-700 transition-colors">
                                         <td class="py-4 px-4 text-left text-gray-400 whitespace-nowrap">
-                                            {{ $rec->created_at->format('M d, Y') }}
-                                            <div class="text-xs">{{ $rec->created_at->format('h:i A') }}</div>
+                                            <?php echo e($rec->created_at->format('M d, Y')); ?>
+
+                                            <div class="text-xs"><?php echo e($rec->created_at->format('h:i A')); ?></div>
                                         </td>
                                         <td class="py-4 px-4 text-left">
-                                            <div class="text-white line-clamp-2">{{ $rec->message }}</div>
+                                            <div class="text-white line-clamp-2"><?php echo e($rec->message); ?></div>
                                         </td>
                                         <td class="py-4 px-4 text-center">
-                                            @if($rec->status === 'resolved')
+                                            <?php if($rec->status === 'resolved'): ?>
                                                 <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-green-900 text-green-300">
                                                     <i class="fas fa-check-circle mr-1"></i> Resolved
                                                 </span>
-                                            @elseif($rec->status === 'pending')
+                                            <?php elseif($rec->status === 'pending'): ?>
                                                 <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-yellow-900 text-yellow-300">
                                                     <i class="fas fa-clock mr-1"></i> Pending
                                                 </span>
-                                            @else
+                                            <?php else: ?>
                                                 <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-primary-900 text-primary-300">
-                                                    <i class="fas fa-sync-alt mr-1"></i> {{ ucfirst($rec->status) }}
+                                                    <i class="fas fa-sync-alt mr-1"></i> <?php echo e(ucfirst($rec->status)); ?>
+
                                                 </span>
-                                            @endif
+                                            <?php endif; ?>
                                         </td>
                                         <td class="py-4 px-4 text-left">
-                                            @if($rec->response)
-                                                <div class="text-white line-clamp-2">{{ $rec->response }}</div>
-                                                @if($rec->agent)
+                                            <?php if($rec->response): ?>
+                                                <div class="text-white line-clamp-2"><?php echo e($rec->response); ?></div>
+                                                <?php if($rec->agent): ?>
                                                     <div class="text-xs text-gray-400 mt-1">
-                                                        Responded by: {{ $rec->agent->name ?? 'Support Agent' }}
+                                                        Responded by: <?php echo e($rec->agent->name ?? 'Support Agent'); ?>
+
                                                     </div>
-                                                @endif
-                                            @else
+                                                <?php endif; ?>
+                                            <?php else: ?>
                                                 <span class="text-gray-500">No response yet</span>
-                                            @endif
+                                            <?php endif; ?>
                                         </td>
                                     </tr>
-                                @endforeach
+                                <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                             </tbody>
                         </table>
                     </div>
-                @else
+                <?php else: ?>
                     <div class="text-center py-8">
                         <div class="w-20 h-20 bg-gray-700 rounded-full flex items-center justify-center mx-auto mb-4 border-4 border-gray-600">
                             <i class="fas fa-ticket-alt text-gray-500 text-3xl"></i>
@@ -247,7 +248,7 @@
                         <h3 class="text-xl font-bold text-white mb-2">No Requests Yet</h3>
                         <p class="text-gray-400">You haven't submitted any support requests yet.</p>
                     </div>
-                @endif
+                <?php endif; ?>
             </div>
         </div>
     </div>
@@ -261,4 +262,6 @@
         overflow: hidden;
     }
 </style>
-@endsection
+<?php $__env->stopSection(); ?>
+
+<?php echo $__env->make('layouts.student', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?><?php /**PATH /home/karim/Plateforme-de-Formation-en-Ligne-Interactive/resources/views/student/support.blade.php ENDPATH**/ ?>
