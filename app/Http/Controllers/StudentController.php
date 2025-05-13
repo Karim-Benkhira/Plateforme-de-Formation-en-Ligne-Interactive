@@ -162,7 +162,7 @@ class StudentController extends UserController
             ],
         ];
 
-        return view('student.achievements', compact('achievements', 'totalScore', 'quizzesTaken'));
+        return view('student.achievements-new', compact('achievements', 'totalScore', 'quizzesTaken'));
     }
 
     public function showProgress(){
