@@ -159,7 +159,7 @@ Route::middleware(['role:admin'])->group(function () {
     Route::delete('/admin/reclamations/{id}/delete', [ReclamationController::class, 'deleteReclamation'])->name('admin.deleteReclamation');
 
     // Analytics Routes
-    Route::get('/admin/analytics', [AnalyticsController::class, 'instructorDashboard'])->name('admin.analytics');
+    Route::get('/admin/analytics', [App\Http\Controllers\Admin\AnalyticsController::class, 'index'])->name('admin.analytics');
     Route::get('/admin/analytics/course/{courseId}', [AnalyticsController::class, 'courseAnalytics'])->name('admin.analytics.course');
     Route::get('/admin/analytics/quiz/{quizId}', [AnalyticsController::class, 'quizAnalytics'])->name('admin.analytics.quiz');
     Route::get('/admin/analytics/course/{courseId}/report', [AnalyticsController::class, 'downloadCourseReport'])->name('admin.analytics.course.report');
