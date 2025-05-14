@@ -1,237 +1,139 @@
-# Plateforme d'Apprentissage en Ligne
-
-Une plateforme d'apprentissage interactive avec gestion des cours, génération de quiz par IA, et reconnaissance faciale pour des examens sécurisés.
+# Plateforme Éducative en Ligne
 
 ![Logo de la plateforme](public/images/logo.png)
 
-## 📋 Prérequis
+Plateforme d'apprentissage interactive offrant:
+- Gestion complète des cours (texte, PDF, vidéo)
+- Génération de quiz par intelligence artificielle
+- Examens sécurisés avec reconnaissance faciale
+- Tableaux de bord analytiques pour enseignants et étudiants
 
-Avant de commencer, assurez-vous d'avoir installé les éléments suivants sur votre machine locale:
+## 📋 Guide d'installation rapide
 
-- [PHP](https://www.php.net/downloads) (version 8.1 ou supérieure)
-- [Composer](https://getcomposer.org/download/)
-- [Node.js](https://nodejs.org/en/download/) (version 14 ou supérieure)
-- [npm](https://www.npmjs.com/get-npm) ou [Yarn](https://yarnpkg.com/getting-started/install)
-- [MySQL](https://dev.mysql.com/downloads/mysql/) (version 5.7 ou supérieure)
-- [Git](https://git-scm.com/downloads)
+### Prérequis
 
-## 🚀 Installation
+| Composant | Version minimale |
+|-----------|------------------|
+| PHP       | 8.1+             |
+| MySQL     | 5.7+             |
+| Node.js   | 14+              |
+| Composer  | 2.0+             |
 
-Vous pouvez installer ce projet de deux façons: avec Docker ou directement sur votre machine locale.
-
-## 🐳 Installation avec Docker (Recommandée)
-
-### Prérequis pour Docker
-- [Docker](https://docs.docker.com/get-docker/)
-- [Docker Compose](https://docs.docker.com/compose/install/)
-
-### Étapes d'installation avec Docker
-
-1. **Cloner le dépôt**
+### Option 1: Installation avec Docker (Recommandée)
 
 ```bash
-git clone https://github.com/votre-nom-utilisateur/nom-du-depot.git
-cd nom-du-depot
-```
+# 1. Cloner le dépôt
+git clone https://github.com/Karim-Benkhira/Plateforme-de-Formation-en-Ligne-Interactive.git
+cd Plateforme-de-Formation-en-Ligne-Interactive
 
-2. **Exécuter le script d'installation**
-
-```bash
+# 2. Lancer l'installation automatisée
 chmod +x docker-setup.sh
 ./docker-setup.sh
+
+# 3. Accéder à l'application
+# → http://localhost:8000
+# → phpMyAdmin: http://localhost:8080
 ```
 
-Ce script va:
-- Créer un fichier `.env` à partir de `.env.example`
-- Construire et démarrer les conteneurs Docker
-- Installer les dépendances PHP et JavaScript
-- Générer la clé d'application
-- Exécuter les migrations et les seeders
-- Créer le lien symbolique pour le stockage
-- Configurer les permissions
-
-3. **Accéder à l'application**
-
-Votre application sera accessible à l'adresse [http://localhost:8000](http://localhost:8000)
-phpMyAdmin sera disponible à l'adresse [http://localhost:8080](http://localhost:8080)
-
-### Commandes Docker utiles
+### Option 2: Installation manuelle
 
 ```bash
-# Démarrer les conteneurs
-docker-compose up -d
+# 1. Cloner le dépôt
+git clone https://github.com/votre-utilisateur/education-platform.git
+cd education-platform
 
-# Arrêter les conteneurs
-docker-compose down
-
-# Voir les logs
-docker-compose logs -f
-
-# Exécuter des commandes Artisan
-docker-compose exec app php artisan [commande]
-
-# Accéder au shell du conteneur
-docker-compose exec app bash
-```
-
-## 💻 Installation manuelle (Sans Docker)
-
-### 1. Cloner le dépôt
-
-```bash
-git clone https://github.com/votre-nom-utilisateur/nom-du-depot.git
-cd nom-du-depot
-```
-
-### 2. Installer les dépendances PHP
-
-```bash
+# 2. Installer les dépendances
 composer install
-```
+npm install && npm run build
 
-### 3. Installer les dépendances JavaScript
-
-```bash
-npm install
-# ou si vous utilisez Yarn
-yarn install
-```
-
-### 4. Compiler les assets
-
-```bash
-npm run dev
-# ou si vous utilisez Yarn
-yarn dev
-```
-
-### 5. Configurer le fichier d'environnement
-
-```bash
+# 3. Configurer l'environnement
 cp .env.example .env
 php artisan key:generate
-```
 
-### 6. Configurer la base de données
+# 4. Configurer la base de données dans .env
+# DB_DATABASE=education
+# DB_USERNAME=root
+# DB_PASSWORD=votre_mot_de_passe
 
-Ouvrez le fichier `.env` et configurez les paramètres de votre base de données:
+# 5. Créer la base de données
+mysql -u root -p -e "CREATE DATABASE education CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;"
 
-```
-DB_CONNECTION=mysql
-DB_HOST=127.0.0.1
-DB_PORT=3306
-DB_DATABASE=education
-DB_USERNAME=root
-DB_PASSWORD=votre_mot_de_passe
-```
-
-### 7. Créer la base de données
-
-Connectez-vous à MySQL et créez une base de données nommée `education`:
-
-```sql
-CREATE DATABASE education CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
-```
-
-### 8. Exécuter les migrations et les seeders
-
-```bash
-php artisan migrate
-php artisan db:seed
-```
-
-### 9. Créer un lien symbolique pour le stockage
-
-```bash
+# 6. Exécuter les migrations et seeders
+php artisan migrate --seed
 php artisan storage:link
-```
 
-### 10. Démarrer le serveur de développement
-
-```bash
+# 7. Démarrer le serveur
 php artisan serve
+# → http://127.0.0.1:8000
 ```
 
-Votre application sera accessible à l'adresse [http://127.0.0.1:8000](http://127.0.0.1:8000).
+## 👥 Comptes de démonstration
 
-## 🔐 Authentification
+| Rôle       | Email                | Mot de passe |
+|------------|----------------------|--------------|
+| Admin      | admin@example.com    | password     |
+| Enseignant | teacher@example.com  | password     |
+| Étudiant   | student@example.com  | password     |
 
-### Comptes par défaut
+## 🚀 Fonctionnalités principales
 
-Après avoir exécuté les seeders, les comptes suivants seront disponibles:
+### Pour les enseignants
+- Création de cours avec contenu multimédia
+- Génération automatique de quiz par IA
+- Surveillance des examens avec reconnaissance faciale
+- Analyse des performances des étudiants
 
-- **Admin**:
-  - Email: admin@example.com
-  - Mot de passe: password
+### Pour les étudiants
+- Interface intuitive d'apprentissage
+- Accès à divers formats de contenu pédagogique
+- Quiz interactifs avec feedback immédiat
+- Suivi de progression personnalisé
 
-- **Enseignant**:
-  - Email: teacher@example.com
-  - Mot de passe: password
+### Pour les administrateurs
+- Gestion complète des utilisateurs
+- Supervision des cours et catégories
+- Tableaux de bord analytiques
+- Gestion des réclamations
 
-- **Étudiant**:
-  - Email: student@example.com
-  - Mot de passe: password
+## ⚙️ Configuration avancée
 
-## 📝 Configuration supplémentaire
+### Augmenter les limites de téléchargement
 
-### Augmenter la taille maximale des fichiers téléchargés
-
-Si vous rencontrez des problèmes lors du téléchargement de fichiers volumineux, vous devrez modifier les paramètres PHP:
-
-1. Créez ou modifiez le fichier `public/.user.ini`:
-
+Créez ou modifiez `public/.user.ini`:
 ```ini
 upload_max_filesize = 100M
 post_max_size = 100M
 max_execution_time = 300
-max_input_time = 300
 memory_limit = 256M
 ```
 
-2. Ou modifiez votre fichier `php.ini` global avec les mêmes paramètres.
-
-### Configuration de la reconnaissance faciale
-
-La fonctionnalité de reconnaissance faciale utilise la bibliothèque face-api.js. Les modèles sont déjà inclus dans le projet.
-
-## 🛠️ Résolution des problèmes courants
-
-### Erreur "Content Too Large"
-
-Si vous rencontrez cette erreur lors de l'envoi de formulaires:
-
-1. Vérifiez que les paramètres PHP pour `upload_max_filesize` et `post_max_size` sont suffisamment élevés.
-2. Redémarrez votre serveur PHP après avoir modifié ces paramètres.
-
-### Problèmes de permissions
-
-Si vous rencontrez des problèmes de permissions sur les dossiers de stockage:
+### Commandes Docker utiles
 
 ```bash
-chmod -R 775 storage bootstrap/cache
+# Démarrer/arrêter les conteneurs
+docker-compose up -d
+docker-compose down
+
+# Exécuter des commandes Artisan
+docker-compose exec app php artisan [commande]
+
+# Accéder au shell
+docker-compose exec app bash
 ```
 
-### Erreurs de base de données
+## 🔧 Résolution des problèmes
 
-Si vous rencontrez des erreurs liées à la base de données:
-
-1. Vérifiez que votre serveur MySQL est en cours d'exécution.
-2. Vérifiez que les informations de connexion dans le fichier `.env` sont correctes.
-3. Assurez-vous que la base de données `education` existe.
-
-## 📚 Fonctionnalités principales
-
-- **Gestion des cours**: Création et gestion de cours avec différents types de contenu (texte, PDF, vidéo, YouTube).
-- **Génération de quiz par IA**: Création automatique de quiz basés sur le contenu des cours.
-- **Examens sécurisés**: Vérification de l'identité des étudiants par reconnaissance faciale.
-- **Tableau de bord analytique**: Suivi des performances des étudiants et des statistiques des cours.
-
-## 📱 Captures d'écran
-
-![Tableau de bord](screenshots/dashboard.png)
-![Page des cours](screenshots/courses.png)
-![Examen sécurisé](screenshots/secure-exam.png)
+| Problème | Solution |
+|----------|----------|
+| **Content Too Large** | Augmenter `upload_max_filesize` et `post_max_size` dans les paramètres PHP |
+| **Problèmes de permissions** | Exécuter `chmod -R 775 storage bootstrap/cache` |
+| **Erreurs de base de données** | Vérifier les informations de connexion dans `.env` |
+| **Method Not Allowed** | Utiliser la méthode HTTP correcte (POST pour les formulaires) |
 
 ## 📄 Licence
 
 Ce projet est sous licence [MIT](LICENSE).
+
+---
+
+Pour toute question ou assistance supplémentaire, veuillez consulter la documentation ou contacter l'équipe de développement.
