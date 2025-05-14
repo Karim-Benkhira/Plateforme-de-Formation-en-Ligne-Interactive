@@ -1,8 +1,6 @@
-@extends('layouts.admin')
+<?php $__env->startSection('title', 'Admin Dashboard'); ?>
 
-@section('title', 'Admin Dashboard')
-
-@push('styles')
+<?php $__env->startPush('styles'); ?>
 <style>
     @keyframes pulse-slow {
         0%, 100% {
@@ -19,9 +17,9 @@
         background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3E%3Cg fill-rule='evenodd'%3E%3Cg fill='%23FFFFFF' fill-opacity='0.1'%3E%3Cpath opacity='.5' d='M96 95h4v1h-4v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4H0v-1h15v-9H0v-1h15v-9H0v-1h15v-9H0v-1h15v-9H0v-1h15v-9H0v-1h15v-9H0v-1h15v-9H0v-1h15v-9H0v-1h15V0h1v15h9V0h1v15h9V0h1v15h9V0h1v15h9V0h1v15h9V0h1v15h9V0h1v15h9V0h1v15h9V0h1v15h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9zm-1 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-9-10h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm9-10v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-9-10h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm9-10v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-9-10h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm9-10v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-9-10h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
     }
 </style>
-@endpush
+<?php $__env->stopPush(); ?>
 
-@section('content')
+<?php $__env->startSection('content'); ?>
 <!-- Welcome Banner -->
 <div class="bg-gradient-to-r from-blue-900 via-primary-800 to-secondary-900 rounded-xl shadow-2xl p-6 mb-8 border border-blue-700/30 relative overflow-hidden">
     <div class="absolute inset-0 bg-grid-white/[0.05] bg-[length:20px_20px]"></div>
@@ -29,12 +27,12 @@
     <div class="relative flex flex-col md:flex-row justify-between items-center">
         <div>
             <h1 class="text-3xl font-bold text-white mb-2 flex items-center">
-                Welcome, <span class="text-blue-300 ml-2">{{ Auth::user()->username }}</span><span class="text-blue-400">!</span>
+                Welcome, <span class="text-blue-300 ml-2"><?php echo e(Auth::user()->username); ?></span><span class="text-blue-400">!</span>
             </h1>
             <p class="text-blue-100 opacity-90">Manage your platform, monitor user activity, and keep everything running smoothly.</p>
         </div>
         <div class="mt-4 md:mt-0">
-            <a href="{{ route('admin.createCourse') }}" class="group bg-white/10 backdrop-blur-sm border border-white/20 text-white hover:bg-white/20 font-semibold py-3 px-5 rounded-lg shadow-lg transition-all duration-300 inline-flex items-center hover:shadow-blue-500/20 hover:shadow-xl">
+            <a href="<?php echo e(route('admin.createCourse')); ?>" class="group bg-white/10 backdrop-blur-sm border border-white/20 text-white hover:bg-white/20 font-semibold py-3 px-5 rounded-lg shadow-lg transition-all duration-300 inline-flex items-center hover:shadow-blue-500/20 hover:shadow-xl">
                 <i class="fas fa-plus mr-2 group-hover:scale-110 transition-transform duration-300"></i>
                 <span>Add New Course</span>
             </a>
@@ -54,7 +52,7 @@
                 </div>
                 <div>
                     <p class="text-gray-400 text-sm font-medium">Total Users</p>
-                    <p class="text-white text-2xl font-bold">{{ $totalUsers }}</p>
+                    <p class="text-white text-2xl font-bold"><?php echo e($totalUsers); ?></p>
                 </div>
             </div>
             <div class="w-full bg-gray-800/80 h-2 rounded-full overflow-hidden shadow-inner">
@@ -73,7 +71,7 @@
                 </div>
                 <div>
                     <p class="text-gray-400 text-sm font-medium">Active Courses</p>
-                    <p class="text-white text-2xl font-bold">{{ $activeCourses }}</p>
+                    <p class="text-white text-2xl font-bold"><?php echo e($activeCourses); ?></p>
                 </div>
             </div>
             <div class="w-full bg-gray-800/80 h-2 rounded-full overflow-hidden shadow-inner">
@@ -92,7 +90,7 @@
                 </div>
                 <div>
                     <p class="text-gray-400 text-sm font-medium">Quizzes Taken</p>
-                    <p class="text-white text-2xl font-bold">{{ $quizzesTaken }}</p>
+                    <p class="text-white text-2xl font-bold"><?php echo e($quizzesTaken); ?></p>
                 </div>
             </div>
             <div class="w-full bg-gray-800/80 h-2 rounded-full overflow-hidden shadow-inner">
@@ -132,43 +130,45 @@
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach($leaders as $index => $user)
+                    <?php $__currentLoopData = $leaders; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $index => $user): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                     <tr class="border-b border-gray-800/80 hover:bg-gray-800/50 transition-all duration-200">
                         <td class="px-4 py-4">
-                            @if($index === 0)
+                            <?php if($index === 0): ?>
                                 <div class="flex items-center justify-center w-10 h-10 rounded-full bg-gradient-to-r from-yellow-500 to-yellow-600 text-white font-bold shadow-lg relative overflow-hidden">
                                     <div class="absolute inset-0 bg-grid-white/10 bg-[length:5px_5px]"></div>
                                     <span class="relative">1</span>
                                     <div class="absolute top-0 left-0 w-full h-full bg-white opacity-20 animate-pulse-slow"></div>
                                 </div>
-                            @elseif($index === 1)
+                            <?php elseif($index === 1): ?>
                                 <div class="flex items-center justify-center w-10 h-10 rounded-full bg-gradient-to-r from-gray-400 to-gray-500 text-white font-bold shadow-lg relative overflow-hidden">
                                     <div class="absolute inset-0 bg-grid-white/10 bg-[length:5px_5px]"></div>
                                     <span class="relative">2</span>
                                 </div>
-                            @elseif($index === 2)
+                            <?php elseif($index === 2): ?>
                                 <div class="flex items-center justify-center w-10 h-10 rounded-full bg-gradient-to-r from-yellow-700 to-yellow-800 text-white font-bold shadow-lg relative overflow-hidden">
                                     <div class="absolute inset-0 bg-grid-white/10 bg-[length:5px_5px]"></div>
                                     <span class="relative">3</span>
                                 </div>
-                            @else
+                            <?php else: ?>
                                 <div class="flex items-center justify-center w-10 h-10 rounded-full bg-gray-800 border border-gray-700 text-gray-300 font-bold">
-                                    {{ $index + 1 }}
+                                    <?php echo e($index + 1); ?>
+
                                 </div>
-                            @endif
+                            <?php endif; ?>
                         </td>
                         <td class="px-4 py-4 font-medium text-white">
                             <div class="flex items-center">
                                 <div class="w-8 h-8 rounded-full bg-gray-700 flex items-center justify-center mr-3 text-gray-300">
                                     <i class="fas fa-user text-sm"></i>
                                 </div>
-                                {{ $user->username }}
+                                <?php echo e($user->username); ?>
+
                             </div>
                         </td>
                         <td class="px-4 py-4">
                             <div class="inline-flex items-center bg-blue-900/30 border border-blue-700/30 text-blue-400 px-4 py-2 rounded-lg font-medium">
                                 <i class="fas fa-star text-yellow-500 mr-2"></i>
-                                <span>{{ $user->total_score }} pts</span>
+                                <span><?php echo e($user->total_score); ?> pts</span>
                             </div>
                         </td>
                         <td class="px-4 py-4 text-gray-300">
@@ -176,13 +176,14 @@
                                 <div class="w-8 h-8 rounded-full bg-purple-900/30 flex items-center justify-center mr-2 text-purple-400">
                                     <i class="fas fa-clipboard-check text-sm"></i>
                                 </div>
-                                {{ $user->quizzes_count }}
+                                <?php echo e($user->quizzes_count); ?>
+
                             </div>
                         </td>
                     </tr>
-                    @endforeach
+                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
 
-                    @if($leaders->isEmpty())
+                    <?php if($leaders->isEmpty()): ?>
                     <tr>
                         <td colspan="4" class="text-center py-8 text-gray-500">
                             <div class="flex flex-col items-center">
@@ -191,7 +192,7 @@
                             </div>
                         </td>
                     </tr>
-                    @endif
+                    <?php endif; ?>
                 </tbody>
             </table>
         </div>
@@ -216,7 +217,7 @@
             </div>
 
             <div class="grid grid-cols-2 gap-5">
-                <a href="{{ route('admin.users') }}" class="group relative bg-gradient-to-br from-gray-800 to-gray-900 hover:from-blue-900/20 hover:to-blue-800/20 border border-gray-700 hover:border-blue-500/50 p-6 rounded-xl flex flex-col items-center justify-center transition-all duration-300 hover:shadow-lg hover:shadow-blue-500/10 overflow-hidden">
+                <a href="<?php echo e(route('admin.users')); ?>" class="group relative bg-gradient-to-br from-gray-800 to-gray-900 hover:from-blue-900/20 hover:to-blue-800/20 border border-gray-700 hover:border-blue-500/50 p-6 rounded-xl flex flex-col items-center justify-center transition-all duration-300 hover:shadow-lg hover:shadow-blue-500/10 overflow-hidden">
                     <div class="absolute inset-0 bg-grid-white/[0.02] bg-[length:10px_10px] opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
                     <div class="relative z-10 flex flex-col items-center">
                         <div class="bg-blue-900/70 text-blue-400 group-hover:bg-blue-800 group-hover:text-blue-300 p-4 rounded-xl mb-4 shadow-inner shadow-blue-950/50 group-hover:shadow-blue-900/30 group-hover:shadow-lg transition-all duration-300 transform group-hover:scale-110">
@@ -227,7 +228,7 @@
                     <div class="absolute bottom-0 left-0 h-1 bg-gradient-to-r from-blue-500 to-blue-600 w-0 group-hover:w-full transition-all duration-500"></div>
                 </a>
 
-                <a href="{{ route('admin.courses') }}" class="group relative bg-gradient-to-br from-gray-800 to-gray-900 hover:from-green-900/20 hover:to-green-800/20 border border-gray-700 hover:border-green-500/50 p-6 rounded-xl flex flex-col items-center justify-center transition-all duration-300 hover:shadow-lg hover:shadow-green-500/10 overflow-hidden">
+                <a href="<?php echo e(route('admin.courses')); ?>" class="group relative bg-gradient-to-br from-gray-800 to-gray-900 hover:from-green-900/20 hover:to-green-800/20 border border-gray-700 hover:border-green-500/50 p-6 rounded-xl flex flex-col items-center justify-center transition-all duration-300 hover:shadow-lg hover:shadow-green-500/10 overflow-hidden">
                     <div class="absolute inset-0 bg-grid-white/[0.02] bg-[length:10px_10px] opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
                     <div class="relative z-10 flex flex-col items-center">
                         <div class="bg-green-900/70 text-green-400 group-hover:bg-green-800 group-hover:text-green-300 p-4 rounded-xl mb-4 shadow-inner shadow-green-950/50 group-hover:shadow-green-900/30 group-hover:shadow-lg transition-all duration-300 transform group-hover:scale-110">
@@ -238,7 +239,7 @@
                     <div class="absolute bottom-0 left-0 h-1 bg-gradient-to-r from-green-500 to-green-600 w-0 group-hover:w-full transition-all duration-500"></div>
                 </a>
 
-                <a href="{{ route('admin.quizzes') }}" class="group relative bg-gradient-to-br from-gray-800 to-gray-900 hover:from-purple-900/20 hover:to-purple-800/20 border border-gray-700 hover:border-purple-500/50 p-6 rounded-xl flex flex-col items-center justify-center transition-all duration-300 hover:shadow-lg hover:shadow-purple-500/10 overflow-hidden">
+                <a href="<?php echo e(route('admin.quizzes')); ?>" class="group relative bg-gradient-to-br from-gray-800 to-gray-900 hover:from-purple-900/20 hover:to-purple-800/20 border border-gray-700 hover:border-purple-500/50 p-6 rounded-xl flex flex-col items-center justify-center transition-all duration-300 hover:shadow-lg hover:shadow-purple-500/10 overflow-hidden">
                     <div class="absolute inset-0 bg-grid-white/[0.02] bg-[length:10px_10px] opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
                     <div class="relative z-10 flex flex-col items-center">
                         <div class="bg-purple-900/70 text-purple-400 group-hover:bg-purple-800 group-hover:text-purple-300 p-4 rounded-xl mb-4 shadow-inner shadow-purple-950/50 group-hover:shadow-purple-900/30 group-hover:shadow-lg transition-all duration-300 transform group-hover:scale-110">
@@ -249,7 +250,7 @@
                     <div class="absolute bottom-0 left-0 h-1 bg-gradient-to-r from-purple-500 to-purple-600 w-0 group-hover:w-full transition-all duration-500"></div>
                 </a>
 
-                <a href="{{ route('admin.reclamations') }}" class="group relative bg-gradient-to-br from-gray-800 to-gray-900 hover:from-red-900/20 hover:to-red-800/20 border border-gray-700 hover:border-red-500/50 p-6 rounded-xl flex flex-col items-center justify-center transition-all duration-300 hover:shadow-lg hover:shadow-red-500/10 overflow-hidden">
+                <a href="<?php echo e(route('admin.reclamations')); ?>" class="group relative bg-gradient-to-br from-gray-800 to-gray-900 hover:from-red-900/20 hover:to-red-800/20 border border-gray-700 hover:border-red-500/50 p-6 rounded-xl flex flex-col items-center justify-center transition-all duration-300 hover:shadow-lg hover:shadow-red-500/10 overflow-hidden">
                     <div class="absolute inset-0 bg-grid-white/[0.02] bg-[length:10px_10px] opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
                     <div class="relative z-10 flex flex-col items-center">
                         <div class="bg-red-900/70 text-red-400 group-hover:bg-red-800 group-hover:text-red-300 p-4 rounded-xl mb-4 shadow-inner shadow-red-950/50 group-hover:shadow-red-900/30 group-hover:shadow-lg transition-all duration-300 transform group-hover:scale-110">
@@ -288,7 +289,7 @@
                             </div>
                             <div>
                                 <p class="text-gray-400 text-xs font-medium mb-1">Students</p>
-                                <p class="text-white text-lg font-bold">{{ App\Models\User::where('role', 'user')->count() }}</p>
+                                <p class="text-white text-lg font-bold"><?php echo e(App\Models\User::where('role', 'user')->count()); ?></p>
                             </div>
                         </div>
                         <div class="flex flex-col items-end">
@@ -309,7 +310,7 @@
                             </div>
                             <div>
                                 <p class="text-gray-400 text-xs font-medium mb-1">Teachers</p>
-                                <p class="text-white text-lg font-bold">{{ App\Models\User::where('role', 'teacher')->count() }}</p>
+                                <p class="text-white text-lg font-bold"><?php echo e(App\Models\User::where('role', 'teacher')->count()); ?></p>
                             </div>
                         </div>
                         <div class="flex flex-col items-end">
@@ -330,7 +331,7 @@
                             </div>
                             <div>
                                 <p class="text-gray-400 text-xs font-medium mb-1">Categories</p>
-                                <p class="text-white text-lg font-bold">{{ App\Models\Category::count() }}</p>
+                                <p class="text-white text-lg font-bold"><?php echo e(App\Models\Category::count()); ?></p>
                             </div>
                         </div>
                         <div class="flex flex-col items-end">
@@ -351,7 +352,7 @@
                             </div>
                             <div>
                                 <p class="text-gray-400 text-xs font-medium mb-1">Quiz Questions</p>
-                                <p class="text-white text-lg font-bold">{{ App\Models\Question::count() }}</p>
+                                <p class="text-white text-lg font-bold"><?php echo e(App\Models\Question::count()); ?></p>
                             </div>
                         </div>
                         <div class="flex flex-col items-end">
@@ -366,4 +367,5 @@
         </div>
     </div>
 </div>
-@endsection
+<?php $__env->stopSection(); ?>
+<?php echo $__env->make('layouts.admin', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?><?php /**PATH /home/karim/Plateforme-de-Formation-en-Ligne-Interactive/resources/views/admin/dashboard.blade.php ENDPATH**/ ?>
