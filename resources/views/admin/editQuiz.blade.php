@@ -152,6 +152,78 @@
                 <p class="text-sm text-gray-400 mt-2 ml-1">Select the course this quiz belongs to</p>
             </div>
 
+            <!-- Quiz Settings -->
+            <div class="bg-gray-800/50 rounded-xl p-6 border border-gray-700/50">
+                <div class="mb-4">
+                    <label class="block text-gray-300 font-medium mb-3 flex items-center">
+                        <i class="fas fa-cog text-purple-400 mr-2"></i>
+                        Quiz Settings
+                    </label>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
+                    <div class="bg-gray-900/50 p-4 rounded-lg border border-gray-700/50">
+                        <label for="duration" class="block text-gray-300 font-medium mb-2 flex items-center">
+                            <i class="fas fa-clock text-blue-400 mr-2"></i>
+                            Duration (minutes)
+                        </label>
+                        <input type="number" name="duration" id="duration" value="{{ old('duration', $quiz->duration) }}" min="1" max="180" required
+                            class="w-full p-3 bg-gray-800 border border-gray-700 rounded-lg text-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent" />
+                        <p class="text-sm text-gray-400 mt-1">Time allowed to complete the quiz</p>
+                    </div>
+
+                    <div class="bg-gray-900/50 p-4 rounded-lg border border-gray-700/50">
+                        <label for="passing_score" class="block text-gray-300 font-medium mb-2 flex items-center">
+                            <i class="fas fa-percentage text-green-400 mr-2"></i>
+                            Passing Score (%)
+                        </label>
+                        <input type="number" name="passing_score" id="passing_score" value="{{ old('passing_score', $quiz->passing_score) }}" min="1" max="100" required
+                            class="w-full p-3 bg-gray-800 border border-gray-700 rounded-lg text-gray-200 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent" />
+                        <p class="text-sm text-gray-400 mt-1">Minimum score to pass the quiz</p>
+                    </div>
+
+                    <div class="bg-gray-900/50 p-4 rounded-lg border border-gray-700/50">
+                        <label for="attempts_allowed" class="block text-gray-300 font-medium mb-2 flex items-center">
+                            <i class="fas fa-redo text-purple-400 mr-2"></i>
+                            Attempts Allowed
+                        </label>
+                        <input type="number" name="attempts_allowed" id="attempts_allowed" value="{{ old('attempts_allowed', $quiz->attempts_allowed) }}" min="1" max="10" required
+                            class="w-full p-3 bg-gray-800 border border-gray-700 rounded-lg text-gray-200 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent" />
+                        <p class="text-sm text-gray-400 mt-1">Number of times a student can take this quiz</p>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="bg-gray-900/50 p-4 rounded-lg border border-gray-700/50">
+                        <div class="flex items-center">
+                            <input type="checkbox" name="is_published" id="is_published" value="1" class="h-5 w-5 text-purple-600 focus:ring-purple-500 border-gray-700 bg-gray-700 rounded" {{ old('is_published', $quiz->is_published) ? 'checked' : '' }}>
+                            <label for="is_published" class="ml-2 text-gray-300 font-medium">Publish quiz</label>
+                        </div>
+                        <p class="text-sm text-gray-400 mt-1 ml-7">When published, students can access this quiz</p>
+                    </div>
+
+                    <div class="bg-gray-900/50 p-4 rounded-lg border border-gray-700/50">
+                        <div class="flex items-center">
+                            <input type="checkbox" name="requires_face_verification" id="requires_face_verification" value="1" class="h-5 w-5 text-purple-600 focus:ring-purple-500 border-gray-700 bg-gray-700 rounded" {{ old('requires_face_verification', $quiz->requires_face_verification) ? 'checked' : '' }}>
+                            <label for="requires_face_verification" class="ml-2 text-gray-300 font-medium">Require face verification</label>
+                        </div>
+                        <p class="text-sm text-gray-400 mt-1 ml-7">Students will need to verify their identity with facial recognition</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Quiz Description -->
+            <div class="bg-gray-800/50 rounded-xl p-6 border border-gray-700/50">
+                <label for="description" class="block text-gray-300 font-medium mb-3 flex items-center">
+                    <i class="fas fa-align-left text-yellow-400 mr-2"></i>
+                    Quiz Description
+                </label>
+                <textarea name="description" id="description" rows="4"
+                    class="w-full p-4 bg-gray-900/70 border border-gray-700 rounded-lg text-gray-200 focus:outline-none focus:ring-2 focus:ring-yellow-500/50 focus:border-transparent transition-all duration-300"
+                    placeholder="Enter a description for this quiz">{{ old('description', $quiz->description) }}</textarea>
+                <p class="text-sm text-gray-400 mt-2 ml-1">Provide instructions or information about this quiz</p>
+            </div>
+
             <!-- Form Actions -->
             <div class="flex flex-col sm:flex-row justify-end gap-4 pt-4 border-t border-gray-700/50">
                 <a href="{{ route('admin.quizzes') }}" class="px-6 py-3 bg-gray-700 hover:bg-gray-600 text-gray-300 font-medium rounded-lg transition-all duration-300 flex items-center justify-center">

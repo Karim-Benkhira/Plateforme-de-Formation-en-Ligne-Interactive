@@ -20,12 +20,20 @@ class SessionController extends Controller
     public function index(Request $request)
     {
         $sessions = $this->getSessions($request);
-        
-        return view('profile.sessions', [
-            'sessions' => $sessions,
-        ]);
+
+        // Check if user is admin and use the new template
+        $user = Auth::user();
+        if ($user->role === 'admin') {
+            return view('profile.sessions-new', [
+                'sessions' => $sessions,
+            ]);
+        } else {
+            return view('profile.sessions', [
+                'sessions' => $sessions,
+            ]);
+        }
     }
-    
+
     /**
      * Log the user out of all other browser sessions.
      *
@@ -37,29 +45,35 @@ class SessionController extends Controller
         $request->validate([
             'password' => 'required|string',
         ]);
-        
+
         $user = Auth::user();
-        
+
         // Check if the current password matches
         if (!Hash::check($request->password, $user->password)) {
             return back()->withErrors(['password' => 'The provided password does not match your current password.']);
         }
-        
+
         // Update the user's session ID to a new one
         $this->updateSessionId($request);
-        
+
+        // Get the count of sessions to be deleted
+        $sessionsCount = DB::table('sessions')
+            ->where('user_id', $user->id)
+            ->where('id', '!=', $request->session()->getId())
+            ->count();
+
         // Delete all other sessions for this user
         DB::table('sessions')
             ->where('user_id', $user->id)
             ->where('id', '!=', $request->session()->getId())
             ->delete();
-        
+
         // Log the activity
-        ActivityLog::log('sessions.logout_others', 'Logged out of all other browser sessions');
-        
-        return redirect()->route('profile.sessions')->with('status', 'All other browser sessions have been logged out.');
+        ActivityLog::log('sessions.logout_others', 'Logged out of all other browser sessions (' . $sessionsCount . ' sessions)');
+
+        return redirect()->route('profile.sessions')->with('status', 'All other browser sessions have been logged out successfully.');
     }
-    
+
     /**
      * Get the current sessions.
      *
@@ -71,9 +85,9 @@ class SessionController extends Controller
         if (config('session.driver') !== 'database') {
             return collect();
         }
-        
+
         $user = Auth::user();
-        
+
         return collect(
             DB::table('sessions')
                 ->where('user_id', $user->id)
@@ -88,7 +102,7 @@ class SessionController extends Controller
             ];
         });
     }
-    
+
     /**
      * Create a new agent instance from the given session.
      *
@@ -98,11 +112,11 @@ class SessionController extends Controller
     protected function createAgent($session)
     {
         $agent = $session->user_agent;
-        
+
         // Extract browser and platform information
         $browser = 'Unknown';
         $platform = 'Unknown';
-        
+
         if (preg_match('/MSIE|Trident/i', $agent)) {
             $browser = 'Internet Explorer';
         } elseif (preg_match('/Firefox/i', $agent)) {
@@ -116,7 +130,7 @@ class SessionController extends Controller
         } elseif (preg_match('/Edge/i', $agent)) {
             $browser = 'Edge';
         }
-        
+
         if (preg_match('/Windows/i', $agent)) {
             $platform = 'Windows';
         } elseif (preg_match('/Macintosh|Mac OS X/i', $agent)) {
@@ -128,14 +142,14 @@ class SessionController extends Controller
         } elseif (preg_match('/iPhone|iPad|iPod/i', $agent)) {
             $platform = 'iOS';
         }
-        
+
         return (object) [
             'browser' => $browser,
             'platform' => $platform,
             'is_desktop' => !preg_match('/mobile|android|iphone|ipad|ipod/i', $agent),
         ];
     }
-    
+
     /**
      * Format the last active time for the session.
      *
@@ -146,7 +160,7 @@ class SessionController extends Controller
     {
         return now()->subSeconds(now()->timestamp - $session->last_activity)->diffForHumans();
     }
-    
+
     /**
      * Update the session ID.
      *
@@ -156,9 +170,9 @@ class SessionController extends Controller
     protected function updateSessionId(Request $request)
     {
         $request->session()->regenerate();
-        
+
         $user = Auth::user();
-        
+
         DB::table('sessions')
             ->where('id', $request->session()->getId())
             ->update([

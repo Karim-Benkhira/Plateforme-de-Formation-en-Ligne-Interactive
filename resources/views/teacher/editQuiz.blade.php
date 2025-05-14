@@ -113,7 +113,7 @@
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div class="bg-gray-700 p-4 rounded-lg">
                         <div class="flex items-center">
-                            <input type="checkbox" name="is_published" id="is_published" class="rounded border-gray-700 text-purple-600 shadow-sm focus:border-purple-500 focus:ring focus:ring-purple-500 focus:ring-opacity-50" {{ $quiz->is_published ? 'checked' : '' }}>
+                            <input type="checkbox" name="is_published" id="is_published" value="1" class="rounded border-gray-700 text-purple-600 shadow-sm focus:border-purple-500 focus:ring focus:ring-purple-500 focus:ring-opacity-50" {{ $quiz->is_published ? 'checked' : '' }}>
                             <label for="is_published" class="ml-2 block text-sm font-medium text-gray-300">Publish quiz</label>
                         </div>
                         <p class="mt-1 text-xs text-gray-400 ml-6">When published, students can access this quiz</p>
@@ -121,7 +121,7 @@
 
                     <div class="bg-gray-700 p-4 rounded-lg">
                         <div class="flex items-center">
-                            <input type="checkbox" name="requires_face_verification" id="requires_face_verification" class="rounded border-gray-700 text-purple-600 shadow-sm focus:border-purple-500 focus:ring focus:ring-purple-500 focus:ring-opacity-50" {{ $quiz->requires_face_verification ? 'checked' : '' }}>
+                            <input type="checkbox" name="requires_face_verification" id="requires_face_verification" value="1" class="rounded border-gray-700 text-purple-600 shadow-sm focus:border-purple-500 focus:ring focus:ring-purple-500 focus:ring-opacity-50" {{ $quiz->requires_face_verification ? 'checked' : '' }}>
                             <label for="requires_face_verification" class="ml-2 block text-sm font-medium text-gray-300">Require face verification</label>
                         </div>
                         <p class="mt-1 text-xs text-gray-400 ml-6">Enable secure exam mode with facial recognition</p>

@@ -76,9 +76,16 @@ class ActivityLogController extends Controller
             ->latest()
             ->paginate(10);
 
-        return view('profile.activity', [
-            'activityLogs' => $activityLogs,
-        ]);
+        // Check if user is admin and use the new template
+        if ($user->role === 'admin') {
+            return view('profile.activity-new', [
+                'activityLogs' => $activityLogs,
+            ]);
+        } else {
+            return view('profile.activity', [
+                'activityLogs' => $activityLogs,
+            ]);
+        }
     }
 
     /**

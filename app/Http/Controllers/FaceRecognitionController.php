@@ -243,7 +243,7 @@ class FaceRecognitionController extends Controller
                 ->with('error', 'You need to register your face before taking a secure exam.');
         }
 
-        return view('face-recognition.exam-verification', compact('quiz'));
+        return view('student.secure-exam', compact('quiz'));
     }
 
     /**

@@ -96,7 +96,7 @@
 
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div class="bg-primary-50 dark:bg-primary-900/20 p-4 rounded-lg border border-primary-100 dark:border-primary-800 flex items-center">
-                            <input type="checkbox" name="is_published" id="is_published" class="h-5 w-5 text-primary-600 focus:ring-primary-500 border-gray-300 rounded transition duration-200">
+                            <input type="checkbox" name="is_published" id="is_published" value="1" class="h-5 w-5 text-primary-600 focus:ring-primary-500 border-gray-300 rounded transition duration-200" {{ old('is_published') ? 'checked' : '' }}>
                             <label for="is_published" class="ml-3 block text-sm text-gray-700 dark:text-gray-300">
                                 <span class="font-medium">Publish immediately</span>
                                 <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">If checked, the quiz will be available to students right away.</p>
@@ -104,7 +104,7 @@
                         </div>
 
                         <div class="bg-secondary-50 dark:bg-secondary-900/20 p-4 rounded-lg border border-secondary-100 dark:border-secondary-800 flex items-center">
-                            <input type="checkbox" name="requires_face_verification" id="requires_face_verification" class="h-5 w-5 text-secondary-600 focus:ring-secondary-500 border-gray-300 rounded transition duration-200">
+                            <input type="checkbox" name="requires_face_verification" id="requires_face_verification" value="1" class="h-5 w-5 text-secondary-600 focus:ring-secondary-500 border-gray-300 rounded transition duration-200" {{ old('requires_face_verification') ? 'checked' : '' }}>
                             <label for="requires_face_verification" class="ml-3 block text-sm text-gray-700 dark:text-gray-300">
                                 <span class="font-medium">Require face verification</span>
                                 <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">Enable secure exam mode with facial recognition to prevent cheating.</p>

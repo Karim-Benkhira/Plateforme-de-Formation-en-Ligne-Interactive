@@ -104,7 +104,7 @@
 
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6 pt-4 border-t border-gray-700">
             <div class="flex items-center">
-                <input type="checkbox" name="is_published" id="is_published" class="w-5 h-5 bg-gray-700 border-gray-600 rounded text-purple-600 focus:ring-purple-500" {{ old('is_published') ? 'checked' : '' }}>
+                <input type="checkbox" name="is_published" id="is_published" value="1" class="w-5 h-5 bg-gray-700 border-gray-600 rounded text-purple-600 focus:ring-purple-500" {{ old('is_published') ? 'checked' : '' }}>
                 <label for="is_published" class="ml-2 text-gray-300">Publish quiz immediately</label>
                 <div class="ml-2 group relative">
                     <i class="fas fa-info-circle text-gray-500 cursor-help"></i>
@@ -115,7 +115,7 @@
             </div>
 
             <div class="flex items-center">
-                <input type="checkbox" name="requires_face_verification" id="requires_face_verification" class="w-5 h-5 bg-gray-700 border-gray-600 rounded text-purple-600 focus:ring-purple-500" {{ old('requires_face_verification') ? 'checked' : '' }}>
+                <input type="checkbox" name="requires_face_verification" id="requires_face_verification" value="1" class="w-5 h-5 bg-gray-700 border-gray-600 rounded text-purple-600 focus:ring-purple-500" {{ old('requires_face_verification') ? 'checked' : '' }}>
                 <label for="requires_face_verification" class="ml-2 text-gray-300">Require face verification</label>
                 <div class="ml-2 group relative">
                     <i class="fas fa-info-circle text-gray-500 cursor-help"></i>

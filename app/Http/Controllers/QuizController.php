@@ -16,9 +16,11 @@ class QuizController extends Controller
         $courses = Course::all();
 
         // Determine the view based on user role
-        $view = auth()->user()->role === 'admin' ? 'admin.createQuiz' : 'teacher.createQuiz';
-
-        return view($view, compact('courses'));
+        if (auth()->user()->role === 'admin') {
+            return view('admin.createQuiz-new', compact('courses'));
+        } else {
+            return view('teacher.createQuiz', compact('courses'));
+        }
     }
 
     public function storeQuiz(Request $request) {
@@ -40,8 +42,8 @@ class QuizController extends Controller
         $quiz->duration = $request->duration;
         $quiz->passing_score = $request->passing_score;
         $quiz->attempts_allowed = $request->attempts_allowed;
-        $quiz->is_published = $request->has('is_published');
-        $quiz->requires_face_verification = $request->has('requires_face_verification');
+        $quiz->is_published = $request->boolean('is_published');
+        $quiz->requires_face_verification = $request->boolean('requires_face_verification');
         $quiz->creator_id = auth()->id();
         $quiz->save();
 
@@ -80,8 +82,8 @@ class QuizController extends Controller
         $quiz->duration = $request->duration;
         $quiz->passing_score = $request->passing_score;
         $quiz->attempts_allowed = $request->attempts_allowed;
-        $quiz->is_published = $request->has('is_published');
-        $quiz->requires_face_verification = $request->has('requires_face_verification');
+        $quiz->is_published = $request->boolean('is_published');
+        $quiz->requires_face_verification = $request->boolean('requires_face_verification');
         $quiz->save();
 
         // Determine the redirect route based on user role
@@ -353,9 +355,11 @@ class QuizController extends Controller
         $course = Course::findOrFail($courseId);
 
         // Determine the view based on user role
-        $view = auth()->user()->role === 'admin' ? 'admin.generateAIQuiz' : 'teacher.generateAIQuiz';
-
-        return view($view, compact('course'));
+        if (auth()->user()->role === 'admin') {
+            return view('admin.generateAIQuiz-new', compact('course'));
+        } else {
+            return view('teacher.generateAIQuiz', compact('course'));
+        }
     }
 
     /**
@@ -449,16 +453,25 @@ class QuizController extends Controller
             }
 
             // Determine the view based on user role
-            $view = auth()->user()->role === 'admin' ? 'admin.previewAIQuiz' : 'teacher.previewAIQuiz';
-
-            return view($view, [
-                'course' => $course,
-                'quizName' => $request->name,
-                'questions' => $result['data'],
-                'numQuestions' => $request->num_questions,
-                'difficulty' => $request->difficulty,
-                'questionType' => $request->question_type
-            ]);
+            if (auth()->user()->role === 'admin') {
+                return view('admin.previewAIQuiz-new', [
+                    'course' => $course,
+                    'quizName' => $request->name,
+                    'questions' => $result['data'],
+                    'numQuestions' => $request->num_questions,
+                    'difficulty' => $request->difficulty,
+                    'questionType' => $request->question_type
+                ]);
+            } else {
+                return view('teacher.previewAIQuiz', [
+                    'course' => $course,
+                    'quizName' => $request->name,
+                    'questions' => $result['data'],
+                    'numQuestions' => $request->num_questions,
+                    'difficulty' => $request->difficulty,
+                    'questionType' => $request->question_type
+                ]);
+            }
 
         } catch (\Exception $e) {
             Log::error('Error previewing AI quiz: ' . $e->getMessage());

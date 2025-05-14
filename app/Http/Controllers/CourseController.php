@@ -136,9 +136,11 @@ class CourseController extends Controller
         $categories = Category::all();
 
         // Determine the view based on user role
-        $view = auth()->user()->role === 'admin' ? 'admin.editCourse' : 'teacher.editCourse';
-
-        return view($view, compact('course', 'categories'));
+        if (auth()->user()->role === 'admin') {
+            return view('admin.editCourse-new', compact('course', 'categories'));
+        } else {
+            return view('teacher.editCourse', compact('course', 'categories'));
+        }
     }
 
     public function updateCourse(Request $request, $id) {
@@ -218,7 +220,14 @@ class CourseController extends Controller
             case 'youtube':
                 if ($request->filled('youtube_link')) {
                     $content->type = 'youtube';
-                    $content->file = $request->youtube_link;
+
+                    // Process YouTube URL to ensure it's in the correct format
+                    $youtubeUrl = $request->youtube_link;
+
+                    // Store the original YouTube URL (not the embed version)
+                    // The view will handle converting it to embed format
+                    $content->file = $youtubeUrl;
+
                     // Clear content field if changing from text
                     if ($content->content) {
                         $content->content = null;
