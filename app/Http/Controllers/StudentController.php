@@ -328,7 +328,7 @@ class StudentController extends UserController
             if (class_exists('App\\Models\\ActivityLog')) {
                 \App\Models\ActivityLog::create([
                     'user_id' => $user->id,
-                    'type' => 'course',
+                    'action' => 'course.enroll',
                     'description' => "Enrolled in course: {$course->title}",
                 ]);
             }
