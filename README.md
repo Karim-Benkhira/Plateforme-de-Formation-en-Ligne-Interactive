@@ -17,7 +17,64 @@ Avant de commencer, assurez-vous d'avoir installé les éléments suivants sur v
 
 ## 🚀 Installation
 
-Suivez ces étapes pour installer et configurer le projet sur votre environnement local:
+Vous pouvez installer ce projet de deux façons: avec Docker ou directement sur votre machine locale.
+
+## 🐳 Installation avec Docker (Recommandée)
+
+### Prérequis pour Docker
+- [Docker](https://docs.docker.com/get-docker/)
+- [Docker Compose](https://docs.docker.com/compose/install/)
+
+### Étapes d'installation avec Docker
+
+1. **Cloner le dépôt**
+
+```bash
+git clone https://github.com/votre-nom-utilisateur/nom-du-depot.git
+cd nom-du-depot
+```
+
+2. **Exécuter le script d'installation**
+
+```bash
+chmod +x docker-setup.sh
+./docker-setup.sh
+```
+
+Ce script va:
+- Créer un fichier `.env` à partir de `.env.example`
+- Construire et démarrer les conteneurs Docker
+- Installer les dépendances PHP et JavaScript
+- Générer la clé d'application
+- Exécuter les migrations et les seeders
+- Créer le lien symbolique pour le stockage
+- Configurer les permissions
+
+3. **Accéder à l'application**
+
+Votre application sera accessible à l'adresse [http://localhost:8000](http://localhost:8000)
+phpMyAdmin sera disponible à l'adresse [http://localhost:8080](http://localhost:8080)
+
+### Commandes Docker utiles
+
+```bash
+# Démarrer les conteneurs
+docker-compose up -d
+
+# Arrêter les conteneurs
+docker-compose down
+
+# Voir les logs
+docker-compose logs -f
+
+# Exécuter des commandes Artisan
+docker-compose exec app php artisan [commande]
+
+# Accéder au shell du conteneur
+docker-compose exec app bash
+```
+
+## 💻 Installation manuelle (Sans Docker)
 
 ### 1. Cloner le dépôt
 
