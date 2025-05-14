@@ -1,6 +1,6 @@
 # Plateforme Éducative en Ligne
 
-![Logo de la plateforme](public/images/logo.png)
+![Logo de la plateforme](public/images/logo.svg)
 
 Plateforme d'apprentissage interactive offrant:
 - Gestion complète des cours (texte, PDF, vidéo)
