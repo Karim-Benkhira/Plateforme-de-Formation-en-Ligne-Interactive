@@ -129,25 +129,25 @@
                         <td class="px-4 py-4">
                             <div class="flex gap-2">
                                 <a href="<?php echo e(route('admin.showGenerateAIQuiz', $course->id)); ?>"
-                                   class="group bg-purple-900/40 hover:bg-purple-800/60 text-purple-300 border border-purple-700/50 rounded-lg p-2 transition-all duration-200 flex items-center justify-center tooltip-trigger"
-                                   data-tooltip="Generate AI Quiz">
-                                    <i class="fas fa-robot group-hover:scale-110 transition-transform duration-200"></i>
+                                   class="group bg-purple-900/40 hover:bg-purple-800/60 text-purple-300 border border-purple-700/50 rounded-lg px-3 py-1.5 transition-all duration-200 flex items-center tooltip-trigger">
+                                    <i class="fas fa-robot mr-1.5 group-hover:scale-110 transition-transform duration-200"></i>
+                                    <span>AI Quiz</span>
                                     <span class="tooltip-text">Generate AI Quiz</span>
                                 </a>
                                 <a href="<?php echo e(route('admin.editCourse', $course->id)); ?>"
-                                   class="group bg-blue-900/40 hover:bg-blue-800/60 text-blue-300 border border-blue-700/50 rounded-lg p-2 transition-all duration-200 flex items-center justify-center tooltip-trigger"
-                                   data-tooltip="Edit Course">
-                                    <i class="fas fa-edit group-hover:scale-110 transition-transform duration-200"></i>
+                                   class="group bg-blue-900/40 hover:bg-blue-800/60 text-blue-300 border border-blue-700/50 rounded-lg px-3 py-1.5 transition-all duration-200 flex items-center tooltip-trigger">
+                                    <i class="fas fa-edit mr-1.5 group-hover:scale-110 transition-transform duration-200"></i>
+                                    <span>Edit</span>
                                     <span class="tooltip-text">Edit Course</span>
                                 </a>
                                 <form action="<?php echo e(route('admin.deleteCourse', $course->id)); ?>" method="POST" class="inline">
                                     <?php echo csrf_field(); ?>
                                     <?php echo method_field('DELETE'); ?>
                                     <button type="submit"
-                                            class="group bg-red-900/40 hover:bg-red-800/60 text-red-300 border border-red-700/50 rounded-lg p-2 transition-all duration-200 flex items-center justify-center tooltip-trigger"
-                                            onclick="return confirm('Are you sure you want to delete this course? This action cannot be undone.')"
-                                            data-tooltip="Delete Course">
-                                        <i class="fas fa-trash-alt group-hover:scale-110 transition-transform duration-200"></i>
+                                            class="group bg-red-900/40 hover:bg-red-800/60 text-red-300 border border-red-700/50 rounded-lg px-3 py-1.5 transition-all duration-200 flex items-center tooltip-trigger"
+                                            onclick="return confirm('Are you sure you want to delete this course? This action cannot be undone.')">
+                                        <i class="fas fa-trash-alt mr-1.5 group-hover:scale-110 transition-transform duration-200"></i>
+                                        <span>Delete</span>
                                         <span class="tooltip-text">Delete Course</span>
                                     </button>
                                 </form>
