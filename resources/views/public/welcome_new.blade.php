@@ -403,6 +403,33 @@
             opacity: 0.8;
             bottom: -15px;
         }
+
+        /* Mobile menu animations */
+        @keyframes slideInRight {
+            from {
+                transform: translateX(100%);
+            }
+            to {
+                transform: translateX(0);
+            }
+        }
+
+        @keyframes slideOutRight {
+            from {
+                transform: translateX(0);
+            }
+            to {
+                transform: translateX(100%);
+            }
+        }
+
+        .animate-slide-in-right {
+            animation: slideInRight 0.3s ease-out forwards;
+        }
+
+        .animate-slide-out-right {
+            animation: slideOutRight 0.3s ease-out forwards;
+        }
     </style>
 </head>
 <body class="font-sans antialiased text-gray-200 bg-gray-900 overflow-x-hidden">
@@ -424,17 +451,107 @@
                     <a class="px-3 py-2 rounded-md text-sm font-medium text-gray-300 hover:text-blue-500 hover:bg-gray-800 transition duration-150" href="/">Home</a>
                     <a class="px-3 py-2 rounded-md text-sm font-medium text-gray-300 hover:text-blue-500 hover:bg-gray-800 transition duration-150" href="/about">About</a>
                     <a class="px-3 py-2 rounded-md text-sm font-medium text-gray-300 hover:text-blue-500 hover:bg-gray-800 transition duration-150" href="/courses">Courses</a>
-                    <a class="px-4 py-2 rounded-md text-sm font-medium text-blue-500 border border-blue-500 hover:bg-blue-900 transition duration-150 ml-2" href="{{ route('login') }}">Login</a>
-                    <a class="px-4 py-2 rounded-md text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 transition duration-150" href="{{ route('register') }}">Register</a>
+
+                    @auth
+                        <div class="flex items-center space-x-2 ml-2">
+                            <div class="relative group">
+                                <button class="flex items-center px-3 py-2 rounded-md text-sm font-medium text-gray-300 hover:text-blue-500 hover:bg-gray-800 transition duration-150">
+                                    <span class="mr-1">{{ Auth::user()->username }}</span>
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                                    </svg>
+                                </button>
+                                <div class="absolute right-0 mt-2 w-48 bg-gray-800 rounded-md shadow-lg py-1 z-50 hidden group-hover:block border border-gray-700">
+                                    @if(Auth::user()->role === 'admin')
+                                        <a href="{{ route('admin.dashboard') }}" class="block px-4 py-2 text-sm text-gray-300 hover:bg-gray-700 hover:text-blue-500">Dashboard</a>
+                                    @elseif(Auth::user()->role === 'teacher')
+                                        <a href="{{ route('teacher.dashboard') }}" class="block px-4 py-2 text-sm text-gray-300 hover:bg-gray-700 hover:text-blue-500">Dashboard</a>
+                                    @elseif(Auth::user()->role === 'user')
+                                        <a href="{{ route('student.dashboard') }}" class="block px-4 py-2 text-sm text-gray-300 hover:bg-gray-700 hover:text-blue-500">Dashboard</a>
+                                    @endif
+                                    <form action="{{ route('logout') }}" method="POST" class="block">
+                                        @csrf
+                                        <button type="submit" class="w-full text-left px-4 py-2 text-sm text-gray-300 hover:bg-gray-700 hover:text-blue-500">Logout</button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    @else
+                        <a class="px-4 py-2 rounded-md text-sm font-medium text-blue-500 border border-blue-500 hover:bg-blue-900 transition duration-150 ml-2" href="{{ route('login') }}">Login</a>
+                        <a class="px-4 py-2 rounded-md text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 transition duration-150" href="{{ route('register') }}">Register</a>
+                    @endauth
                 </nav>
 
                 <!-- Mobile menu button -->
                 <div class="md:hidden">
-                    <button type="button" class="text-gray-400 hover:text-blue-500 focus:outline-none focus:text-blue-500" aria-label="Toggle menu">
+                    <button id="mobile-menu-button" type="button" class="text-gray-400 hover:text-blue-500 focus:outline-none focus:text-blue-500" aria-label="Toggle menu">
                         <svg viewBox="0 0 24 24" class="h-6 w-6 fill-current">
                             <path d="M4 5h16a1 1 0 0 1 0 2H4a1 1 0 1 1 0-2zm0 6h16a1 1 0 0 1 0 2H4a1 1 0 0 1 0-2zm0 6h16a1 1 0 0 1 0 2H4a1 1 0 0 1 0-2z"></path>
                         </svg>
                     </button>
+                </div>
+
+                <!-- Mobile Menu -->
+                <div id="mobile-menu" class="fixed inset-0 z-50 hidden">
+                    <div class="absolute inset-0 bg-gray-900 opacity-75" id="mobile-menu-overlay"></div>
+                    <div class="absolute inset-y-0 right-0 max-w-xs w-full bg-gray-800 shadow-lg p-6 flex flex-col">
+                        <div class="flex items-center justify-between mb-8">
+                            <div class="flex items-center">
+                                <img src="{{ asset('images/logo.svg') }}" alt="BrightPath Logo" class="h-8 w-8 mr-2">
+                                <span class="text-blue-500 text-xl font-bold">BrightPath</span>
+                            </div>
+                            <button id="close-mobile-menu" class="text-gray-400 hover:text-white">
+                                <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                                </svg>
+                            </button>
+                        </div>
+                        <nav class="flex-1 flex flex-col">
+                            <a class="px-3 py-3 rounded-md text-base font-medium text-gray-300 hover:text-blue-500 hover:bg-gray-700 transition duration-150 mb-1" href="/">Home</a>
+                            <a class="px-3 py-3 rounded-md text-base font-medium text-gray-300 hover:text-blue-500 hover:bg-gray-700 transition duration-150 mb-1" href="/about">About</a>
+                            <a class="px-3 py-3 rounded-md text-base font-medium text-gray-300 hover:text-blue-500 hover:bg-gray-700 transition duration-150 mb-1" href="/courses">Courses</a>
+
+                            @auth
+                                <div class="border-t border-gray-700 my-4"></div>
+                                <div class="px-3 py-2">
+                                    <div class="flex items-center mb-3">
+                                        <div class="w-10 h-10 rounded-full bg-blue-700 flex items-center justify-center mr-3">
+                                            <span class="text-white font-bold">{{ substr(Auth::user()->username, 0, 1) }}</span>
+                                        </div>
+                                        <div>
+                                            <div class="text-white font-medium">{{ Auth::user()->username }}</div>
+                                            <div class="text-sm text-gray-400">{{ Auth::user()->email }}</div>
+                                        </div>
+                                    </div>
+
+                                    @if(Auth::user()->role === 'admin')
+                                        <a href="{{ route('admin.dashboard') }}" class="block px-3 py-3 rounded-md text-base font-medium text-gray-300 hover:text-blue-500 hover:bg-gray-700 transition duration-150 mb-1">
+                                            <i class="fas fa-tachometer-alt mr-2"></i> Admin Dashboard
+                                        </a>
+                                    @elseif(Auth::user()->role === 'teacher')
+                                        <a href="{{ route('teacher.dashboard') }}" class="block px-3 py-3 rounded-md text-base font-medium text-gray-300 hover:text-blue-500 hover:bg-gray-700 transition duration-150 mb-1">
+                                            <i class="fas fa-chalkboard-teacher mr-2"></i> Teacher Dashboard
+                                        </a>
+                                    @elseif(Auth::user()->role === 'user')
+                                        <a href="{{ route('student.dashboard') }}" class="block px-3 py-3 rounded-md text-base font-medium text-gray-300 hover:text-blue-500 hover:bg-gray-700 transition duration-150 mb-1">
+                                            <i class="fas fa-user-graduate mr-2"></i> Student Dashboard
+                                        </a>
+                                    @endif
+
+                                    <form action="{{ route('logout') }}" method="POST">
+                                        @csrf
+                                        <button type="submit" class="w-full text-left px-3 py-3 rounded-md text-base font-medium text-red-400 hover:text-red-300 hover:bg-gray-700 transition duration-150 mb-1">
+                                            <i class="fas fa-sign-out-alt mr-2"></i> Logout
+                                        </button>
+                                    </form>
+                                </div>
+                            @else
+                                <div class="border-t border-gray-700 my-4"></div>
+                                <a class="px-4 py-3 rounded-md text-base font-medium text-blue-500 border border-blue-500 hover:bg-blue-900 transition duration-150 mb-3 text-center" href="{{ route('login') }}">Login</a>
+                                <a class="px-4 py-3 rounded-md text-base font-medium text-white bg-blue-600 hover:bg-blue-700 transition duration-150 text-center" href="{{ route('register') }}">Register</a>
+                            @endauth
+                        </nav>
+                    </div>
                 </div>
             </div>
         </div>
@@ -1141,6 +1258,34 @@
                         once: true
                     });
                 });
+            }
+
+            // Mobile menu functionality
+            const mobileMenuButton = document.getElementById('mobile-menu-button');
+            const mobileMenu = document.getElementById('mobile-menu');
+            const closeMobileMenu = document.getElementById('close-mobile-menu');
+            const mobileMenuOverlay = document.getElementById('mobile-menu-overlay');
+
+            if (mobileMenuButton && mobileMenu) {
+                // Open mobile menu
+                mobileMenuButton.addEventListener('click', function() {
+                    mobileMenu.classList.remove('hidden');
+                    document.body.classList.add('overflow-hidden');
+                });
+
+                // Close mobile menu
+                const closeMenu = function() {
+                    mobileMenu.classList.add('hidden');
+                    document.body.classList.remove('overflow-hidden');
+                };
+
+                if (closeMobileMenu) {
+                    closeMobileMenu.addEventListener('click', closeMenu);
+                }
+
+                if (mobileMenuOverlay) {
+                    mobileMenuOverlay.addEventListener('click', closeMenu);
+                }
             }
         });
     </script>

@@ -32,7 +32,31 @@ class UserController extends Controller
     }
 
     public function showCourses(){
-        return view('public.courses');
+        // If user is logged in, redirect to their dashboard courses page
+        if (auth()->check()) {
+            $user = auth()->user();
+
+            if ($user->role === 'admin') {
+                return redirect()->route('admin.courses');
+            } elseif ($user->role === 'teacher') {
+                return redirect()->route('teacher.courses');
+            } elseif ($user->role === 'user') {
+                return redirect()->route('student.courses');
+            }
+        }
+
+        // For guests, show the public courses page
+        $courses = \App\Models\Course::with(['category', 'teacher'])
+            ->where('is_published', true)
+            ->get();
+
+        // Get categories if the table exists
+        $categories = [];
+        if (class_exists('App\\Models\\Category')) {
+            $categories = \App\Models\Category::all();
+        }
+
+        return view('public.courses', compact('courses', 'categories'));
     }
 
     public function register(Request $request){
