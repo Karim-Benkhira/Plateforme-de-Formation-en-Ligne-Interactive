@@ -14,7 +14,7 @@ use App\Http\Controllers\Validator;
 class UserController extends Controller
 {
     public function showRegister(){
-        return view('public.Auth.signup');
+        return view('public.Auth.signup_enhanced');
     }
 
     public function showLogIn(){
