@@ -18,7 +18,7 @@ class UserController extends Controller
     }
 
     public function showLogIn(){
-        return view('public.Auth.login');
+        return view('public.Auth.login_enhanced');
     }
 
     public function showAbout(){
