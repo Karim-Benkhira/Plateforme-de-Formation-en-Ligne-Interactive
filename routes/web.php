@@ -84,7 +84,9 @@ Route::middleware(['auth'])->group(function () {
     Route::delete('/profile/sessions', [SessionController::class, 'destroyOtherSessions'])->name('profile.sessions.destroy');
 });
 
-Route::get('/about', [UserController::class, 'showAbout']);
+Route::get('/about', function() {
+    return view('public.about-updated');
+});
 Route::get('/courses', [UserController::class, 'showCourses']);
 
 // Legal Routes
