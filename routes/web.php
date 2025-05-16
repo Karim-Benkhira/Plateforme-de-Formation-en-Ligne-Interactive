@@ -231,7 +231,19 @@ Route::middleware(['auth','role:teacher'])->group(function () {
     Route::get('/teacher/courses', [TeacherController::class, 'showCourses'])->name('teacher.courses');
     Route::get('/teacher/courses/create', [TeacherController::class, 'createCourse'])->name('teacher.courses.create');
     Route::post('/teacher/courses', [CourseController::class, 'storeCourse'])->name('teacher.courses.store');
-    Route::get('/teacher/courses/{id}', [TeacherController::class, 'showCourse'])->name('teacher.courses.show');
+    Route::get('/teacher/courses/{id}', function($id) {
+        $course = \App\Models\Course::where('id', $id)
+            ->where('creator_id', \Illuminate\Support\Facades\Auth::id())
+            ->with('category')
+            ->firstOrFail();
+
+        $quizzes = \App\Models\Quiz::where('course_id', $id)->get();
+
+        return view('teacher.courseDetails-updated', [
+            'course' => $course,
+            'quizzes' => $quizzes
+        ]);
+    })->name('teacher.courses.show');
     Route::get('/teacher/courses/{id}/edit', [CourseController::class, 'editCourse'])->name('teacher.courses.edit');
     Route::put('/teacher/courses/{id}', [CourseController::class, 'updateCourse'])->name('teacher.courses.update');
     Route::delete('/teacher/courses/{id}', [CourseController::class, 'deleteCourse'])->name('teacher.courses.delete');
