@@ -1,46 +1,322 @@
-@extends('layouts.app')
+@extends('layouts.teacher')
 
 @section('title', 'Create Quiz')
 
+@push('styles')
+<style>
+    /* Custom styles for create quiz page */
+    .quiz-header {
+        background-color: #111827;
+        border-radius: 1rem;
+        overflow: hidden;
+        margin-bottom: 1.5rem;
+    }
+
+    .quiz-title-bar {
+        background: linear-gradient(90deg, #0284c7, #7c3aed);
+        padding: 1.25rem;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+    }
+
+    .form-card {
+        background-color: #1e293b;
+        border-radius: 0.75rem;
+        overflow: hidden;
+        box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        margin-bottom: 1.5rem;
+    }
+
+    .form-header {
+        background-color: #0f172a;
+        padding: 1rem 1.5rem;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        display: flex;
+        align-items: center;
+    }
+
+    .form-content {
+        padding: 1.5rem;
+    }
+
+    .section-title {
+        color: white;
+        font-size: 1rem;
+        font-weight: 600;
+        display: flex;
+        align-items: center;
+        padding-bottom: 0.75rem;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        margin-bottom: 1.25rem;
+    }
+
+    .section-title i {
+        color: #38bdf8;
+        margin-right: 0.5rem;
+    }
+
+    .input-group {
+        margin-bottom: 1.5rem;
+    }
+
+    .input-label {
+        display: block;
+        font-size: 0.875rem;
+        font-weight: 500;
+        color: #e2e8f0;
+        margin-bottom: 0.5rem;
+    }
+
+    .form-input {
+        width: 100%;
+        padding: 0.75rem 1rem;
+        background-color: #0f172a;
+        border: 1px solid #334155;
+        border-radius: 0.5rem;
+        color: white;
+        transition: all 0.2s ease;
+    }
+
+    .form-input:focus {
+        border-color: #38bdf8;
+        box-shadow: 0 0 0 2px rgba(56, 189, 248, 0.2);
+        outline: none;
+    }
+
+    .form-input::placeholder {
+        color: #64748b;
+    }
+
+    .form-select {
+        width: 100%;
+        padding: 0.75rem 1rem;
+        background-color: #0f172a;
+        border: 1px solid #334155;
+        border-radius: 0.5rem;
+        color: white;
+        transition: all 0.2s ease;
+        appearance: none;
+        background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%2364748b' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e");
+        background-position: right 0.5rem center;
+        background-repeat: no-repeat;
+        background-size: 1.5em 1.5em;
+    }
+
+    .form-select:focus {
+        border-color: #38bdf8;
+        box-shadow: 0 0 0 2px rgba(56, 189, 248, 0.2);
+        outline: none;
+    }
+
+    .setting-card {
+        background-color: #0f172a;
+        border-radius: 0.5rem;
+        padding: 1rem;
+        border: 1px solid #1e293b;
+    }
+
+    .setting-card.blue {
+        border-left: 3px solid #38bdf8;
+    }
+
+    .setting-card.purple {
+        border-left: 3px solid #a855f7;
+    }
+
+    .checkbox-group {
+        display: flex;
+        align-items: center;
+        background-color: #0f172a;
+        border-radius: 0.5rem;
+        padding: 1rem;
+        border: 1px solid #1e293b;
+    }
+
+    .checkbox-group.blue {
+        border-left: 3px solid #38bdf8;
+    }
+
+    .checkbox-group.purple {
+        border-left: 3px solid #a855f7;
+    }
+
+    .form-checkbox {
+        width: 1.25rem;
+        height: 1.25rem;
+        border-radius: 0.25rem;
+        border: 1px solid #4b5563;
+        background-color: #1f2937;
+        transition: all 0.2s ease;
+        position: relative;
+        appearance: none;
+    }
+
+    .form-checkbox:checked {
+        background-color: #38bdf8;
+        border-color: #38bdf8;
+    }
+
+    .form-checkbox:checked::after {
+        content: '';
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 0.75rem;
+        height: 0.75rem;
+        background-image: url("data:image/svg+xml,%3csvg viewBox='0 0 16 16' fill='white' xmlns='http://www.w3.org/2000/svg'%3e%3cpath d='M12.207 4.793a1 1 0 010 1.414l-5 5a1 1 0 01-1.414 0l-2-2a1 1 0 011.414-1.414L6.5 9.086l4.293-4.293a1 1 0 011.414 0z'/%3e%3c/svg%3e");
+        background-size: cover;
+    }
+
+    .checkbox-label {
+        margin-left: 0.75rem;
+    }
+
+    .checkbox-title {
+        font-size: 0.875rem;
+        font-weight: 500;
+        color: #e2e8f0;
+    }
+
+    .checkbox-desc {
+        font-size: 0.75rem;
+        color: #94a3b8;
+        margin-top: 0.25rem;
+    }
+
+    .btn-container {
+        display: flex;
+        justify-content: flex-end;
+        padding-top: 1.5rem;
+        border-top: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .btn-cancel {
+        background-color: transparent;
+        border: 1px solid #4b5563;
+        color: #e2e8f0;
+        padding: 0.75rem 1.5rem;
+        border-radius: 0.5rem;
+        font-weight: 500;
+        transition: all 0.2s ease;
+    }
+
+    .btn-cancel:hover {
+        background-color: rgba(255, 255, 255, 0.05);
+    }
+
+    .btn-submit {
+        background: linear-gradient(90deg, #0284c7, #7c3aed);
+        color: white;
+        padding: 0.75rem 1.5rem;
+        border-radius: 0.5rem;
+        font-weight: 500;
+        margin-left: 0.75rem;
+        transition: all 0.3s ease;
+        display: inline-flex;
+        align-items: center;
+    }
+
+    .btn-submit:hover {
+        box-shadow: 0 4px 12px rgba(124, 58, 237, 0.3);
+        transform: translateY(-2px);
+    }
+
+    .tip-card {
+        display: flex;
+        align-items: flex-start;
+        background-color: #0f172a;
+        border-radius: 0.5rem;
+        padding: 0.75rem 1rem;
+        margin-bottom: 0.75rem;
+        border: 1px solid #1e293b;
+    }
+
+    .tip-card.blue {
+        border-left: 3px solid #38bdf8;
+    }
+
+    .tip-card.purple {
+        border-left: 3px solid #a855f7;
+    }
+
+    .tip-icon {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 2rem;
+        height: 2rem;
+        border-radius: 50%;
+        margin-right: 0.75rem;
+        flex-shrink: 0;
+    }
+
+    .tip-icon.blue {
+        background-color: rgba(56, 189, 248, 0.2);
+        color: #38bdf8;
+    }
+
+    .tip-icon.purple {
+        background-color: rgba(168, 85, 247, 0.2);
+        color: #a855f7;
+    }
+
+    .tip-text {
+        font-size: 0.875rem;
+        color: #e2e8f0;
+    }
+</style>
+@endpush
+
 @section('content')
-<div class="container mx-auto px-4 py-8">
-    <div class="flex justify-between items-center mb-8">
-        <h1 class="text-3xl font-bold text-gray-800 dark:text-white flex items-center">
-            <span class="bg-primary-100 dark:bg-primary-900 p-2 rounded-full mr-3">
-                <i class="fas fa-plus-circle text-primary-600 dark:text-primary-400"></i>
-            </span>
-            Create New Quiz
-        </h1>
-        <a href="{{ route('teacher.quizzes') }}" class="bg-gray-100 hover:bg-gray-200 dark:bg-gray-700 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-200 font-medium py-2 px-4 rounded-lg inline-flex items-center transition duration-300 shadow-sm">
-            <i class="fas fa-arrow-left mr-2"></i> Back to Quizzes
-        </a>
+<div class="container mx-auto px-4 py-6">
+    <!-- Quiz Header -->
+    <div class="quiz-header">
+        <div class="quiz-title-bar">
+            <div class="flex items-center">
+                <div class="bg-blue-500/20 p-2 rounded-full mr-3">
+                    <i class="fas fa-plus-circle text-blue-400"></i>
+                </div>
+                <div>
+                    <h1 class="text-xl font-bold text-white">Create New Quiz</h1>
+                    <p class="text-sm text-blue-200 opacity-80">Create a new quiz for your students</p>
+                </div>
+            </div>
+            <a href="{{ route('teacher.quizzes') }}" class="bg-white/10 hover:bg-white/20 text-white font-medium py-2 px-4 rounded-lg inline-flex items-center transition-all duration-300 border border-white/20">
+                <i class="fas fa-arrow-left mr-2"></i> Back to Quizzes
+            </a>
+        </div>
     </div>
 
-    <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg overflow-hidden border border-gray-200 dark:border-gray-700">
-        <div class="bg-gradient-to-r from-primary-600 to-secondary-600 px-6 py-4">
-            <h2 class="text-xl font-bold text-white flex items-center">
-                <i class="fas fa-question-circle mr-2"></i> Quiz Details
-            </h2>
+    <div class="form-card">
+        <div class="form-header">
+            <i class="fas fa-question-circle text-blue-400 mr-2"></i>
+            <h2 class="text-white font-semibold">Quiz Details</h2>
         </div>
-        <div class="p-8">
-            <form action="{{ route('teacher.quizzes.store') }}" method="POST" class="space-y-8">
+        <div class="form-content">
+            <form action="{{ route('teacher.quizzes.store') }}" method="POST" class="space-y-6">
                 @csrf
 
                 <!-- Quiz Information -->
-                <div class="mb-8">
-                    <h3 class="text-lg font-semibold text-gray-800 dark:text-white mb-4 pb-2 border-b border-gray-200 dark:border-gray-700">
-                        <i class="fas fa-info-circle mr-2 text-primary-600"></i>Basic Information
+                <div class="mb-6">
+                    <h3 class="section-title">
+                        <i class="fas fa-info-circle"></i>Basic Information
                     </h3>
 
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <div>
-                            <label for="name" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Quiz Name</label>
-                            <input type="text" name="name" id="name" placeholder="Enter quiz name" class="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white shadow-sm focus:border-primary-500 focus:ring-2 focus:ring-primary-500 focus:ring-opacity-50 transition duration-200" required>
+                        <div class="input-group">
+                            <label for="name" class="input-label">
+                                <i class="fas fa-font text-blue-400 mr-1"></i> Quiz Name
+                            </label>
+                            <input type="text" name="name" id="name" placeholder="Enter quiz name" class="form-input" required>
                         </div>
 
-                        <div>
-                            <label for="course_id" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Select Course</label>
-                            <select name="course_id" id="course_id" class="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white shadow-sm focus:border-primary-500 focus:ring-2 focus:ring-primary-500 focus:ring-opacity-50 transition duration-200" required>
+                        <div class="input-group">
+                            <label for="course_id" class="input-label">
+                                <i class="fas fa-book text-blue-400 mr-1"></i> Select Course
+                            </label>
+                            <select name="course_id" id="course_id" class="form-select" required>
                                 <option value="">Select a course</option>
                                 @foreach($courses as $course)
                                     <option value="{{ $course->id }}">{{ $course->title }}</option>
@@ -51,121 +327,122 @@
                 </div>
 
                 <!-- Quiz Settings -->
-                <div class="mb-8">
-                    <h3 class="text-lg font-semibold text-gray-800 dark:text-white mb-4 pb-2 border-b border-gray-200 dark:border-gray-700">
-                        <i class="fas fa-cog mr-2 text-primary-600"></i>Quiz Settings
+                <div class="mb-6">
+                    <h3 class="section-title">
+                        <i class="fas fa-cog"></i>Quiz Settings
                     </h3>
 
-                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
-                        <div class="bg-primary-50 dark:bg-primary-900/20 p-4 rounded-lg border border-primary-100 dark:border-primary-800">
-                            <label for="duration" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                                <i class="fas fa-clock text-primary-600 mr-2"></i>Duration (minutes)
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+                        <div class="setting-card blue">
+                            <label for="duration" class="input-label">
+                                <i class="fas fa-clock text-blue-400 mr-1"></i>Duration (minutes)
                             </label>
-                            <input type="number" name="duration" id="duration" min="1" max="180" value="30" class="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white shadow-sm focus:border-primary-500 focus:ring-2 focus:ring-primary-500 focus:ring-opacity-50 transition duration-200" required>
+                            <input type="number" name="duration" id="duration" min="1" max="180" value="30" class="form-input" required>
                         </div>
 
-                        <div class="bg-primary-50 dark:bg-primary-900/20 p-4 rounded-lg border border-primary-100 dark:border-primary-800">
-                            <label for="passing_score" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                                <i class="fas fa-percentage text-primary-600 mr-2"></i>Passing Score (%)
+                        <div class="setting-card blue">
+                            <label for="passing_score" class="input-label">
+                                <i class="fas fa-percentage text-blue-400 mr-1"></i>Passing Score (%)
                             </label>
-                            <input type="number" name="passing_score" id="passing_score" min="1" max="100" value="70" class="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white shadow-sm focus:border-primary-500 focus:ring-2 focus:ring-primary-500 focus:ring-opacity-50 transition duration-200" required>
+                            <input type="number" name="passing_score" id="passing_score" min="1" max="100" value="70" class="form-input" required>
                         </div>
 
-                        <div class="bg-primary-50 dark:bg-primary-900/20 p-4 rounded-lg border border-primary-100 dark:border-primary-800">
-                            <label for="attempts_allowed" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                                <i class="fas fa-redo text-primary-600 mr-2"></i>Attempts Allowed
+                        <div class="setting-card purple">
+                            <label for="attempts_allowed" class="input-label">
+                                <i class="fas fa-redo text-purple-400 mr-1"></i>Attempts Allowed
                             </label>
-                            <input type="number" name="attempts_allowed" id="attempts_allowed" min="1" max="10" value="2" class="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white shadow-sm focus:border-primary-500 focus:ring-2 focus:ring-primary-500 focus:ring-opacity-50 transition duration-200" required>
+                            <input type="number" name="attempts_allowed" id="attempts_allowed" min="1" max="10" value="2" class="form-input" required>
                         </div>
                     </div>
 
-                    <div class="mb-6">
-                        <label for="description" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                            <i class="fas fa-align-left text-primary-600 mr-2"></i>Description
+                    <div class="input-group">
+                        <label for="description" class="input-label">
+                            <i class="fas fa-align-left text-blue-400 mr-1"></i>Description
                         </label>
-                        <textarea name="description" id="description" rows="4" placeholder="Enter quiz description" class="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white shadow-sm focus:border-primary-500 focus:ring-2 focus:ring-primary-500 focus:ring-opacity-50 transition duration-200"></textarea>
-                        <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">Provide a brief description of what this quiz covers and its purpose.</p>
+                        <textarea name="description" id="description" rows="4" placeholder="Enter quiz description" class="form-input"></textarea>
+                        <p class="text-xs text-gray-400 mt-1">Provide a brief description of what this quiz covers and its purpose.</p>
                     </div>
                 </div>
 
                 <!-- Quiz Options -->
-                <div class="mb-8">
-                    <h3 class="text-lg font-semibold text-gray-800 dark:text-white mb-4 pb-2 border-b border-gray-200 dark:border-gray-700">
-                        <i class="fas fa-sliders-h mr-2 text-primary-600"></i>Additional Options
+                <div class="mb-6">
+                    <h3 class="section-title">
+                        <i class="fas fa-sliders-h"></i>Additional Options
                     </h3>
 
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <div class="bg-primary-50 dark:bg-primary-900/20 p-4 rounded-lg border border-primary-100 dark:border-primary-800 flex items-center">
-                            <input type="checkbox" name="is_published" id="is_published" value="1" class="h-5 w-5 text-primary-600 focus:ring-primary-500 border-gray-300 rounded transition duration-200" {{ old('is_published') ? 'checked' : '' }}>
-                            <label for="is_published" class="ml-3 block text-sm text-gray-700 dark:text-gray-300">
-                                <span class="font-medium">Publish immediately</span>
-                                <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">If checked, the quiz will be available to students right away.</p>
-                            </label>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div class="checkbox-group blue">
+                            <input type="checkbox" name="is_published" id="is_published" value="1" class="form-checkbox" {{ old('is_published') ? 'checked' : '' }}>
+                            <div class="checkbox-label">
+                                <div class="checkbox-title">Publish immediately</div>
+                                <div class="checkbox-desc">If checked, the quiz will be available to students right away.</div>
+                            </div>
                         </div>
 
-                        <div class="bg-secondary-50 dark:bg-secondary-900/20 p-4 rounded-lg border border-secondary-100 dark:border-secondary-800 flex items-center">
-                            <input type="checkbox" name="requires_face_verification" id="requires_face_verification" value="1" class="h-5 w-5 text-secondary-600 focus:ring-secondary-500 border-gray-300 rounded transition duration-200" {{ old('requires_face_verification') ? 'checked' : '' }}>
-                            <label for="requires_face_verification" class="ml-3 block text-sm text-gray-700 dark:text-gray-300">
-                                <span class="font-medium">Require face verification</span>
-                                <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">Enable secure exam mode with facial recognition to prevent cheating.</p>
-                            </label>
+                        <div class="checkbox-group purple">
+                            <input type="checkbox" name="requires_face_verification" id="requires_face_verification" value="1" class="form-checkbox" {{ old('requires_face_verification') ? 'checked' : '' }}>
+                            <div class="checkbox-label">
+                                <div class="checkbox-title">Require face verification</div>
+                                <div class="checkbox-desc">Enable secure exam mode with facial recognition to prevent cheating.</div>
+                            </div>
                         </div>
                     </div>
                 </div>
 
-                <div class="pt-6 border-t border-gray-200 dark:border-gray-700">
-                    <div class="flex justify-end">
-                        <button type="button" onclick="window.location.href='{{ route('teacher.quizzes') }}'" class="bg-white dark:bg-gray-700 py-3 px-6 border border-gray-300 dark:border-gray-600 rounded-lg shadow-sm text-sm font-medium text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 transition duration-300">
-                            Cancel
-                        </button>
-                        <button type="submit" class="ml-4 inline-flex justify-center py-3 px-6 border border-transparent shadow-sm text-sm font-medium rounded-lg text-white bg-gradient-to-r from-primary-600 to-secondary-600 hover:from-primary-700 hover:to-secondary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 transition duration-300">
-                            <i class="fas fa-save mr-2"></i> Create Quiz and Add Questions
-                        </button>
-                    </div>
+                <div class="btn-container">
+                    <button type="button" onclick="window.location.href='{{ route('teacher.quizzes') }}'" class="btn-cancel">
+                        Cancel
+                    </button>
+                    <button type="submit" class="btn-submit">
+                        <i class="fas fa-save mr-2"></i> Create Quiz and Add Questions
+                    </button>
                 </div>
             </form>
         </div>
     </div>
 
-    <div class="mt-8 bg-white dark:bg-gray-800 rounded-xl shadow-lg overflow-hidden border border-gray-200 dark:border-gray-700">
-        <div class="bg-gradient-to-r from-primary-600 to-secondary-600 px-6 py-4">
-            <h2 class="text-xl font-bold text-white flex items-center">
-                <i class="fas fa-lightbulb mr-2"></i> Tips for Creating Effective Quizzes
-            </h2>
+    <div class="form-card mt-6">
+        <div class="form-header">
+            <i class="fas fa-lightbulb text-blue-400 mr-2"></i>
+            <h2 class="text-white font-semibold">Tips for Creating Effective Quizzes</h2>
         </div>
-        <div class="p-8">
-            <ul class="space-y-4 text-gray-700 dark:text-gray-300">
-                <li class="flex items-start bg-primary-50 dark:bg-primary-900/20 p-3 rounded-lg">
-                    <div class="bg-primary-100 dark:bg-primary-800 p-2 rounded-full mr-3">
-                        <i class="fas fa-check-circle text-primary-600 dark:text-primary-400"></i>
+        <div class="form-content">
+            <div class="space-y-3">
+                <div class="tip-card blue">
+                    <div class="tip-icon blue">
+                        <i class="fas fa-check-circle"></i>
                     </div>
-                    <span>Keep questions clear and concise to avoid confusion.</span>
-                </li>
-                <li class="flex items-start bg-primary-50 dark:bg-primary-900/20 p-3 rounded-lg">
-                    <div class="bg-primary-100 dark:bg-primary-800 p-2 rounded-full mr-3">
-                        <i class="fas fa-check-circle text-primary-600 dark:text-primary-400"></i>
+                    <p class="tip-text">Keep questions clear and concise to avoid confusion.</p>
+                </div>
+
+                <div class="tip-card blue">
+                    <div class="tip-icon blue">
+                        <i class="fas fa-check-circle"></i>
                     </div>
-                    <span>Include a mix of question types (multiple choice, true/false, etc.).</span>
-                </li>
-                <li class="flex items-start bg-primary-50 dark:bg-primary-900/20 p-3 rounded-lg">
-                    <div class="bg-primary-100 dark:bg-primary-800 p-2 rounded-full mr-3">
-                        <i class="fas fa-check-circle text-primary-600 dark:text-primary-400"></i>
+                    <p class="tip-text">Include a mix of question types (multiple choice, true/false, etc.).</p>
+                </div>
+
+                <div class="tip-card blue">
+                    <div class="tip-icon blue">
+                        <i class="fas fa-check-circle"></i>
                     </div>
-                    <span>Ensure questions align with your course learning objectives.</span>
-                </li>
-                <li class="flex items-start bg-secondary-50 dark:bg-secondary-900/20 p-3 rounded-lg">
-                    <div class="bg-secondary-100 dark:bg-secondary-800 p-2 rounded-full mr-3">
-                        <i class="fas fa-check-circle text-secondary-600 dark:text-secondary-400"></i>
+                    <p class="tip-text">Ensure questions align with your course learning objectives.</p>
+                </div>
+
+                <div class="tip-card purple">
+                    <div class="tip-icon purple">
+                        <i class="fas fa-magic"></i>
                     </div>
-                    <span>Consider using the AI quiz generation feature for time-saving and variety.</span>
-                </li>
-                <li class="flex items-start bg-secondary-50 dark:bg-secondary-900/20 p-3 rounded-lg">
-                    <div class="bg-secondary-100 dark:bg-secondary-800 p-2 rounded-full mr-3">
-                        <i class="fas fa-check-circle text-secondary-600 dark:text-secondary-400"></i>
+                    <p class="tip-text">Consider using the AI quiz generation feature for time-saving and variety.</p>
+                </div>
+
+                <div class="tip-card purple">
+                    <div class="tip-icon purple">
+                        <i class="fas fa-shield-alt"></i>
                     </div>
-                    <span>For high-stakes assessments, enable face verification to ensure academic integrity.</span>
-                </li>
-            </ul>
+                    <p class="tip-text">For high-stakes assessments, enable face verification to ensure academic integrity.</p>
+                </div>
+            </div>
         </div>
     </div>
 </div>

@@ -265,7 +265,15 @@ Route::middleware(['auth','role:teacher'])->group(function () {
     Route::delete('/teacher/questions/{id}', [QuizController::class, 'deleteQuestion'])->name('teacher.deleteQuestion');
 
     // AI Quiz Generation
-    Route::get('/teacher/courses/{courseId}/generate-quiz', [TeacherController::class, 'showGenerateAIQuiz'])->name('teacher.generate-quiz');
+    Route::get('/teacher/courses/{courseId}/generate-quiz', function($courseId) {
+        $course = \App\Models\Course::where('id', $courseId)
+            ->where('creator_id', \Illuminate\Support\Facades\Auth::id())
+            ->firstOrFail();
+
+        return view('teacher.generateAIQuiz-updated', [
+            'course' => $course
+        ]);
+    })->name('teacher.generate-quiz');
     Route::post('/teacher/courses/{courseId}/generate-quiz', [QuizController::class, 'generateAIQuiz'])->name('teacher.generate-quiz.store');
 
     // Analytics

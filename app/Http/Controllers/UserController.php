@@ -123,7 +123,7 @@ class UserController extends Controller
                 'email' => $request->email,
             ]);
 
-            return redirect()->back()->with('error', 'Invalid email');
+            return redirect()->back()->with('error', 'The email or password you entered is incorrect. Please try again.');
         }
 
         if(!Hash::check($request->password, $user->password)){
@@ -135,7 +135,7 @@ class UserController extends Controller
                 'email' => $request->email,
             ]);
 
-            return redirect()->back()->with('error', 'Invalid password');
+            return redirect()->back()->with('error', 'The email or password you entered is incorrect. Please try again.');
         }
 
         if (Auth::attempt(['email' => $request->email, 'password' => $request->password])) {

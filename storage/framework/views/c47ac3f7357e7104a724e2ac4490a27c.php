@@ -142,7 +142,7 @@
             position: relative;
             border-radius: 0.5rem;
         }
-        
+
         .gradient-border::before {
             content: '';
             position: absolute;
@@ -165,9 +165,9 @@
         }
 
         .shimmer-effect {
-            background: linear-gradient(90deg, 
-                rgba(255, 255, 255, 0) 0%, 
-                rgba(255, 255, 255, 0.05) 50%, 
+            background: linear-gradient(90deg,
+                rgba(255, 255, 255, 0) 0%,
+                rgba(255, 255, 255, 0.05) 50%,
                 rgba(255, 255, 255, 0) 100%);
             background-size: 200% 100%;
             animation: shimmer 2s infinite;
@@ -215,7 +215,7 @@
         }
 
         .bg-grid-pattern {
-            background-image: 
+            background-image:
                 linear-gradient(rgba(15, 23, 42, 0.8) 1px, transparent 1px),
                 linear-gradient(90deg, rgba(15, 23, 42, 0.8) 1px, transparent 1px);
             background-size: 40px 40px;
@@ -273,7 +273,7 @@
 <body class="flex justify-center items-center min-h-screen bg-gradient-to-b from-gray-900 via-gray-800 to-gray-900 overflow-hidden">
     <!-- Particles Background -->
     <div id="particles-js" class="absolute inset-0 z-0"></div>
-    
+
     <!-- Background Elements -->
     <div class="absolute inset-0 z-0">
         <div class="absolute top-20 left-10 w-72 h-72 bg-blue-900 rounded-full mix-blend-multiply filter blur-xl opacity-30 animate-blob"></div>
@@ -286,7 +286,7 @@
 
         <!-- Grid Pattern -->
         <div class="absolute inset-0 bg-grid-pattern opacity-5"></div>
-        
+
         <!-- Light Rays Effect -->
         <div class="absolute inset-0 overflow-hidden opacity-10">
             <div class="absolute -inset-[10%] rotate-45 bg-gradient-to-r from-transparent via-blue-500 to-transparent blur-3xl transform translate-x-full animate-shimmer"></div>
@@ -424,7 +424,7 @@ unset($__errorArgs, $__bag); ?>
                         <div class="p-4 bg-red-900 bg-opacity-40 border border-red-700 text-red-300 rounded-lg flex items-start animate-fade-in">
                             <i class="fas fa-exclamation-circle text-red-400 mt-1 mr-3"></i>
                             <div>
-                                <h4 class="font-semibold">Error</h4>
+                                <h4 class="font-semibold">Login Failed</h4>
                                 <p><?php echo e(session('error')); ?></p>
                             </div>
                         </div>
