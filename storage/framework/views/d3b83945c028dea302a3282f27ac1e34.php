@@ -1,8 +1,6 @@
-@extends('layouts.admin')
+<?php $__env->startSection('title', 'Activity Logs'); ?>
 
-@section('title', 'Activity Logs')
-
-@push('styles')
+<?php $__env->startPush('styles'); ?>
 <style>
     :root {
         /* Admin Color Scheme - Yellow/Pink */
@@ -97,9 +95,9 @@
         @apply bg-orange-900/50 text-orange-300 border border-orange-700/50;
     }
 </style>
-@endpush
+<?php $__env->stopPush(); ?>
 
-@section('content')
+<?php $__env->startSection('content'); ?>
 <!-- Page Header -->
 <div class="admin-gradient-bg rounded-xl shadow-2xl p-6 mb-8 border border-yellow-500/30 relative overflow-hidden admin-glow">
     <div class="absolute inset-0 bg-grid-white/[0.05] bg-[length:20px_20px]"></div>
@@ -115,16 +113,16 @@
         <div class="mt-4 md:mt-0 flex flex-wrap gap-3">
             <div class="bg-white/10 backdrop-blur-sm border border-white/20 text-white px-4 py-2 rounded-lg shadow-lg flex items-center">
                 <i class="fas fa-list-alt mr-2 text-yellow-300"></i>
-                <span class="text-sm font-medium">Total Logs: {{ $activityLogs->total() }}</span>
+                <span class="text-sm font-medium">Total Logs: <?php echo e($activityLogs->total()); ?></span>
             </div>
             <button type="button" id="filterButton" class="group bg-white/10 backdrop-blur-sm border border-white/20 text-white hover:bg-yellow-500/20 font-semibold py-3 px-5 rounded-lg shadow-lg transition-all duration-300 inline-flex items-center hover:shadow-yellow-500/30 hover:shadow-xl">
                 <i class="fas fa-filter mr-2 group-hover:scale-110 transition-transform duration-300"></i>
                 <span>Filter Logs</span>
             </button>
 
-            <form action="{{ route('admin.activity-logs.clear') }}" method="POST" onsubmit="return confirm('Are you sure you want to clear all activity logs? This action cannot be undone.');">
-                @csrf
-                @method('DELETE')
+            <form action="<?php echo e(route('admin.activity-logs.clear')); ?>" method="POST" onsubmit="return confirm('Are you sure you want to clear all activity logs? This action cannot be undone.');">
+                <?php echo csrf_field(); ?>
+                <?php echo method_field('DELETE'); ?>
                 <button type="submit" class="group bg-red-600/80 hover:bg-red-700/80 text-white font-semibold py-3 px-5 rounded-lg shadow-lg transition-all duration-300 inline-flex items-center hover:shadow-red-500/20 hover:shadow-xl">
                     <i class="fas fa-trash-alt mr-2 group-hover:scale-110 transition-transform duration-300"></i>
                     <span>Clear All</span>
@@ -146,7 +144,7 @@
             </div>
             <div>
                 <p class="text-gray-400 text-sm font-medium mb-1">Total Logs</p>
-                <p class="text-white text-2xl font-bold">{{ $activityLogs->total() }}</p>
+                <p class="text-white text-2xl font-bold"><?php echo e($activityLogs->total()); ?></p>
             </div>
         </div>
     </div>
@@ -161,7 +159,7 @@
             </div>
             <div>
                 <p class="text-gray-400 text-sm font-medium mb-1">Today's Logs</p>
-                <p class="text-white text-2xl font-bold">{{ \App\Models\ActivityLog::whereDate('created_at', today())->count() }}</p>
+                <p class="text-white text-2xl font-bold"><?php echo e(\App\Models\ActivityLog::whereDate('created_at', today())->count()); ?></p>
             </div>
         </div>
     </div>
@@ -176,7 +174,7 @@
             </div>
             <div>
                 <p class="text-gray-400 text-sm font-medium mb-1">Active Users</p>
-                <p class="text-white text-2xl font-bold">{{ \App\Models\ActivityLog::distinct('user_id')->whereNotNull('user_id')->whereDate('created_at', today())->count() }}</p>
+                <p class="text-white text-2xl font-bold"><?php echo e(\App\Models\ActivityLog::distinct('user_id')->whereNotNull('user_id')->whereDate('created_at', today())->count()); ?></p>
             </div>
         </div>
     </div>
@@ -191,24 +189,24 @@
             </div>
             <div>
                 <p class="text-gray-400 text-sm font-medium mb-1">Top Action</p>
-                <p class="text-white text-lg font-bold">{{ \App\Models\ActivityLog::select('action')->groupBy('action')->orderByRaw('COUNT(*) DESC')->first()->action ?? 'N/A' }}</p>
+                <p class="text-white text-lg font-bold"><?php echo e(\App\Models\ActivityLog::select('action')->groupBy('action')->orderByRaw('COUNT(*) DESC')->first()->action ?? 'N/A'); ?></p>
             </div>
         </div>
     </div>
 </div>
 
 <!-- Success Message -->
-@if (session('success'))
+<?php if(session('success')): ?>
     <div class="mb-6 bg-gradient-to-r from-green-900/80 to-green-800/80 border border-green-700/50 text-green-300 px-6 py-4 rounded-xl flex items-center shadow-lg">
         <div class="bg-green-800/80 p-2 rounded-lg mr-4 shadow-inner">
             <i class="fas fa-check-circle text-green-400 text-xl"></i>
         </div>
-        <span class="font-medium">{{ session('success') }}</span>
+        <span class="font-medium"><?php echo e(session('success')); ?></span>
     </div>
-@endif
+<?php endif; ?>
 
 <!-- Filter Panel -->
-<div id="filterPanel" class="bg-gradient-to-br from-gray-900 to-gray-800 backdrop-blur-sm border border-yellow-500/30 rounded-xl p-6 shadow-xl relative overflow-hidden mb-8 admin-card-hover {{ request('user_id') || request('action') || request('date_from') || request('date_to') ? '' : 'hidden' }}">
+<div id="filterPanel" class="bg-gradient-to-br from-gray-900 to-gray-800 backdrop-blur-sm border border-yellow-500/30 rounded-xl p-6 shadow-xl relative overflow-hidden mb-8 admin-card-hover <?php echo e(request('user_id') || request('action') || request('date_from') || request('date_to') ? '' : 'hidden'); ?>">
     <div class="absolute inset-0 bg-grid-white/[0.02] bg-[length:20px_20px]"></div>
     <div class="absolute inset-0 bg-gradient-to-br from-yellow-600/5 to-pink-600/5"></div>
 
@@ -225,7 +223,7 @@
             </button>
         </div>
 
-        <form action="{{ route('admin.activity-logs.index') }}" method="GET">
+        <form action="<?php echo e(route('admin.activity-logs.index')); ?>" method="GET">
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                 <!-- User Filter -->
                 <div class="group">
@@ -237,11 +235,12 @@
                         <select id="user_id" name="user_id"
                             class="w-full p-3 pl-4 pr-10 bg-gray-900/70 border border-gray-700 rounded-lg text-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500/50 transition-all duration-300 appearance-none custom-select hover:border-blue-500/30">
                             <option value="">All Users</option>
-                            @foreach(\App\Models\User::all() as $user)
-                                <option value="{{ $user->id }}" {{ request('user_id') == $user->id ? 'selected' : '' }}>
-                                    {{ $user->username }}
+                            <?php $__currentLoopData = \App\Models\User::all(); $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $user): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                <option value="<?php echo e($user->id); ?>" <?php echo e(request('user_id') == $user->id ? 'selected' : ''); ?>>
+                                    <?php echo e($user->username); ?>
+
                                 </option>
-                            @endforeach
+                            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                         </select>
                         <div class="absolute inset-y-0 right-0 flex items-center px-3 pointer-events-none text-gray-400">
                             <i class="fas fa-chevron-down text-xs"></i>
@@ -259,11 +258,12 @@
                         <select id="action" name="action"
                             class="w-full p-3 pl-4 pr-10 bg-gray-900/70 border border-gray-700 rounded-lg text-gray-200 focus:outline-none focus:ring-2 focus:ring-purple-500/50 focus:border-purple-500/50 transition-all duration-300 appearance-none custom-select hover:border-purple-500/30">
                             <option value="">All Actions</option>
-                            @foreach($actions as $action)
-                                <option value="{{ $action }}" {{ request('action') == $action ? 'selected' : '' }}>
-                                    {{ $action }}
+                            <?php $__currentLoopData = $actions; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $action): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                <option value="<?php echo e($action); ?>" <?php echo e(request('action') == $action ? 'selected' : ''); ?>>
+                                    <?php echo e($action); ?>
+
                                 </option>
-                            @endforeach
+                            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                         </select>
                         <div class="absolute inset-y-0 right-0 flex items-center px-3 pointer-events-none text-gray-400">
                             <i class="fas fa-chevron-down text-xs"></i>
@@ -278,7 +278,7 @@
                         Date From
                     </label>
                     <div class="relative">
-                        <input type="date" id="date_from" name="date_from" value="{{ request('date_from') }}"
+                        <input type="date" id="date_from" name="date_from" value="<?php echo e(request('date_from')); ?>"
                             class="w-full p-3 bg-gray-900/70 border border-gray-700 rounded-lg text-gray-200 focus:outline-none focus:ring-2 focus:ring-green-500/50 focus:border-green-500/50 transition-all duration-300 hover:border-green-500/30" />
                     </div>
                 </div>
@@ -290,7 +290,7 @@
                         Date To
                     </label>
                     <div class="relative">
-                        <input type="date" id="date_to" name="date_to" value="{{ request('date_to') }}"
+                        <input type="date" id="date_to" name="date_to" value="<?php echo e(request('date_to')); ?>"
                             class="w-full p-3 bg-gray-900/70 border border-gray-700 rounded-lg text-gray-200 focus:outline-none focus:ring-2 focus:ring-orange-500/50 focus:border-orange-500/50 transition-all duration-300 hover:border-orange-500/30" />
                     </div>
                 </div>
@@ -298,7 +298,7 @@
 
             <!-- Filter Actions -->
             <div class="flex flex-wrap justify-end gap-4 pt-6 mt-6 border-t border-gray-700/50">
-                <a href="{{ route('admin.activity-logs.index') }}" class="group px-6 py-3 bg-gray-800/80 hover:bg-gray-700/80 text-gray-300 hover:text-white border border-gray-600/50 hover:border-gray-500/50 font-medium rounded-lg transition-all duration-300 flex items-center">
+                <a href="<?php echo e(route('admin.activity-logs.index')); ?>" class="group px-6 py-3 bg-gray-800/80 hover:bg-gray-700/80 text-gray-300 hover:text-white border border-gray-600/50 hover:border-gray-500/50 font-medium rounded-lg transition-all duration-300 flex items-center">
                     <i class="fas fa-undo mr-2 group-hover:rotate-180 transition-transform duration-300"></i> Reset Filters
                 </a>
                 <button type="submit" class="group px-6 py-3 bg-gradient-to-r from-yellow-600 to-pink-600 hover:from-yellow-500 hover:to-pink-500 text-white font-medium rounded-lg transition-all duration-300 flex items-center shadow-lg hover:shadow-yellow-500/20">
@@ -330,14 +330,14 @@
                 <div class="flex items-center gap-3">
                     <span class="bg-yellow-900/30 text-yellow-400 text-sm py-2 px-4 rounded-lg border border-yellow-700/30 flex items-center">
                         <i class="fas fa-database mr-2"></i>
-                        {{ $activityLogs->total() }} entries
+                        <?php echo e($activityLogs->total()); ?> entries
                     </span>
-                    @if(request()->hasAny(['user_id', 'action', 'date_from', 'date_to']))
+                    <?php if(request()->hasAny(['user_id', 'action', 'date_from', 'date_to'])): ?>
                         <span class="bg-blue-900/30 text-blue-400 text-sm py-2 px-4 rounded-lg border border-blue-700/30 flex items-center">
                             <i class="fas fa-filter mr-2"></i>
                             Filtered
                         </span>
-                    @endif
+                    <?php endif; ?>
                 </div>
             </div>
         </div>
@@ -379,34 +379,37 @@
                     </tr>
                 </thead>
                 <tbody id="logs-table-body">
-                    @forelse ($activityLogs as $log)
+                    <?php $__empty_1 = true; $__currentLoopData = $activityLogs; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $log): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); $__empty_1 = false; ?>
                         <tr class="border-b border-gray-800/80 hover:bg-gray-800/50 transition-all duration-200 log-row">
                             <td class="px-6 py-4">
-                                @if ($log->user)
+                                <?php if($log->user): ?>
                                     <div class="flex items-center">
                                         <div class="w-10 h-10 rounded-full bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center text-white font-bold mr-3 shadow-md relative overflow-hidden">
                                             <div class="absolute inset-0 bg-grid-white/[0.1] bg-[length:8px_8px]"></div>
-                                            <span class="relative">{{ strtoupper(substr($log->user->username, 0, 1)) }}</span>
+                                            <span class="relative"><?php echo e(strtoupper(substr($log->user->username, 0, 1))); ?></span>
                                         </div>
                                         <div>
                                             <div class="font-medium text-white user-name">
-                                                {{ $log->user->username }}
+                                                <?php echo e($log->user->username); ?>
+
                                             </div>
                                             <div class="text-xs text-gray-400">
-                                                {{ $log->user->email }}
+                                                <?php echo e($log->user->email); ?>
+
                                             </div>
-                                            @if($log->user->role !== 'user')
+                                            <?php if($log->user->role !== 'user'): ?>
                                                 <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium mt-1
-                                                    @if($log->user->role === 'admin') bg-yellow-900/50 text-yellow-300 border border-yellow-700/50
-                                                    @elseif($log->user->role === 'teacher') bg-blue-900/50 text-blue-300 border border-blue-700/50
-                                                    @elseif($log->user->role === 'agent') bg-orange-900/50 text-orange-300 border border-orange-700/50
-                                                    @endif">
-                                                    {{ ucfirst($log->user->role) }}
+                                                    <?php if($log->user->role === 'admin'): ?> bg-yellow-900/50 text-yellow-300 border border-yellow-700/50
+                                                    <?php elseif($log->user->role === 'teacher'): ?> bg-blue-900/50 text-blue-300 border border-blue-700/50
+                                                    <?php elseif($log->user->role === 'agent'): ?> bg-orange-900/50 text-orange-300 border border-orange-700/50
+                                                    <?php endif; ?>">
+                                                    <?php echo e(ucfirst($log->user->role)); ?>
+
                                                 </span>
-                                            @endif
+                                            <?php endif; ?>
                                         </div>
                                     </div>
-                                @else
+                                <?php else: ?>
                                     <div class="flex items-center">
                                         <div class="w-10 h-10 rounded-full bg-gradient-to-br from-gray-600 to-gray-700 flex items-center justify-center text-gray-300 mr-3 shadow-md relative overflow-hidden">
                                             <div class="absolute inset-0 bg-grid-white/[0.05] bg-[length:8px_8px]"></div>
@@ -417,11 +420,11 @@
                                             <div class="text-xs text-gray-400">Automated action</div>
                                         </div>
                                     </div>
-                                @endif
+                                <?php endif; ?>
                             </td>
                             <td class="px-6 py-4">
                                 <div>
-                                    @php
+                                    <?php
                                         $badgeClass = 'badge-blue';
                                         $icon = 'fa-info-circle';
 
@@ -441,18 +444,20 @@
                                             $badgeClass = 'badge-orange';
                                             $icon = 'fa-eye';
                                         }
-                                    @endphp
+                                    ?>
 
-                                    <span class="badge {{ $badgeClass }} mb-2 action-badge">
-                                        <i class="fas {{ $icon }} mr-1"></i>
-                                        {{ $log->action }}
+                                    <span class="badge <?php echo e($badgeClass); ?> mb-2 action-badge">
+                                        <i class="fas <?php echo e($icon); ?> mr-1"></i>
+                                        <?php echo e($log->action); ?>
+
                                     </span>
 
-                                    @if ($log->description)
-                                        <div class="text-sm text-gray-300 mt-1 max-w-xs truncate hover:max-w-none hover:whitespace-normal transition-all duration-200 cursor-pointer log-description" title="{{ $log->description }}">
-                                            {{ $log->description }}
+                                    <?php if($log->description): ?>
+                                        <div class="text-sm text-gray-300 mt-1 max-w-xs truncate hover:max-w-none hover:whitespace-normal transition-all duration-200 cursor-pointer log-description" title="<?php echo e($log->description); ?>">
+                                            <?php echo e($log->description); ?>
+
                                         </div>
-                                    @endif
+                                    <?php endif; ?>
                                 </div>
                             </td>
                             <td class="px-6 py-4">
@@ -461,10 +466,10 @@
                                         <i class="fas fa-network-wired text-blue-400 text-sm"></i>
                                     </div>
                                     <div>
-                                        <span class="font-mono text-sm">{{ $log->ip_address }}</span>
-                                        @if($log->ip_address === request()->ip())
+                                        <span class="font-mono text-sm"><?php echo e($log->ip_address); ?></span>
+                                        <?php if($log->ip_address === request()->ip()): ?>
                                             <div class="text-xs text-green-400 mt-1">Current IP</div>
-                                        @endif
+                                        <?php endif; ?>
                                     </div>
                                 </div>
                             </td>
@@ -474,21 +479,21 @@
                                         <i class="far fa-clock text-green-400 text-sm"></i>
                                     </div>
                                     <div>
-                                        <div class="font-medium">{{ $log->created_at->format('M d, Y') }}</div>
-                                        <div class="text-xs text-gray-500">{{ $log->created_at->format('H:i:s') }}</div>
-                                        <div class="text-xs text-blue-400 mt-1">{{ $log->created_at->diffForHumans() }}</div>
+                                        <div class="font-medium"><?php echo e($log->created_at->format('M d, Y')); ?></div>
+                                        <div class="text-xs text-gray-500"><?php echo e($log->created_at->format('H:i:s')); ?></div>
+                                        <div class="text-xs text-blue-400 mt-1"><?php echo e($log->created_at->diffForHumans()); ?></div>
                                     </div>
                                 </div>
                             </td>
                             <td class="px-6 py-4">
-                                <a href="{{ route('admin.activity-logs.show', $log->id) }}"
+                                <a href="<?php echo e(route('admin.activity-logs.show', $log->id)); ?>"
                                    class="group bg-yellow-900/40 hover:bg-yellow-800/60 text-yellow-300 hover:text-yellow-200 border border-yellow-700/50 hover:border-yellow-600/50 rounded-lg px-3 py-1.5 transition-all duration-200 flex items-center w-fit">
                                     <i class="fas fa-eye mr-1.5 group-hover:scale-110 transition-transform duration-200"></i>
                                     <span>Details</span>
                                 </a>
                             </td>
                         </tr>
-                    @empty
+                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); if ($__empty_1): ?>
                         <tr>
                             <td colspan="5" class="px-6 py-12 text-center">
                                 <div class="flex flex-col items-center justify-center">
@@ -498,14 +503,14 @@
                                     <h3 class="text-xl font-semibold text-white mb-2">No activity logs found</h3>
                                     <p class="text-gray-400 max-w-md">Try adjusting your search filters or check back later when there's more activity.</p>
                                     <div class="mt-4">
-                                        <a href="{{ route('admin.activity-logs.index') }}" class="text-yellow-400 hover:text-yellow-300 text-sm underline">
+                                        <a href="<?php echo e(route('admin.activity-logs.index')); ?>" class="text-yellow-400 hover:text-yellow-300 text-sm underline">
                                             Clear all filters
                                         </a>
                                     </div>
                                 </div>
                             </td>
                         </tr>
-                    @endforelse
+                    <?php endif; ?>
                 </tbody>
             </table>
         </div>
@@ -514,18 +519,19 @@
         <div class="px-6 py-4 border-t border-gray-700/50 bg-gray-800/30">
             <div class="flex flex-col md:flex-row justify-between items-center gap-4">
                 <div class="text-sm text-gray-400">
-                    Showing {{ $activityLogs->firstItem() ?? 0 }} to {{ $activityLogs->lastItem() ?? 0 }} of {{ $activityLogs->total() }} results
+                    Showing <?php echo e($activityLogs->firstItem() ?? 0); ?> to <?php echo e($activityLogs->lastItem() ?? 0); ?> of <?php echo e($activityLogs->total()); ?> results
                 </div>
                 <div class="pagination-wrapper">
-                    {{ $activityLogs->withQueryString()->links() }}
+                    <?php echo e($activityLogs->withQueryString()->links()); ?>
+
                 </div>
             </div>
         </div>
     </div>
 </div>
-@endsection
+<?php $__env->stopSection(); ?>
 
-@push('scripts')
+<?php $__env->startPush('scripts'); ?>
 <script>
     document.addEventListener('DOMContentLoaded', function() {
         // Filter panel toggle
@@ -660,4 +666,6 @@
         // startAutoRefresh();
     });
 </script>
-@endpush
+<?php $__env->stopPush(); ?>
+
+<?php echo $__env->make('layouts.admin', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?><?php /**PATH /var/www/resources/views/admin/activity-logs/index.blade.php ENDPATH**/ ?>
