@@ -1,4 +1,3 @@
-<script src="tailwind.js"></script>
 <?php
 
 use Illuminate\Http\Request;

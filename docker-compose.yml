@@ -1,4 +1,3 @@
-version: '3'
 services:
   # PHP Service
   app:
@@ -48,7 +47,7 @@ services:
     volumes:
       - education-mysql-data:/var/lib/mysql
     ports:
-      - "3306:3306"
+      - "3307:3306"
     networks:
       - education-network
 
@@ -58,7 +57,7 @@ services:
     container_name: education-phpmyadmin
     restart: unless-stopped
     ports:
-      - "8080:80"
+      - "8081:80"
     environment:
       PMA_HOST: db
       MYSQL_ROOT_PASSWORD: ${DB_PASSWORD}
