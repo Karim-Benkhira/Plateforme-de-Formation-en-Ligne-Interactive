@@ -1,8 +1,6 @@
-@extends('layouts.admin')
+<?php $__env->startSection('title', 'Create New Category'); ?>
 
-@section('title', 'Create New Category')
-
-@push('styles')
+<?php $__env->startPush('styles'); ?>
 <style>
     :root {
         /* Admin Color Scheme - Yellow/Pink */
@@ -101,9 +99,9 @@
         transform: translateY(-1px);
     }
 </style>
-@endpush
+<?php $__env->stopPush(); ?>
 
-@section('content')
+<?php $__env->startSection('content'); ?>
 <!-- Page Header -->
 <div class="admin-gradient-bg rounded-xl shadow-2xl p-6 mb-8 border border-yellow-500/30 relative overflow-hidden admin-glow">
     <div class="absolute inset-0 bg-grid-white/[0.05] bg-[length:20px_20px]"></div>
@@ -117,7 +115,7 @@
             <p class="text-yellow-100 opacity-90">Add a new category to organize your courses and improve navigation</p>
         </div>
         <div class="mt-4 md:mt-0">
-            <a href="{{ route('admin.categories') }}" class="group bg-white/10 backdrop-blur-sm border border-white/20 text-white hover:bg-yellow-500/20 font-semibold py-3 px-5 rounded-lg shadow-lg transition-all duration-300 inline-flex items-center hover:shadow-yellow-500/30 hover:shadow-xl">
+            <a href="<?php echo e(route('admin.categories')); ?>" class="group bg-white/10 backdrop-blur-sm border border-white/20 text-white hover:bg-yellow-500/20 font-semibold py-3 px-5 rounded-lg shadow-lg transition-all duration-300 inline-flex items-center hover:shadow-yellow-500/30 hover:shadow-xl">
                 <i class="fas fa-arrow-left mr-2 group-hover:scale-110 transition-transform duration-300"></i>
                 <span>Back to Categories</span>
             </a>
@@ -143,8 +141,8 @@
         </div>
 
         <!-- Form Content -->
-        <form action="{{ route('admin.storeCategory') }}" method="POST" class="space-y-8">
-            @csrf
+        <form action="<?php echo e(route('admin.storeCategory')); ?>" method="POST" class="space-y-8">
+            <?php echo csrf_field(); ?>
 
             <!-- Category Name Section -->
             <div class="form-section bg-gray-800/50 rounded-xl p-6 border border-gray-700/50">
@@ -159,7 +157,7 @@
                         Category Name <span class="text-red-400 ml-1">*</span>
                     </label>
                     <div class="relative">
-                        <input type="text" name="name" id="name" value="{{ old('name') }}" required
+                        <input type="text" name="name" id="name" value="<?php echo e(old('name')); ?>" required
                             class="w-full p-4 pl-4 bg-gray-900/70 border border-gray-700 rounded-lg text-gray-200 focus:outline-none focus:ring-2 focus:ring-yellow-500/50 focus:border-yellow-500/50 transition-all duration-300 hover:border-yellow-500/30"
                             placeholder="Enter a clear and descriptive category name" />
                     </div>
@@ -182,7 +180,7 @@
                     <div class="relative">
                         <textarea name="description" id="description" rows="4"
                             class="w-full p-4 bg-gray-900/70 border border-gray-700 rounded-lg text-gray-200 focus:outline-none focus:ring-2 focus:ring-green-500/50 focus:border-green-500/50 transition-all duration-300 hover:border-green-500/30 resize-none"
-                            placeholder="Provide a brief description of what this category includes and what types of courses it will contain...">{{ old('description') }}</textarea>
+                            placeholder="Provide a brief description of what this category includes and what types of courses it will contain..."><?php echo e(old('description')); ?></textarea>
                     </div>
                     <p class="text-xs text-gray-400 mt-2">Help users understand what types of courses belong to this category</p>
                 </div>
@@ -201,15 +199,15 @@
                         Category Icon
                     </label>
                     <div class="grid grid-cols-4 md:grid-cols-8 gap-3 p-4 bg-gray-900/70 rounded-xl border border-gray-700/50">
-                        @foreach(['book', 'code', 'laptop', 'calculator', 'flask', 'language', 'music', 'palette', 'chart-pie', 'brain', 'atom', 'globe', 'camera', 'video', 'microphone', 'graduation-cap'] as $icon)
+                        <?php $__currentLoopData = ['book', 'code', 'laptop', 'calculator', 'flask', 'language', 'music', 'palette', 'chart-pie', 'brain', 'atom', 'globe', 'camera', 'video', 'microphone', 'graduation-cap']; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $icon): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                         <div>
-                            <input type="radio" name="icon" id="icon-{{ $icon }}" value="{{ $icon }}" class="hidden peer" {{ old('icon') == $icon ? 'checked' : '' }}>
-                            <label for="icon-{{ $icon }}" class="radio-card flex flex-col items-center justify-center p-3 rounded-lg cursor-pointer bg-gray-800 hover:bg-gray-700 peer-checked:bg-gradient-to-br peer-checked:from-yellow-900/80 peer-checked:to-pink-900/80 peer-checked:text-yellow-300 peer-checked:border-yellow-500/50 peer-checked:shadow-lg peer-checked:shadow-yellow-500/20 transition-all duration-300 border border-gray-700 hover:border-gray-600">
-                                <i class="fas fa-{{ $icon }} text-xl mb-1"></i>
-                                <span class="text-xs capitalize">{{ $icon }}</span>
+                            <input type="radio" name="icon" id="icon-<?php echo e($icon); ?>" value="<?php echo e($icon); ?>" class="hidden peer" <?php echo e(old('icon') == $icon ? 'checked' : ''); ?>>
+                            <label for="icon-<?php echo e($icon); ?>" class="radio-card flex flex-col items-center justify-center p-3 rounded-lg cursor-pointer bg-gray-800 hover:bg-gray-700 peer-checked:bg-gradient-to-br peer-checked:from-yellow-900/80 peer-checked:to-pink-900/80 peer-checked:text-yellow-300 peer-checked:border-yellow-500/50 peer-checked:shadow-lg peer-checked:shadow-yellow-500/20 transition-all duration-300 border border-gray-700 hover:border-gray-600">
+                                <i class="fas fa-<?php echo e($icon); ?> text-xl mb-1"></i>
+                                <span class="text-xs capitalize"><?php echo e($icon); ?></span>
                             </label>
                         </div>
-                        @endforeach
+                        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                     </div>
                     <p class="text-xs text-gray-400 mt-2">Select an icon that best represents this category</p>
                 </div>
@@ -220,19 +218,19 @@
                         Category Color
                     </label>
                     <div class="grid grid-cols-5 md:grid-cols-10 gap-3 p-4 bg-gray-900/70 rounded-xl border border-gray-700/50">
-                        @foreach(['blue', 'green', 'red', 'yellow', 'purple', 'pink', 'indigo', 'teal', 'orange', 'cyan'] as $color)
+                        <?php $__currentLoopData = ['blue', 'green', 'red', 'yellow', 'purple', 'pink', 'indigo', 'teal', 'orange', 'cyan']; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $color): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                         <div>
-                            <input type="radio" name="color" id="color-{{ $color }}" value="{{ $color }}" class="hidden peer" {{ old('color') == $color ? 'checked' : '' }}>
-                            <label for="color-{{ $color }}" class="block w-full h-12 rounded-lg cursor-pointer bg-gradient-to-br from-{{ $color }}-500 to-{{ $color }}-600 peer-checked:ring-2 peer-checked:ring-{{ $color }}-400 peer-checked:shadow-lg peer-checked:shadow-{{ $color }}-500/20 hover:shadow-md hover:scale-105 transition-all duration-300 border-2 border-transparent peer-checked:border-white/20"></label>
+                            <input type="radio" name="color" id="color-<?php echo e($color); ?>" value="<?php echo e($color); ?>" class="hidden peer" <?php echo e(old('color') == $color ? 'checked' : ''); ?>>
+                            <label for="color-<?php echo e($color); ?>" class="block w-full h-12 rounded-lg cursor-pointer bg-gradient-to-br from-<?php echo e($color); ?>-500 to-<?php echo e($color); ?>-600 peer-checked:ring-2 peer-checked:ring-<?php echo e($color); ?>-400 peer-checked:shadow-lg peer-checked:shadow-<?php echo e($color); ?>-500/20 hover:shadow-md hover:scale-105 transition-all duration-300 border-2 border-transparent peer-checked:border-white/20"></label>
                         </div>
-                        @endforeach
+                        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                     </div>
                     <p class="text-xs text-gray-400 mt-2">Choose a color theme that will be used throughout the category display</p>
                 </div>
             </div>
 
             <!-- Error Messages -->
-            @if($errors->any())
+            <?php if($errors->any()): ?>
                 <div class="bg-gradient-to-r from-red-900/80 to-red-800/80 border border-red-700/50 text-red-300 p-6 rounded-xl shadow-lg">
                     <div class="flex items-center mb-4">
                         <div class="bg-red-800/80 p-2 rounded-lg mr-4 shadow-inner">
@@ -244,19 +242,19 @@
                         </div>
                     </div>
                     <ul class="space-y-2 ml-14">
-                        @foreach($errors->all() as $error)
+                        <?php $__currentLoopData = $errors->all(); $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $error): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                             <li class="flex items-center">
                                 <i class="fas fa-times-circle text-red-400 mr-2 text-sm"></i>
-                                <span>{{ $error }}</span>
+                                <span><?php echo e($error); ?></span>
                             </li>
-                        @endforeach
+                        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                     </ul>
                 </div>
-            @endif
+            <?php endif; ?>
 
             <!-- Form Actions -->
             <div class="flex flex-col sm:flex-row justify-end gap-4 pt-6 border-t border-gray-700/50">
-                <a href="{{ route('admin.categories') }}" class="group px-6 py-3 bg-gray-800/80 hover:bg-gray-700/80 text-gray-300 hover:text-white border border-gray-600/50 hover:border-gray-500/50 font-medium rounded-lg transition-all duration-300 flex items-center justify-center">
+                <a href="<?php echo e(route('admin.categories')); ?>" class="group px-6 py-3 bg-gray-800/80 hover:bg-gray-700/80 text-gray-300 hover:text-white border border-gray-600/50 hover:border-gray-500/50 font-medium rounded-lg transition-all duration-300 flex items-center justify-center">
                     <i class="fas fa-times mr-2 group-hover:rotate-90 transition-transform duration-300"></i>
                     <span>Cancel</span>
                 </a>
@@ -269,7 +267,7 @@
     </div>
 </div>
 
-@push('scripts')
+<?php $__env->startPush('scripts'); ?>
 <script>
     document.addEventListener('DOMContentLoaded', function() {
         // Form validation enhancement
@@ -338,5 +336,6 @@
         });
     });
 </script>
-@endpush
-@endsection
+<?php $__env->stopPush(); ?>
+<?php $__env->stopSection(); ?>
+<?php echo $__env->make('layouts.admin', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?><?php /**PATH /var/www/resources/views/admin/createCategory.blade.php ENDPATH**/ ?>
