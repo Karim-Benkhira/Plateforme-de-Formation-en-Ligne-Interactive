@@ -2,6 +2,23 @@
 
 <?php $__env->startPush('styles'); ?>
 <style>
+    :root {
+        /* Admin Color Scheme - Yellow/Pink */
+        --admin-primary: #f59e0b;
+        --admin-primary-dark: #d97706;
+        --admin-primary-light: #fbbf24;
+        --admin-secondary: #ec4899;
+        --admin-secondary-dark: #db2777;
+        --admin-secondary-light: #f472b6;
+        --admin-accent: #fbbf24;
+        --admin-accent-dark: #f59e0b;
+        --admin-bg-primary: #1f2937;
+        --admin-bg-secondary: #111827;
+        --admin-text-primary: #f9fafb;
+        --admin-text-secondary: #d1d5db;
+        --admin-border: #374151;
+    }
+
     @keyframes pulse-slow {
         0%, 100% {
             opacity: 0.2;
@@ -10,31 +27,55 @@
             opacity: 0;
         }
     }
+
+    @keyframes admin-glow {
+        0%, 100% {
+            box-shadow: 0 0 20px rgba(245, 158, 11, 0.3);
+        }
+        50% {
+            box-shadow: 0 0 30px rgba(245, 158, 11, 0.5);
+        }
+    }
+
     .animate-pulse-slow {
         animation: pulse-slow 3s cubic-bezier(0.4, 0, 0.6, 1) infinite;
     }
+
+    .admin-glow {
+        animation: admin-glow 2s ease-in-out infinite;
+    }
+
     .bg-grid-white {
         background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3E%3Cg fill-rule='evenodd'%3E%3Cg fill='%23FFFFFF' fill-opacity='0.1'%3E%3Cpath opacity='.5' d='M96 95h4v1h-4v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4H0v-1h15v-9H0v-1h15v-9H0v-1h15v-9H0v-1h15v-9H0v-1h15v-9H0v-1h15v-9H0v-1h15v-9H0v-1h15v-9H0v-1h15V0h1v15h9V0h1v15h9V0h1v15h9V0h1v15h9V0h1v15h9V0h1v15h9V0h1v15h9V0h1v15h9V0h1v15h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9zm-1 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-9-10h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm9-10v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-9-10h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm9-10v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-9-10h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm9-10v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-9-10h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+    }
+
+    .admin-gradient-bg {
+        background: linear-gradient(135deg, var(--admin-primary) 0%, var(--admin-secondary) 100%);
+    }
+
+    .admin-card-hover:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 10px 25px rgba(245, 158, 11, 0.15);
     }
 </style>
 <?php $__env->stopPush(); ?>
 
 <?php $__env->startSection('content'); ?>
 <!-- Page Header -->
-<div class="bg-gradient-to-r from-blue-900 via-primary-800 to-secondary-900 rounded-xl shadow-2xl p-6 mb-8 border border-blue-700/30 relative overflow-hidden">
+<div class="admin-gradient-bg rounded-xl shadow-2xl p-6 mb-8 border border-yellow-500/30 relative overflow-hidden admin-glow">
     <div class="absolute inset-0 bg-grid-white/[0.05] bg-[length:20px_20px]"></div>
-    <div class="absolute inset-0 bg-gradient-to-r from-blue-500/10 to-purple-500/10"></div>
+    <div class="absolute inset-0 bg-gradient-to-r from-yellow-500/10 to-pink-500/10"></div>
     <div class="relative flex flex-col md:flex-row justify-between items-center">
         <div>
             <h1 class="text-3xl font-bold text-white mb-2 flex items-center">
-                <i class="fas fa-users-cog mr-3 text-blue-300"></i>
+                <i class="fas fa-users-cog mr-3 text-yellow-300"></i>
                 User Management
             </h1>
-            <p class="text-blue-100 opacity-90">Manage user accounts, roles, and permissions.</p>
+            <p class="text-yellow-100 opacity-90">Manage user accounts, roles, and permissions.</p>
         </div>
         <div class="mt-4 md:mt-0 flex space-x-3">
             <div class="bg-white/10 backdrop-blur-sm border border-white/20 text-white px-4 py-2 rounded-lg shadow-lg flex items-center">
-                <i class="fas fa-user-plus mr-2 text-blue-300"></i>
+                <i class="fas fa-user-plus mr-2 text-yellow-300"></i>
                 <span class="text-sm font-medium">Total Users: <?php echo e(count($users)); ?></span>
             </div>
         </div>
@@ -42,15 +83,15 @@
 </div>
 
 <!-- Users Table Card -->
-<div class="bg-gradient-to-br from-gray-900 to-gray-800 backdrop-blur-sm border border-gray-700/50 rounded-xl p-6 shadow-xl relative overflow-hidden">
+<div class="bg-gradient-to-br from-gray-900 to-gray-800 backdrop-blur-sm border border-yellow-500/30 rounded-xl p-6 shadow-xl relative overflow-hidden admin-card-hover">
     <div class="absolute inset-0 bg-grid-white/[0.02] bg-[length:20px_20px]"></div>
-    <div class="absolute inset-0 bg-gradient-to-br from-blue-600/5 to-purple-800/5"></div>
+    <div class="absolute inset-0 bg-gradient-to-br from-yellow-600/5 to-pink-600/5"></div>
 
     <div class="relative">
         <!-- Table Header -->
         <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-4">
             <h2 class="text-xl font-bold text-white flex items-center">
-                <div class="bg-blue-900/70 text-blue-400 rounded-lg p-2 mr-3 shadow-inner shadow-blue-950/50">
+                <div class="bg-yellow-900/70 text-yellow-400 rounded-lg p-2 mr-3 shadow-inner shadow-yellow-950/50">
                     <i class="fas fa-users"></i>
                 </div>
                 <span>All Users</span>
@@ -58,18 +99,18 @@
 
             <div class="flex flex-col md:flex-row gap-3 w-full md:w-auto">
                 <div class="relative group">
-                    <div class="absolute inset-0 bg-gradient-to-r from-blue-600/20 to-purple-600/20 rounded-lg blur opacity-75 group-hover:opacity-100 transition duration-200"></div>
+                    <div class="absolute inset-0 bg-gradient-to-r from-yellow-600/20 to-pink-600/20 rounded-lg blur opacity-75 group-hover:opacity-100 transition duration-200"></div>
                     <div class="relative bg-gray-900 border border-gray-700 rounded-lg flex items-center overflow-hidden">
                         <input type="text" id="search-users" placeholder="Search users..."
                             class="bg-transparent border-0 px-4 py-2.5 focus:outline-none text-gray-200 w-full placeholder-gray-500">
-                        <div class="px-3 text-gray-400">
+                        <div class="px-3 text-yellow-400">
                             <i class="fas fa-search"></i>
                         </div>
                     </div>
                 </div>
 
                 <div class="relative group">
-                    <div class="absolute inset-0 bg-gradient-to-r from-blue-600/20 to-purple-600/20 rounded-lg blur opacity-75 group-hover:opacity-100 transition duration-200"></div>
+                    <div class="absolute inset-0 bg-gradient-to-r from-yellow-600/20 to-pink-600/20 rounded-lg blur opacity-75 group-hover:opacity-100 transition duration-200"></div>
                     <div class="relative">
                         <select id="role-filter"
                             class="bg-gray-900 border border-gray-700 rounded-lg px-4 py-2.5 focus:outline-none text-gray-200 appearance-none pr-10 w-full">
@@ -79,7 +120,7 @@
                             <option value="agent">Agents</option>
                             <option value="admin">Admins</option>
                         </select>
-                        <div class="absolute inset-y-0 right-0 flex items-center px-3 pointer-events-none text-gray-400">
+                        <div class="absolute inset-y-0 right-0 flex items-center px-3 pointer-events-none text-yellow-400">
                             <i class="fas fa-chevron-down text-xs"></i>
                         </div>
                     </div>
@@ -115,19 +156,19 @@
                         <td class="px-4 py-4 text-gray-300"><?php echo e($user->email); ?></td>
                         <td class="px-4 py-4">
                             <?php if($user->role === 'admin'): ?>
-                                <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-purple-900/50 text-purple-300 border border-purple-700/50">
-                                    <i class="fas fa-user-shield mr-1.5"></i> Admin
+                                <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-yellow-900/50 text-yellow-300 border border-yellow-700/50">
+                                    <i class="fas fa-crown mr-1.5"></i> Admin
                                 </span>
                             <?php elseif($user->role === 'teacher'): ?>
                                 <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-blue-900/50 text-blue-300 border border-blue-700/50">
                                     <i class="fas fa-chalkboard-teacher mr-1.5"></i> Teacher
                                 </span>
                             <?php elseif($user->role === 'agent'): ?>
-                                <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-yellow-900/50 text-yellow-300 border border-yellow-700/50">
+                                <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-orange-900/50 text-orange-300 border border-orange-700/50">
                                     <i class="fas fa-headset mr-1.5"></i> Agent
                                 </span>
                             <?php else: ?>
-                                <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-green-900/50 text-green-300 border border-green-700/50">
+                                <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-purple-900/50 text-purple-300 border border-purple-700/50">
                                     <i class="fas fa-user-graduate mr-1.5"></i> Student
                                 </span>
                             <?php endif; ?>
@@ -164,7 +205,7 @@
                                                 <i class="fas fa-chevron-down text-xs"></i>
                                             </div>
                                         </div>
-                                        <button type="submit" class="bg-blue-900/50 hover:bg-blue-800 text-blue-300 border border-blue-700/50 rounded-lg px-3 py-1.5 text-sm font-medium transition-colors duration-200 flex items-center">
+                                        <button type="submit" class="bg-yellow-900/50 hover:bg-yellow-800 text-yellow-300 border border-yellow-700/50 rounded-lg px-3 py-1.5 text-sm font-medium transition-colors duration-200 flex items-center">
                                             <i class="fas fa-user-tag mr-1.5"></i> Update
                                         </button>
                                     </form>
@@ -235,9 +276,9 @@
                     // Add a subtle highlight effect for matching search terms
                     if (searchTerm !== '') {
                         // Reset any previous highlights
-                        row.classList.add('bg-blue-900/10');
+                        row.classList.add('bg-yellow-900/10');
                         setTimeout(() => {
-                            row.classList.remove('bg-blue-900/10');
+                            row.classList.remove('bg-yellow-900/10');
                         }, 300);
                     }
                 } else {
@@ -252,11 +293,11 @@
 
             // Add focus effect
             searchInput.addEventListener('focus', function() {
-                this.parentElement.classList.add('ring-2', 'ring-blue-500/50');
+                this.parentElement.classList.add('ring-2', 'ring-yellow-500/50');
             });
 
             searchInput.addEventListener('blur', function() {
-                this.parentElement.classList.remove('ring-2', 'ring-blue-500/50');
+                this.parentElement.classList.remove('ring-2', 'ring-yellow-500/50');
             });
 
             // Filter when role selection changes
@@ -264,11 +305,11 @@
 
             // Add focus effect for role filter
             roleFilter.addEventListener('focus', function() {
-                this.parentElement.classList.add('ring-2', 'ring-blue-500/50');
+                this.parentElement.classList.add('ring-2', 'ring-yellow-500/50');
             });
 
             roleFilter.addEventListener('blur', function() {
-                this.parentElement.classList.remove('ring-2', 'ring-blue-500/50');
+                this.parentElement.classList.remove('ring-2', 'ring-yellow-500/50');
             });
         }
     });
