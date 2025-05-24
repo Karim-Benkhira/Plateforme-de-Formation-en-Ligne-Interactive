@@ -1,8 +1,6 @@
-@extends('layouts.admin')
+<?php $__env->startSection('title', 'Platform Analytics'); ?>
 
-@section('title', 'Platform Analytics')
-
-@push('styles')
+<?php $__env->startPush('styles'); ?>
 <style>
     :root {
         /* Admin Color Scheme - Yellow/Pink */
@@ -93,9 +91,9 @@
         transform: scale(1.02);
     }
 </style>
-@endpush
+<?php $__env->stopPush(); ?>
 
-@section('content')
+<?php $__env->startSection('content'); ?>
 <!-- Page Header -->
 <div class="admin-gradient-bg rounded-xl shadow-2xl p-6 mb-8 border border-yellow-500/30 relative overflow-hidden admin-glow">
     <div class="absolute inset-0 bg-grid-white/[0.05] bg-[length:20px_20px]"></div>
@@ -109,7 +107,7 @@
             <p class="text-yellow-100 opacity-90">Comprehensive insights into platform performance and user engagement</p>
         </div>
         <div class="mt-4 md:mt-0">
-            <a href="{{ route('admin.dashboard') }}" class="group bg-white/10 backdrop-blur-sm border border-white/20 text-white hover:bg-yellow-500/20 font-semibold py-3 px-5 rounded-lg shadow-lg transition-all duration-300 inline-flex items-center hover:shadow-yellow-500/30 hover:shadow-xl">
+            <a href="<?php echo e(route('admin.dashboard')); ?>" class="group bg-white/10 backdrop-blur-sm border border-white/20 text-white hover:bg-yellow-500/20 font-semibold py-3 px-5 rounded-lg shadow-lg transition-all duration-300 inline-flex items-center hover:shadow-yellow-500/30 hover:shadow-xl">
                 <i class="fas fa-arrow-left mr-2 group-hover:scale-110 transition-transform duration-300"></i>
                 <span>Back to Dashboard</span>
             </a>
@@ -129,7 +127,7 @@
             </div>
             <div>
                 <p class="text-gray-400 text-sm font-medium mb-1">Total Users</p>
-                <p class="text-white text-2xl font-bold">{{ $totalUsers ?? 0 }}</p>
+                <p class="text-white text-2xl font-bold"><?php echo e($totalUsers ?? 0); ?></p>
             </div>
             <div class="ml-auto text-yellow-400">
                 <i class="fas fa-arrow-up text-sm mr-1"></i>
@@ -148,7 +146,7 @@
             </div>
             <div>
                 <p class="text-gray-400 text-sm font-medium mb-1">Active Courses</p>
-                <p class="text-white text-2xl font-bold">{{ $totalCourses ?? 0 }}</p>
+                <p class="text-white text-2xl font-bold"><?php echo e($totalCourses ?? 0); ?></p>
             </div>
             <div class="ml-auto text-pink-400">
                 <i class="fas fa-arrow-up text-sm mr-1"></i>
@@ -167,7 +165,7 @@
             </div>
             <div>
                 <p class="text-gray-400 text-sm font-medium mb-1">Completed Quizzes</p>
-                <p class="text-white text-2xl font-bold">{{ $completedQuizzes ?? 0 }}</p>
+                <p class="text-white text-2xl font-bold"><?php echo e($completedQuizzes ?? 0); ?></p>
             </div>
             <div class="ml-auto text-orange-400">
                 <i class="fas fa-arrow-up text-sm mr-1"></i>
@@ -186,7 +184,7 @@
             </div>
             <div>
                 <p class="text-gray-400 text-sm font-medium mb-1">Support Tickets</p>
-                <p class="text-white text-2xl font-bold">{{ $supportTickets ?? 0 }}</p>
+                <p class="text-white text-2xl font-bold"><?php echo e($supportTickets ?? 0); ?></p>
             </div>
             <div class="ml-auto text-red-400">
                 <i class="fas fa-arrow-down text-sm mr-1"></i>
@@ -365,7 +363,7 @@
                         </div>
                         <h2 class="text-xl font-bold text-white">Recent Tickets</h2>
                     </div>
-                    <a href="{{ route('admin.reclamations') }}" class="text-red-400 hover:text-red-300 transition-colors text-sm flex items-center">
+                    <a href="<?php echo e(route('admin.reclamations')); ?>" class="text-red-400 hover:text-red-300 transition-colors text-sm flex items-center">
                         View All <i class="fas fa-arrow-right ml-1"></i>
                     </a>
                 </div>
@@ -485,9 +483,9 @@
         </div>
     </div>
 </div>
-@endsection
+<?php $__env->stopSection(); ?>
 
-@push('scripts')
+<?php $__env->startPush('scripts'); ?>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
     document.addEventListener('DOMContentLoaded', function() {
@@ -623,4 +621,5 @@
         });
     });
 </script>
-@endpush
+<?php $__env->stopPush(); ?>
+<?php echo $__env->make('layouts.admin', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?><?php /**PATH /var/www/resources/views/admin/analytics.blade.php ENDPATH**/ ?>
