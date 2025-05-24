@@ -4,6 +4,23 @@
 
 @push('styles')
 <style>
+    :root {
+        /* Admin Color Scheme - Yellow/Pink */
+        --admin-primary: #f59e0b;
+        --admin-primary-dark: #d97706;
+        --admin-primary-light: #fbbf24;
+        --admin-secondary: #ec4899;
+        --admin-secondary-dark: #db2777;
+        --admin-secondary-light: #f472b6;
+        --admin-accent: #fbbf24;
+        --admin-accent-dark: #f59e0b;
+        --admin-bg-primary: #1f2937;
+        --admin-bg-secondary: #111827;
+        --admin-text-primary: #f9fafb;
+        --admin-text-secondary: #d1d5db;
+        --admin-border: #374151;
+    }
+
     @keyframes pulse-slow {
         0%, 100% {
             opacity: 0.2;
@@ -12,29 +29,54 @@
             opacity: 0;
         }
     }
+
+    @keyframes admin-glow {
+        0%, 100% {
+            box-shadow: 0 0 20px rgba(245, 158, 11, 0.3);
+        }
+        50% {
+            box-shadow: 0 0 30px rgba(245, 158, 11, 0.5);
+        }
+    }
+
     .animate-pulse-slow {
         animation: pulse-slow 3s cubic-bezier(0.4, 0, 0.6, 1) infinite;
     }
+
+    .admin-glow {
+        animation: admin-glow 2s ease-in-out infinite;
+    }
+
     .bg-grid-white {
         background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3E%3Cg fill-rule='evenodd'%3E%3Cg fill='%23FFFFFF' fill-opacity='0.1'%3E%3Cpath opacity='.5' d='M96 95h4v1h-4v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4H0v-1h15v-9H0v-1h15v-9H0v-1h15v-9H0v-1h15v-9H0v-1h15v-9H0v-1h15v-9H0v-1h15v-9H0v-1h15v-9H0v-1h15V0h1v15h9V0h1v15h9V0h1v15h9V0h1v15h9V0h1v15h9V0h1v15h9V0h1v15h9V0h1v15h9V0h1v15h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9zm-1 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-9-10h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm9-10v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-9-10h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm9-10v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-9-10h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm9-10v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-9-10h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+    }
+
+    .admin-gradient-bg {
+        background: linear-gradient(135deg, var(--admin-primary) 0%, var(--admin-secondary) 100%);
+    }
+
+    .admin-card-hover:hover {
+        transform: translateY(-8px);
+        box-shadow: 0 20px 40px rgba(245, 158, 11, 0.2);
     }
 </style>
 @endpush
 
 @section('content')
 <!-- Welcome Banner -->
-<div class="bg-gradient-to-r from-blue-900 via-primary-800 to-secondary-900 rounded-xl shadow-2xl p-6 mb-8 border border-blue-700/30 relative overflow-hidden">
+<div class="admin-gradient-bg rounded-xl shadow-2xl p-6 mb-8 border border-yellow-500/30 relative overflow-hidden admin-glow">
     <div class="absolute inset-0 bg-grid-white/[0.05] bg-[length:20px_20px]"></div>
-    <div class="absolute inset-0 bg-gradient-to-r from-blue-500/10 to-purple-500/10"></div>
+    <div class="absolute inset-0 bg-gradient-to-r from-yellow-500/10 to-pink-500/10"></div>
     <div class="relative flex flex-col md:flex-row justify-between items-center">
         <div>
             <h1 class="text-3xl font-bold text-white mb-2 flex items-center">
-                Welcome, <span class="text-blue-300 ml-2">{{ Auth::user()->username }}</span><span class="text-blue-400">!</span>
+                <i class="fas fa-crown text-yellow-400 mr-3 text-2xl"></i>
+                Welcome, <span class="text-yellow-300 ml-2">{{ Auth::user()->username }}</span><span class="text-pink-400">!</span>
             </h1>
-            <p class="text-blue-100 opacity-90">Manage your platform, monitor user activity, and keep everything running smoothly.</p>
+            <p class="text-yellow-100 opacity-90">Manage your platform, monitor user activity, and keep everything running smoothly.</p>
         </div>
         <div class="mt-4 md:mt-0">
-            <a href="{{ route('admin.createCourse') }}" class="group bg-white/10 backdrop-blur-sm border border-white/20 text-white hover:bg-white/20 font-semibold py-3 px-5 rounded-lg shadow-lg transition-all duration-300 inline-flex items-center hover:shadow-blue-500/20 hover:shadow-xl">
+            <a href="{{ route('admin.createCourse') }}" class="group bg-white/10 backdrop-blur-sm border border-white/20 text-white hover:bg-yellow-500/20 font-semibold py-3 px-5 rounded-lg shadow-lg transition-all duration-300 inline-flex items-center hover:shadow-yellow-500/30 hover:shadow-xl">
                 <i class="fas fa-plus mr-2 group-hover:scale-110 transition-transform duration-300"></i>
                 <span>Add New Course</span>
             </a>
@@ -44,12 +86,12 @@
 
 <!-- Stats Cards -->
 <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-    <div class="bg-gradient-to-br from-gray-900 to-gray-800 backdrop-blur-sm border border-blue-900/30 rounded-xl p-6 shadow-lg hover:shadow-blue-500/10 hover:shadow-xl transition-all duration-300 hover:translate-y-[-5px] relative overflow-hidden group">
+    <div class="bg-gradient-to-br from-gray-900 to-gray-800 backdrop-blur-sm border border-yellow-500/30 rounded-xl p-6 shadow-lg hover:shadow-yellow-500/20 hover:shadow-xl transition-all duration-300 admin-card-hover relative overflow-hidden group">
         <div class="absolute inset-0 bg-grid-white/[0.02] bg-[length:20px_20px]"></div>
-        <div class="absolute inset-0 bg-gradient-to-br from-blue-600/5 to-blue-800/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+        <div class="absolute inset-0 bg-gradient-to-br from-yellow-600/5 to-yellow-800/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
         <div class="relative">
             <div class="flex items-center mb-4">
-                <div class="flex-shrink-0 bg-blue-900/70 text-blue-400 rounded-xl p-4 mr-4 shadow-inner shadow-blue-950/50 group-hover:shadow-blue-900/30 group-hover:shadow-lg transition-all duration-300">
+                <div class="flex-shrink-0 bg-yellow-900/70 text-yellow-400 rounded-xl p-4 mr-4 shadow-inner shadow-yellow-950/50 group-hover:shadow-yellow-900/30 group-hover:shadow-lg transition-all duration-300">
                     <i class="fas fa-users text-2xl group-hover:scale-110 transition-transform duration-300"></i>
                 </div>
                 <div>
@@ -58,17 +100,17 @@
                 </div>
             </div>
             <div class="w-full bg-gray-800/80 h-2 rounded-full overflow-hidden shadow-inner">
-                <div class="bg-gradient-to-r from-blue-500 to-blue-600 h-2 rounded-full" style="width: 75%"></div>
+                <div class="bg-gradient-to-r from-yellow-500 to-yellow-600 h-2 rounded-full" style="width: 75%"></div>
             </div>
         </div>
     </div>
 
-    <div class="bg-gradient-to-br from-gray-900 to-gray-800 backdrop-blur-sm border border-green-900/30 rounded-xl p-6 shadow-lg hover:shadow-green-500/10 hover:shadow-xl transition-all duration-300 hover:translate-y-[-5px] relative overflow-hidden group">
+    <div class="bg-gradient-to-br from-gray-900 to-gray-800 backdrop-blur-sm border border-pink-500/30 rounded-xl p-6 shadow-lg hover:shadow-pink-500/20 hover:shadow-xl transition-all duration-300 admin-card-hover relative overflow-hidden group">
         <div class="absolute inset-0 bg-grid-white/[0.02] bg-[length:20px_20px]"></div>
-        <div class="absolute inset-0 bg-gradient-to-br from-green-600/5 to-green-800/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+        <div class="absolute inset-0 bg-gradient-to-br from-pink-600/5 to-pink-800/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
         <div class="relative">
             <div class="flex items-center mb-4">
-                <div class="flex-shrink-0 bg-green-900/70 text-green-400 rounded-xl p-4 mr-4 shadow-inner shadow-green-950/50 group-hover:shadow-green-900/30 group-hover:shadow-lg transition-all duration-300">
+                <div class="flex-shrink-0 bg-pink-900/70 text-pink-400 rounded-xl p-4 mr-4 shadow-inner shadow-pink-950/50 group-hover:shadow-pink-900/30 group-hover:shadow-lg transition-all duration-300">
                     <i class="fas fa-book text-2xl group-hover:scale-110 transition-transform duration-300"></i>
                 </div>
                 <div>
@@ -77,17 +119,17 @@
                 </div>
             </div>
             <div class="w-full bg-gray-800/80 h-2 rounded-full overflow-hidden shadow-inner">
-                <div class="bg-gradient-to-r from-green-500 to-green-600 h-2 rounded-full" style="width: 60%"></div>
+                <div class="bg-gradient-to-r from-pink-500 to-pink-600 h-2 rounded-full" style="width: 60%"></div>
             </div>
         </div>
     </div>
 
-    <div class="bg-gradient-to-br from-gray-900 to-gray-800 backdrop-blur-sm border border-yellow-900/30 rounded-xl p-6 shadow-lg hover:shadow-yellow-500/10 hover:shadow-xl transition-all duration-300 hover:translate-y-[-5px] relative overflow-hidden group">
+    <div class="bg-gradient-to-br from-gray-900 to-gray-800 backdrop-blur-sm border border-orange-500/30 rounded-xl p-6 shadow-lg hover:shadow-orange-500/20 hover:shadow-xl transition-all duration-300 admin-card-hover relative overflow-hidden group">
         <div class="absolute inset-0 bg-grid-white/[0.02] bg-[length:20px_20px]"></div>
-        <div class="absolute inset-0 bg-gradient-to-br from-yellow-600/5 to-yellow-800/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+        <div class="absolute inset-0 bg-gradient-to-br from-orange-600/5 to-orange-800/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
         <div class="relative">
             <div class="flex items-center mb-4">
-                <div class="flex-shrink-0 bg-yellow-900/70 text-yellow-400 rounded-xl p-4 mr-4 shadow-inner shadow-yellow-950/50 group-hover:shadow-yellow-900/30 group-hover:shadow-lg transition-all duration-300">
+                <div class="flex-shrink-0 bg-orange-900/70 text-orange-400 rounded-xl p-4 mr-4 shadow-inner shadow-orange-950/50 group-hover:shadow-orange-900/30 group-hover:shadow-lg transition-all duration-300">
                     <i class="fas fa-question-circle text-2xl group-hover:scale-110 transition-transform duration-300"></i>
                 </div>
                 <div>
@@ -96,16 +138,16 @@
                 </div>
             </div>
             <div class="w-full bg-gray-800/80 h-2 rounded-full overflow-hidden shadow-inner">
-                <div class="bg-gradient-to-r from-yellow-500 to-yellow-600 h-2 rounded-full" style="width: 85%"></div>
+                <div class="bg-gradient-to-r from-orange-500 to-orange-600 h-2 rounded-full" style="width: 85%"></div>
             </div>
         </div>
     </div>
 </div>
 
 <!-- Leaderboard -->
-<div class="bg-gradient-to-br from-gray-900 to-gray-800 backdrop-blur-sm border border-gray-700/50 rounded-xl p-6 shadow-xl mb-8 relative overflow-hidden">
+<div class="bg-gradient-to-br from-gray-900 to-gray-800 backdrop-blur-sm border border-yellow-500/30 rounded-xl p-6 shadow-xl mb-8 relative overflow-hidden">
     <div class="absolute inset-0 bg-grid-white/[0.02] bg-[length:20px_20px]"></div>
-    <div class="absolute inset-0 bg-gradient-to-br from-yellow-600/5 to-yellow-800/5"></div>
+    <div class="absolute inset-0 bg-gradient-to-br from-yellow-600/5 to-pink-600/5"></div>
 
     <div class="relative">
         <div class="flex items-center justify-between mb-6">
@@ -115,7 +157,7 @@
                 </div>
                 <span>Top 10 Users Leaderboard</span>
             </h2>
-            <a href="#" class="group bg-gray-800/80 hover:bg-gray-700/80 text-blue-400 hover:text-blue-300 text-sm flex items-center py-2 px-4 rounded-lg border border-gray-700/50 transition-all duration-300">
+            <a href="#" class="group bg-gray-800/80 hover:bg-yellow-500/20 text-yellow-400 hover:text-yellow-300 text-sm flex items-center py-2 px-4 rounded-lg border border-yellow-500/30 transition-all duration-300">
                 <span>View All</span>
                 <i class="fas fa-chevron-right ml-2 text-xs group-hover:translate-x-1 transition-transform duration-300"></i>
             </a>
@@ -201,14 +243,14 @@
 <!-- Quick Actions & Platform Overview -->
 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
     <!-- Quick Actions -->
-    <div class="bg-gradient-to-br from-gray-900 to-gray-800 backdrop-blur-sm border border-gray-700/50 rounded-xl p-6 shadow-xl relative overflow-hidden">
+    <div class="bg-gradient-to-br from-gray-900 to-gray-800 backdrop-blur-sm border border-yellow-500/30 rounded-xl p-6 shadow-xl relative overflow-hidden">
         <div class="absolute inset-0 bg-grid-white/[0.02] bg-[length:20px_20px]"></div>
-        <div class="absolute inset-0 bg-gradient-to-br from-blue-600/5 to-purple-800/5"></div>
+        <div class="absolute inset-0 bg-gradient-to-br from-yellow-600/5 to-pink-600/5"></div>
 
         <div class="relative">
             <div class="flex items-center justify-between mb-6">
                 <h2 class="text-xl font-bold text-white flex items-center">
-                    <div class="bg-blue-900/70 text-blue-400 rounded-lg p-2 mr-3 shadow-inner shadow-blue-950/50">
+                    <div class="bg-yellow-900/70 text-yellow-400 rounded-lg p-2 mr-3 shadow-inner shadow-yellow-950/50">
                         <i class="fas fa-bolt"></i>
                     </div>
                     <span>Quick Actions</span>
@@ -216,37 +258,37 @@
             </div>
 
             <div class="grid grid-cols-2 gap-5">
-                <a href="{{ route('admin.users') }}" class="group relative bg-gradient-to-br from-gray-800 to-gray-900 hover:from-blue-900/20 hover:to-blue-800/20 border border-gray-700 hover:border-blue-500/50 p-6 rounded-xl flex flex-col items-center justify-center transition-all duration-300 hover:shadow-lg hover:shadow-blue-500/10 overflow-hidden">
+                <a href="{{ route('admin.users') }}" class="group relative bg-gradient-to-br from-gray-800 to-gray-900 hover:from-yellow-900/20 hover:to-yellow-800/20 border border-gray-700 hover:border-yellow-500/50 p-6 rounded-xl flex flex-col items-center justify-center transition-all duration-300 hover:shadow-lg hover:shadow-yellow-500/10 overflow-hidden">
                     <div class="absolute inset-0 bg-grid-white/[0.02] bg-[length:10px_10px] opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
                     <div class="relative z-10 flex flex-col items-center">
-                        <div class="bg-blue-900/70 text-blue-400 group-hover:bg-blue-800 group-hover:text-blue-300 p-4 rounded-xl mb-4 shadow-inner shadow-blue-950/50 group-hover:shadow-blue-900/30 group-hover:shadow-lg transition-all duration-300 transform group-hover:scale-110">
+                        <div class="bg-yellow-900/70 text-yellow-400 group-hover:bg-yellow-800 group-hover:text-yellow-300 p-4 rounded-xl mb-4 shadow-inner shadow-yellow-950/50 group-hover:shadow-yellow-900/30 group-hover:shadow-lg transition-all duration-300 transform group-hover:scale-110">
                             <i class="fas fa-users text-2xl"></i>
                         </div>
                         <span class="text-sm font-medium text-gray-300 group-hover:text-white transition-colors duration-300">Manage Users</span>
                     </div>
-                    <div class="absolute bottom-0 left-0 h-1 bg-gradient-to-r from-blue-500 to-blue-600 w-0 group-hover:w-full transition-all duration-500"></div>
+                    <div class="absolute bottom-0 left-0 h-1 bg-gradient-to-r from-yellow-500 to-yellow-600 w-0 group-hover:w-full transition-all duration-500"></div>
                 </a>
 
-                <a href="{{ route('admin.courses') }}" class="group relative bg-gradient-to-br from-gray-800 to-gray-900 hover:from-green-900/20 hover:to-green-800/20 border border-gray-700 hover:border-green-500/50 p-6 rounded-xl flex flex-col items-center justify-center transition-all duration-300 hover:shadow-lg hover:shadow-green-500/10 overflow-hidden">
+                <a href="{{ route('admin.courses') }}" class="group relative bg-gradient-to-br from-gray-800 to-gray-900 hover:from-pink-900/20 hover:to-pink-800/20 border border-gray-700 hover:border-pink-500/50 p-6 rounded-xl flex flex-col items-center justify-center transition-all duration-300 hover:shadow-lg hover:shadow-pink-500/10 overflow-hidden">
                     <div class="absolute inset-0 bg-grid-white/[0.02] bg-[length:10px_10px] opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
                     <div class="relative z-10 flex flex-col items-center">
-                        <div class="bg-green-900/70 text-green-400 group-hover:bg-green-800 group-hover:text-green-300 p-4 rounded-xl mb-4 shadow-inner shadow-green-950/50 group-hover:shadow-green-900/30 group-hover:shadow-lg transition-all duration-300 transform group-hover:scale-110">
+                        <div class="bg-pink-900/70 text-pink-400 group-hover:bg-pink-800 group-hover:text-pink-300 p-4 rounded-xl mb-4 shadow-inner shadow-pink-950/50 group-hover:shadow-pink-900/30 group-hover:shadow-lg transition-all duration-300 transform group-hover:scale-110">
                             <i class="fas fa-book text-2xl"></i>
                         </div>
                         <span class="text-sm font-medium text-gray-300 group-hover:text-white transition-colors duration-300">Manage Courses</span>
                     </div>
-                    <div class="absolute bottom-0 left-0 h-1 bg-gradient-to-r from-green-500 to-green-600 w-0 group-hover:w-full transition-all duration-500"></div>
+                    <div class="absolute bottom-0 left-0 h-1 bg-gradient-to-r from-pink-500 to-pink-600 w-0 group-hover:w-full transition-all duration-500"></div>
                 </a>
 
-                <a href="{{ route('admin.quizzes') }}" class="group relative bg-gradient-to-br from-gray-800 to-gray-900 hover:from-purple-900/20 hover:to-purple-800/20 border border-gray-700 hover:border-purple-500/50 p-6 rounded-xl flex flex-col items-center justify-center transition-all duration-300 hover:shadow-lg hover:shadow-purple-500/10 overflow-hidden">
+                <a href="{{ route('admin.quizzes') }}" class="group relative bg-gradient-to-br from-gray-800 to-gray-900 hover:from-orange-900/20 hover:to-orange-800/20 border border-gray-700 hover:border-orange-500/50 p-6 rounded-xl flex flex-col items-center justify-center transition-all duration-300 hover:shadow-lg hover:shadow-orange-500/10 overflow-hidden">
                     <div class="absolute inset-0 bg-grid-white/[0.02] bg-[length:10px_10px] opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
                     <div class="relative z-10 flex flex-col items-center">
-                        <div class="bg-purple-900/70 text-purple-400 group-hover:bg-purple-800 group-hover:text-purple-300 p-4 rounded-xl mb-4 shadow-inner shadow-purple-950/50 group-hover:shadow-purple-900/30 group-hover:shadow-lg transition-all duration-300 transform group-hover:scale-110">
+                        <div class="bg-orange-900/70 text-orange-400 group-hover:bg-orange-800 group-hover:text-orange-300 p-4 rounded-xl mb-4 shadow-inner shadow-orange-950/50 group-hover:shadow-orange-900/30 group-hover:shadow-lg transition-all duration-300 transform group-hover:scale-110">
                             <i class="fas fa-question-circle text-2xl"></i>
                         </div>
                         <span class="text-sm font-medium text-gray-300 group-hover:text-white transition-colors duration-300">Manage Quizzes</span>
                     </div>
-                    <div class="absolute bottom-0 left-0 h-1 bg-gradient-to-r from-purple-500 to-purple-600 w-0 group-hover:w-full transition-all duration-500"></div>
+                    <div class="absolute bottom-0 left-0 h-1 bg-gradient-to-r from-orange-500 to-orange-600 w-0 group-hover:w-full transition-all duration-500"></div>
                 </a>
 
                 <a href="{{ route('admin.reclamations') }}" class="group relative bg-gradient-to-br from-gray-800 to-gray-900 hover:from-red-900/20 hover:to-red-800/20 border border-gray-700 hover:border-red-500/50 p-6 rounded-xl flex flex-col items-center justify-center transition-all duration-300 hover:shadow-lg hover:shadow-red-500/10 overflow-hidden">
@@ -264,14 +306,14 @@
     </div>
 
     <!-- Platform Overview -->
-    <div class="bg-gradient-to-br from-gray-900 to-gray-800 backdrop-blur-sm border border-gray-700/50 rounded-xl p-6 shadow-xl relative overflow-hidden">
+    <div class="bg-gradient-to-br from-gray-900 to-gray-800 backdrop-blur-sm border border-pink-500/30 rounded-xl p-6 shadow-xl relative overflow-hidden">
         <div class="absolute inset-0 bg-grid-white/[0.02] bg-[length:20px_20px]"></div>
-        <div class="absolute inset-0 bg-gradient-to-br from-green-600/5 to-green-800/5"></div>
+        <div class="absolute inset-0 bg-gradient-to-br from-pink-600/5 to-yellow-600/5"></div>
 
         <div class="relative">
             <div class="flex items-center justify-between mb-6">
                 <h2 class="text-xl font-bold text-white flex items-center">
-                    <div class="bg-green-900/70 text-green-400 rounded-lg p-2 mr-3 shadow-inner shadow-green-950/50">
+                    <div class="bg-pink-900/70 text-pink-400 rounded-lg p-2 mr-3 shadow-inner shadow-pink-950/50">
                         <i class="fas fa-chart-line"></i>
                     </div>
                     <span>Platform Overview</span>
