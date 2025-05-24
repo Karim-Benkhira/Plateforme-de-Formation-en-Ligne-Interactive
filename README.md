@@ -1,4 +1,4 @@
-# Plateforme Éducative en Ligne
+# Plateforme Éducative en Ligne Interactive
 
 ![Logo de la plateforme](public/images/logo.svg)
 
@@ -8,31 +8,79 @@ Plateforme d'apprentissage interactive offrant:
 - Examens sécurisés avec reconnaissance faciale
 - Tableaux de bord analytiques pour enseignants et étudiants
 
-## 📋 Guide d'installation rapide
+## 🐳 Installation avec Docker (Recommandée)
 
 ### Prérequis
 
-| Composant | Version minimale |
-|-----------|------------------|
-| PHP       | 8.1+             |
-| MySQL     | 5.7+             |
-| Node.js   | 14+              |
-| Composer  | 2.0+             |
+| Système | Composants requis |
+|---------|-------------------|
+| **Linux** | Docker, Docker Compose, Git |
+| **Windows** | Docker Desktop, Git |
+| **macOS** | Docker Desktop, Git |
 
-### Option 1: Installation avec Docker (Recommandée)
+### 🐧 Installation sur Linux
 
 ```bash
-# 1. Cloner le dépôt
+# 1. Installer Docker et Docker Compose
+sudo apt update
+sudo apt install docker.io docker-compose git -y
+
+# 2. Ajouter votre utilisateur au groupe docker
+sudo usermod -aG docker $USER
+newgrp docker
+
+# 3. Cloner le projet
 git clone https://github.com/Karim-Benkhira/Plateforme-de-Formation-en-Ligne-Interactive.git
 cd Plateforme-de-Formation-en-Ligne-Interactive
 
-# 2. Lancer l'installation automatisée
-chmod +x docker-setup.sh
-./docker-setup.sh
+# 4. Démarrer les conteneurs
+docker-compose up -d
 
-# 3. Accéder à l'application
+# 5. Installer les dépendances Laravel
+docker-compose exec app composer install
+
+# 6. Générer la clé d'application
+docker-compose exec app php artisan key:generate
+
+# 7. Exécuter les migrations
+docker-compose exec app php artisan migrate --seed
+
+# 8. Créer les liens symboliques
+docker-compose exec app php artisan storage:link
+
+# 9. Accéder à l'application
 # → http://localhost:8000
-# → phpMyAdmin: http://localhost:8080
+```
+
+### 🪟 Installation sur Windows
+
+```powershell
+# 1. Installer Docker Desktop depuis https://www.docker.com/products/docker-desktop
+# 2. Installer Git depuis https://git-scm.com/download/win
+# 3. Redémarrer votre ordinateur après l'installation
+
+# 4. Ouvrir PowerShell ou Command Prompt
+# 5. Cloner le projet
+git clone https://github.com/Karim-Benkhira/Plateforme-de-Formation-en-Ligne-Interactive.git
+cd Plateforme-de-Formation-en-Ligne-Interactive
+
+# 6. Démarrer les conteneurs
+docker-compose up -d
+
+# 7. Installer les dépendances Laravel
+docker-compose exec app composer install
+
+# 8. Générer la clé d'application
+docker-compose exec app php artisan key:generate
+
+# 9. Exécuter les migrations
+docker-compose exec app php artisan migrate --seed
+
+# 10. Créer les liens symboliques
+docker-compose exec app php artisan storage:link
+
+# 11. Accéder à l'application
+# → http://localhost:8000
 ```
 
 ### Option 2: Installation manuelle
@@ -67,11 +115,72 @@ php artisan serve
 # → http://127.0.0.1:8000
 ```
 
+## 🚨 Résolution des problèmes courants
+
+### Problème: "419 | PAGE EXPIRED"
+```bash
+# Solution: Vérifier le fichier public/index.php
+# Assurez-vous qu'il commence par <?php sans aucun contenu HTML avant
+
+# Nettoyer le cache
+docker-compose exec app php artisan cache:clear
+docker-compose exec app php artisan config:clear
+docker-compose exec app php artisan key:generate
+```
+
+### Problème: "Permission denied" sur Linux
+```bash
+# Donner les bonnes permissions
+sudo chown -R $USER:$USER .
+chmod -R 755 storage bootstrap/cache
+docker-compose exec app chmod -R 777 /var/www/storage
+```
+
+### Problème: "Port already in use"
+```bash
+# Vérifier les ports utilisés
+docker ps
+netstat -tulpn | grep :8000
+
+# Arrêter les conteneurs existants
+docker-compose down
+docker system prune -f
+
+# Redémarrer
+docker-compose up -d
+```
+
+### Problème: "Database connection refused"
+```bash
+# Vérifier que MySQL est démarré
+docker-compose ps
+
+# Redémarrer la base de données
+docker-compose restart db
+
+# Vérifier les logs
+docker-compose logs db
+```
+
+### Problème: "Composer install fails"
+```bash
+# Nettoyer et réinstaller
+docker-compose exec app rm -rf vendor composer.lock
+docker-compose exec app composer clear-cache
+docker-compose exec app composer install --no-dev --optimize-autoloader
+```
+
+### Problème: "Storage link not working"
+```bash
+# Recréer le lien symbolique
+docker-compose exec app php artisan storage:link --force
+```
+
 ## 👥 Comptes de démonstration
 
 | Rôle       | Email                | Mot de passe |
 |------------|----------------------|--------------|
-| Admin      | admin@example.com    | password     |
+| Admin      | test@example.com     | admin123     |
 | Enseignant | teacher@example.com  | password     |
 | Étudiant   | student@example.com  | password     |
 
@@ -107,28 +216,51 @@ max_execution_time = 300
 memory_limit = 256M
 ```
 
-### Commandes Docker utiles
+## 🛠️ Commandes Docker utiles
 
 ```bash
 # Démarrer/arrêter les conteneurs
-docker-compose up -d
-docker-compose down
+docker-compose up -d                    # Démarrer en arrière-plan
+docker-compose down                     # Arrêter et supprimer les conteneurs
+docker-compose restart                  # Redémarrer tous les services
 
-# Exécuter des commandes Artisan
-docker-compose exec app php artisan [commande]
+# Gestion des conteneurs
+docker-compose ps                       # Voir l'état des conteneurs
+docker-compose logs app                 # Voir les logs de l'application
+docker-compose logs db                  # Voir les logs de la base de données
 
-# Accéder au shell
-docker-compose exec app bash
+# Exécuter des commandes Laravel
+docker-compose exec app php artisan migrate
+docker-compose exec app php artisan cache:clear
+docker-compose exec app php artisan config:clear
+docker-compose exec app php artisan route:list
+
+# Accéder aux shells
+docker-compose exec app bash           # Shell de l'application
+docker-compose exec db mysql -u root -p # Console MySQL
+
+# Gestion des volumes et nettoyage
+docker-compose down -v                 # Supprimer aussi les volumes
+docker system prune -f                 # Nettoyer le système Docker
 ```
 
-## 🔧 Résolution des problèmes
+## 🔗 URLs d'accès
 
-| Problème | Solution |
-|----------|----------|
-| **Content Too Large** | Augmenter `upload_max_filesize` et `post_max_size` dans les paramètres PHP |
-| **Problèmes de permissions** | Exécuter `chmod -R 775 storage bootstrap/cache` |
-| **Erreurs de base de données** | Vérifier les informations de connexion dans `.env` |
-| **Method Not Allowed** | Utiliser la méthode HTTP correcte (POST pour les formulaires) |
+| Service | URL | Description |
+|---------|-----|-------------|
+| **Application** | http://localhost:8000 | Interface principale |
+| **phpMyAdmin** | http://localhost:8081 | Gestion base de données |
+| **pgAdmin** | http://localhost:5050 | Interface PostgreSQL (si utilisé) |
+
+## 📊 Informations de base de données
+
+| Paramètre | Valeur |
+|-----------|--------|
+| **Host** | localhost (ou db depuis les conteneurs) |
+| **Port** | 3307 (externe), 3306 (interne) |
+| **Database** | education |
+| **Username** | root |
+| **Password** | StrongP@ssw0rd! |
 
 ## 📄 Licence
 
