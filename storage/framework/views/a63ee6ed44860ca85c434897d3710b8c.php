@@ -1,8 +1,6 @@
-@extends('layouts.admin')
+<?php $__env->startSection('title', 'Browser Sessions'); ?>
 
-@section('title', 'Browser Sessions')
-
-@push('styles')
+<?php $__env->startPush('styles'); ?>
 <style>
     :root {
         /* Admin Color Scheme - Yellow/Pink */
@@ -42,9 +40,9 @@
         background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3E%3Cg fill-rule='evenodd'%3E%3Cg fill='%23FFFFFF' fill-opacity='0.1'%3E%3Cpath opacity='.5' d='M96 95h4v1h-4v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4H0v-1h15v-9H0v-1h15v-9H0v-1h15v-9H0v-1h15v-9H0v-1h15v-9H0v-1h15v-9H0v-1h15v-9H0v-1h15v-9H0v-1h15V0h1v15h9V0h1v15h9V0h1v15h9V0h1v15h9V0h1v15h9V0h1v15h9V0h1v15h9V0h1v15h9V0h1v15h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9zm-1 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-9-10h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm9-10v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-9-10h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm9-10v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-9-10h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
     }
 </style>
-@endpush
+<?php $__env->stopPush(); ?>
 
-@section('content')
+<?php $__env->startSection('content'); ?>
 <!-- Page Header -->
 <div class="admin-gradient-bg rounded-xl shadow-2xl p-6 mb-8 border border-yellow-500/30 relative overflow-hidden admin-glow">
     <div class="absolute inset-0 bg-grid-white/[0.05] bg-[length:20px_20px]"></div>
@@ -58,7 +56,7 @@
             <p class="text-yellow-100 opacity-90">Manage and log out your active sessions on other browsers and devices.</p>
         </div>
         <div class="mt-4 md:mt-0">
-            <a href="{{ route('profile.edit') }}" class="group bg-white/10 backdrop-blur-sm border border-white/20 text-white hover:bg-yellow-500/20 font-semibold py-3 px-5 rounded-lg shadow-lg transition-all duration-300 inline-flex items-center hover:shadow-yellow-500/30 hover:shadow-xl">
+            <a href="<?php echo e(route('profile.edit')); ?>" class="group bg-white/10 backdrop-blur-sm border border-white/20 text-white hover:bg-yellow-500/20 font-semibold py-3 px-5 rounded-lg shadow-lg transition-all duration-300 inline-flex items-center hover:shadow-yellow-500/30 hover:shadow-xl">
                 <i class="fas fa-arrow-left mr-2 group-hover:transform group-hover:-translate-x-1 transition-transform duration-300"></i>
                 <span>Back to Profile</span>
             </a>
@@ -66,16 +64,16 @@
     </div>
 </div>
 
-@if (session('status'))
+<?php if(session('status')): ?>
     <div class="mb-6 bg-green-900/40 border border-green-700/50 text-green-300 px-4 py-3 rounded-lg flex items-center shadow-lg relative overflow-hidden">
         <div class="absolute inset-0 bg-grid-white/[0.02] bg-[length:20px_20px]"></div>
         <div class="absolute inset-0 bg-gradient-to-r from-green-500/5 to-green-600/5"></div>
         <div class="relative flex items-center">
             <i class="fas fa-check-circle text-green-500 mr-2 text-xl"></i>
-            <span>{{ session('status') }}</span>
+            <span><?php echo e(session('status')); ?></span>
         </div>
     </div>
-@endif
+<?php endif; ?>
 
 <div class="bg-gradient-to-br from-gray-900 to-gray-800 backdrop-blur-sm border border-pink-500/30 rounded-xl p-6 shadow-xl relative overflow-hidden mb-6 hover:shadow-pink-500/20 hover:shadow-xl transition-all duration-300">
     <div class="absolute inset-0 bg-grid-white/[0.02] bg-[length:20px_20px]"></div>
@@ -88,53 +86,56 @@
             </p>
         </div>
 
-        @if (count($sessions) > 0)
+        <?php if(count($sessions) > 0): ?>
             <div class="space-y-6">
-                @foreach ($sessions as $session)
+                <?php $__currentLoopData = $sessions; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $session): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                     <div class="bg-gray-800/50 rounded-lg p-4 border border-gray-700/50 shadow-inner flex items-center group hover:bg-gray-800 transition-all duration-200">
                         <div class="flex-shrink-0">
                             <div class="w-12 h-12 rounded-lg overflow-hidden
-                                @if ($session->agent->is_desktop)
+                                <?php if($session->agent->is_desktop): ?>
                                     bg-gradient-to-br from-yellow-800 to-yellow-900 text-yellow-400 border border-yellow-700/50
-                                @else
+                                <?php else: ?>
                                     bg-gradient-to-br from-pink-800 to-pink-900 text-pink-400 border border-pink-700/50
-                                @endif
+                                <?php endif; ?>
                                 flex items-center justify-center shadow-inner">
-                                @if ($session->agent->is_desktop)
+                                <?php if($session->agent->is_desktop): ?>
                                     <i class="fas fa-desktop text-xl"></i>
-                                @else
+                                <?php else: ?>
                                     <i class="fas fa-mobile-alt text-xl"></i>
-                                @endif
+                                <?php endif; ?>
                             </div>
                         </div>
 
                         <div class="ml-4 flex-1">
                             <div class="flex flex-col sm:flex-row sm:justify-between">
                                 <h3 class="text-base font-medium text-white mb-1 sm:mb-0">
-                                    {{ $session->agent->platform }} - {{ $session->agent->browser }}
+                                    <?php echo e($session->agent->platform); ?> - <?php echo e($session->agent->browser); ?>
+
                                 </h3>
-                                @if ($session->is_current_device)
+                                <?php if($session->is_current_device): ?>
                                     <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-900/50 text-green-300 border border-green-700/50">
                                         <i class="fas fa-circle text-xs mr-1.5 text-green-400"></i>
                                         This device
                                     </span>
-                                @endif
+                                <?php endif; ?>
                             </div>
                             <div class="mt-2 flex flex-wrap gap-3">
                                 <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-gray-800/80 text-gray-300 border border-gray-700/50">
                                     <i class="fas fa-map-marker-alt mr-1.5 text-yellow-400"></i>
-                                    {{ $session->ip_address }}
+                                    <?php echo e($session->ip_address); ?>
+
                                 </span>
-                                @if (!$session->is_current_device)
+                                <?php if(!$session->is_current_device): ?>
                                     <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-gray-800/80 text-gray-300 border border-gray-700/50">
                                         <i class="fas fa-clock mr-1.5 text-pink-400"></i>
-                                        Last active {{ $session->last_active }}
+                                        Last active <?php echo e($session->last_active); ?>
+
                                     </span>
-                                @endif
+                                <?php endif; ?>
                             </div>
                         </div>
                     </div>
-                @endforeach
+                <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
             </div>
 
             <div class="mt-8 flex items-center">
@@ -146,7 +147,7 @@
                     <i class="fas fa-circle-notch fa-spin text-pink-400 text-xl"></i>
                 </div>
             </div>
-        @else
+        <?php else: ?>
             <div class="py-8 text-center">
                 <div class="inline-flex items-center justify-center w-16 h-16 rounded-full bg-gradient-to-br from-pink-800/80 to-pink-900/80 text-pink-400 mb-4 border border-pink-700/50 shadow-inner">
                     <i class="fas fa-laptop text-2xl"></i>
@@ -154,7 +155,7 @@
                 <h3 class="text-xl font-medium text-pink-400 mb-2">No Active Sessions</h3>
                 <p class="text-gray-400">There are no active browser sessions to display at this time.</p>
             </div>
-        @endif
+        <?php endif; ?>
     </div>
 </div>
 
@@ -184,9 +185,9 @@
                                 </p>
 
                                 <div class="mt-4">
-                                    <form id="logoutOtherSessionsForm" action="{{ route('profile.sessions.destroy') }}" method="POST">
-                                        @csrf
-                                        @method('DELETE')
+                                    <form id="logoutOtherSessionsForm" action="<?php echo e(route('profile.sessions.destroy')); ?>" method="POST">
+                                        <?php echo csrf_field(); ?>
+                                        <?php echo method_field('DELETE'); ?>
 
                                         <div>
                                             <label for="password" class="block text-sm font-medium text-gray-300 mb-2">Password <span class="text-red-500">*</span></label>
@@ -276,4 +277,6 @@
         });
     });
 </script>
-@endsection
+<?php $__env->stopSection(); ?>
+
+<?php echo $__env->make('layouts.admin', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?><?php /**PATH /var/www/resources/views/profile/sessions-new.blade.php ENDPATH**/ ?>
