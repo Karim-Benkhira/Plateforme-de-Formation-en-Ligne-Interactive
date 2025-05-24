@@ -307,7 +307,7 @@
             });
 
             // Update the course count badge
-            const courseBadge = document.querySelector('.bg-green-900/30.text-green-400.text-sm');
+            const courseBadge = document.querySelector('.bg-yellow-900\\/30.text-yellow-400.text-sm');
             if (courseBadge) {
                 courseBadge.textContent = `${visibleCount} courses`;
             }

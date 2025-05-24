@@ -1,8 +1,6 @@
-@extends('layouts.admin')
+<?php $__env->startSection('title', 'Create New Course'); ?>
 
-@section('title', 'Create New Course')
-
-@push('styles')
+<?php $__env->startPush('styles'); ?>
 <style>
     :root {
         /* Admin Color Scheme - Yellow/Pink */
@@ -60,9 +58,9 @@
         box-shadow: 0 4px 12px rgba(245, 158, 11, 0.15);
     }
 </style>
-@endpush
+<?php $__env->stopPush(); ?>
 
-@section('content')
+<?php $__env->startSection('content'); ?>
 <!-- Page Header -->
 <div class="admin-gradient-bg rounded-xl shadow-2xl p-6 mb-8 border border-yellow-500/30 relative overflow-hidden admin-glow">
     <div class="absolute inset-0 bg-grid-white/[0.05] bg-[length:20px_20px]"></div>
@@ -76,7 +74,7 @@
             <p class="text-yellow-100 opacity-90">Add a new course to your learning platform and start educating students</p>
         </div>
         <div class="mt-4 md:mt-0">
-            <a href="{{ route('admin.courses') }}" class="group bg-white/10 backdrop-blur-sm border border-white/20 text-white hover:bg-yellow-500/20 font-semibold py-3 px-5 rounded-lg shadow-lg transition-all duration-300 inline-flex items-center hover:shadow-yellow-500/30 hover:shadow-xl">
+            <a href="<?php echo e(route('admin.courses')); ?>" class="group bg-white/10 backdrop-blur-sm border border-white/20 text-white hover:bg-yellow-500/20 font-semibold py-3 px-5 rounded-lg shadow-lg transition-all duration-300 inline-flex items-center hover:shadow-yellow-500/30 hover:shadow-xl">
                 <i class="fas fa-arrow-left mr-2 group-hover:scale-110 transition-transform duration-300"></i>
                 <span>Back to Courses</span>
             </a>
@@ -97,8 +95,8 @@
             <h2 class="text-xl font-bold text-white">Course Information</h2>
         </div>
 
-        <form method="POST" action="{{ route('admin.storeCourse') }}" enctype="multipart/form-data" class="space-y-8">
-            @csrf
+        <form method="POST" action="<?php echo e(route('admin.storeCourse')); ?>" enctype="multipart/form-data" class="space-y-8">
+            <?php echo csrf_field(); ?>
 
             <!-- Basic Information Section -->
             <div class="form-section bg-gray-800/50 rounded-xl p-6 border border-gray-700/50">
@@ -130,9 +128,9 @@
                             <select name="category" id="category" required
                                 class="w-full p-3 pl-4 pr-10 bg-gray-900/70 border border-gray-700 rounded-lg text-gray-200 focus:outline-none focus:ring-2 focus:ring-purple-500/50 focus:border-purple-500/50 transition-all duration-300 hover:border-purple-500/30 appearance-none">
                                 <option value="">Select Category</option>
-                                @foreach($categories as $category)
-                                    <option value="{{ $category->id }}">{{ $category->name }}</option>
-                                @endforeach
+                                <?php $__currentLoopData = $categories; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $category): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                    <option value="<?php echo e($category->id); ?>"><?php echo e($category->name); ?></option>
+                                <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                             </select>
                             <div class="absolute inset-y-0 right-0 flex items-center px-3 pointer-events-none text-gray-400">
                                 <i class="fas fa-chevron-down text-sm"></i>
@@ -336,7 +334,7 @@
             </div>
 
             <!-- Error Messages -->
-            @if ($errors->any())
+            <?php if($errors->any()): ?>
                 <div class="bg-gradient-to-r from-red-900/80 to-red-800/80 border border-red-700/50 text-red-300 p-6 rounded-xl shadow-lg">
                     <div class="flex items-center mb-4">
                         <div class="bg-red-800/80 p-2 rounded-lg mr-4 shadow-inner">
@@ -348,19 +346,19 @@
                         </div>
                     </div>
                     <ul class="space-y-2 ml-14">
-                        @foreach ($errors->all() as $error)
+                        <?php $__currentLoopData = $errors->all(); $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $error): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                             <li class="flex items-center">
                                 <i class="fas fa-times-circle text-red-400 mr-2 text-sm"></i>
-                                <span>{{ $error }}</span>
+                                <span><?php echo e($error); ?></span>
                             </li>
-                        @endforeach
+                        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                     </ul>
                 </div>
-            @endif
+            <?php endif; ?>
 
             <!-- Form Actions -->
             <div class="flex flex-col sm:flex-row justify-end gap-4 pt-6 border-t border-gray-700/50">
-                <a href="{{ route('admin.courses') }}" class="group px-6 py-3 bg-gray-800/80 hover:bg-gray-700/80 text-gray-300 hover:text-white border border-gray-600/50 hover:border-gray-500/50 font-medium rounded-lg transition-all duration-300 flex items-center justify-center">
+                <a href="<?php echo e(route('admin.courses')); ?>" class="group px-6 py-3 bg-gray-800/80 hover:bg-gray-700/80 text-gray-300 hover:text-white border border-gray-600/50 hover:border-gray-500/50 font-medium rounded-lg transition-all duration-300 flex items-center justify-center">
                     <i class="fas fa-times mr-2 group-hover:rotate-90 transition-transform duration-300"></i>
                     <span>Cancel</span>
                 </a>
@@ -373,7 +371,7 @@
     </div>
 </div>
 
-@push('scripts')
+<?php $__env->startPush('scripts'); ?>
 <script>
     function toggleContentInputs() {
         const contentType = document.getElementById('content_type').value;
@@ -543,5 +541,7 @@
         }
     });
 </script>
-@endpush
-@endsection
+<?php $__env->stopPush(); ?>
+<?php $__env->stopSection(); ?>
+
+<?php echo $__env->make('layouts.admin', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?><?php /**PATH /var/www/resources/views/admin/createCourse.blade.php ENDPATH**/ ?>
