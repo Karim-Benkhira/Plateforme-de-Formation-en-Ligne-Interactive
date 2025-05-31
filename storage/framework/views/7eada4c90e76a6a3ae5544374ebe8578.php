@@ -1,8 +1,6 @@
-@extends('layouts.teacher')
+<?php $__env->startSection('title', 'Analytics Dashboard'); ?>
 
-@section('title', 'Analytics Dashboard')
-
-@push('styles')
+<?php $__env->startPush('styles'); ?>
 <style>
     .gradient-pink-purple {
         background: linear-gradient(135deg, #ec4899 0%, #8b5cf6 50%, #06b6d4 100%);
@@ -33,9 +31,9 @@
         transform: translateY(-2px);
     }
 </style>
-@endpush
+<?php $__env->stopPush(); ?>
 
-@section('content')
+<?php $__env->startSection('content'); ?>
 <!-- Page Header -->
 <div class="gradient-pink-purple rounded-2xl shadow-2xl p-8 mb-8 relative overflow-hidden">
     <div class="absolute inset-0 opacity-10">
@@ -49,7 +47,7 @@
             <p class="text-pink-100 text-lg">Track student performance and course effectiveness</p>
         </div>
         <div class="mt-6 md:mt-0">
-            <a href="{{ route('teacher.dashboard') }}"
+            <a href="<?php echo e(route('teacher.dashboard')); ?>"
                class="bg-white/20 hover:bg-white/30 backdrop-blur-sm text-white px-8 py-4 rounded-xl transition-all flex items-center font-medium shadow-lg hover:shadow-xl transform hover:scale-105">
                 <i class="fas fa-arrow-left mr-3 text-lg"></i> Back to Dashboard
             </a>
@@ -66,7 +64,7 @@
             </div>
             <div>
                 <p class="text-gray-400 text-sm">Total Courses</p>
-                <p class="text-2xl font-bold text-white">{{ count($courses) }}</p>
+                <p class="text-2xl font-bold text-white"><?php echo e(count($courses)); ?></p>
             </div>
         </div>
     </div>
@@ -78,7 +76,7 @@
             </div>
             <div>
                 <p class="text-gray-400 text-sm">Active Students</p>
-                <p class="text-2xl font-bold text-white">{{ $studentProgress['total_students'] ?? 0 }}</p>
+                <p class="text-2xl font-bold text-white"><?php echo e($studentProgress['total_students'] ?? 0); ?></p>
             </div>
         </div>
     </div>
@@ -90,7 +88,7 @@
             </div>
             <div>
                 <p class="text-gray-400 text-sm">Quiz Completions</p>
-                <p class="text-2xl font-bold text-white">{{ $studentProgress['total_completions'] ?? 0 }}</p>
+                <p class="text-2xl font-bold text-white"><?php echo e($studentProgress['total_completions'] ?? 0); ?></p>
             </div>
         </div>
     </div>
@@ -102,7 +100,7 @@
             </div>
             <div>
                 <p class="text-gray-400 text-sm">Avg. Score</p>
-                <p class="text-2xl font-bold text-white">{{ $studentProgress['average_score'] ?? 0 }}%</p>
+                <p class="text-2xl font-bold text-white"><?php echo e($studentProgress['average_score'] ?? 0); ?>%</p>
             </div>
         </div>
     </div>
@@ -120,53 +118,53 @@
                 </h2>
             </div>
 
-            @if(count($courses) > 0)
+            <?php if(count($courses) > 0): ?>
                 <div class="mb-6">
                     <canvas id="coursePerformanceChart" height="300"></canvas>
                 </div>
                 <div class="space-y-4">
-                    @foreach($courses as $course)
+                    <?php $__currentLoopData = $courses; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $course): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                         <div class="flex items-center justify-between p-4 bg-gray-800/50 rounded-xl hover:bg-gray-700/50 transition-all card-hover border border-gray-700/50">
                             <div class="flex items-center">
-                                @if($course->image)
-                                    <img class="h-12 w-12 rounded-full object-cover mr-4" src="{{ asset('storage/' . $course->image) }}" alt="{{ $course->title }}">
-                                @else
+                                <?php if($course->image): ?>
+                                    <img class="h-12 w-12 rounded-full object-cover mr-4" src="<?php echo e(asset('storage/' . $course->image)); ?>" alt="<?php echo e($course->title); ?>">
+                                <?php else: ?>
                                     <div class="h-12 w-12 rounded-full gradient-pink-blue flex items-center justify-center mr-4">
                                         <i class="fas fa-book text-white"></i>
                                     </div>
-                                @endif
+                                <?php endif; ?>
                                 <div>
-                                    <h3 class="font-semibold text-white">{{ $course->title }}</h3>
+                                    <h3 class="font-semibold text-white"><?php echo e($course->title); ?></h3>
                                     <p class="text-sm text-gray-400">
-                                        {{ isset($coursePerformance[$course->id]) ? $coursePerformance[$course->id]['student_count'] : 0 }} students enrolled
+                                        <?php echo e(isset($coursePerformance[$course->id]) ? $coursePerformance[$course->id]['student_count'] : 0); ?> students enrolled
                                     </p>
                                 </div>
                             </div>
                             <div class="text-right">
                                 <div class="text-xl font-bold text-white mb-1">
-                                    {{ isset($coursePerformance[$course->id]) ? $coursePerformance[$course->id]['average_score'] : 0 }}%
+                                    <?php echo e(isset($coursePerformance[$course->id]) ? $coursePerformance[$course->id]['average_score'] : 0); ?>%
                                 </div>
-                                <a href="{{ route('teacher.course-analytics', $course->id) }}"
+                                <a href="<?php echo e(route('teacher.course-analytics', $course->id)); ?>"
                                    class="text-sm text-pink-400 hover:text-pink-300 flex items-center justify-end transition-colors">
                                     View Details <i class="fas fa-arrow-right ml-1"></i>
                                 </a>
                             </div>
                         </div>
-                    @endforeach
+                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                 </div>
-            @else
+            <?php else: ?>
                 <div class="text-center py-12">
                     <div class="w-20 h-20 mx-auto gradient-pink-purple rounded-full flex items-center justify-center mb-4">
                         <i class="fas fa-chart-bar text-white text-2xl"></i>
                     </div>
                     <h3 class="text-lg font-semibold text-white mb-2">No Course Data Available</h3>
                     <p class="text-gray-400 mb-6">Create courses and assign quizzes to see performance data.</p>
-                    <a href="{{ route('teacher.courses.create') }}"
+                    <a href="<?php echo e(route('teacher.courses.create')); ?>"
                        class="gradient-pink-blue hover:opacity-90 text-white px-6 py-3 rounded-xl transition-all inline-flex items-center font-medium shadow-lg">
                         <i class="fas fa-plus mr-2"></i> Create Course
                     </a>
                 </div>
-            @endif
+            <?php endif; ?>
         </div>
 
         <!-- Student Progress -->
@@ -177,32 +175,33 @@
                 </h2>
             </div>
 
-            @if(isset($studentProgress['students']) && count($studentProgress['students']) > 0)
+            <?php if(isset($studentProgress['students']) && count($studentProgress['students']) > 0): ?>
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    @foreach($studentProgress['students'] as $student)
+                    <?php $__currentLoopData = $studentProgress['students']; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $student): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                         <div class="bg-gray-800/50 rounded-xl p-4 border border-gray-700/50 hover:border-pink-400/50 transition-all card-hover">
                             <div class="flex items-center justify-between">
                                 <div class="flex items-center">
                                     <div class="h-12 w-12 rounded-full gradient-pink-blue flex items-center justify-center mr-3">
-                                        <span class="text-white font-bold text-lg">{{ substr($student['name'], 0, 1) }}</span>
+                                        <span class="text-white font-bold text-lg"><?php echo e(substr($student['name'], 0, 1)); ?></span>
                                     </div>
                                     <div>
-                                        <h3 class="font-semibold text-white">{{ $student['name'] }}</h3>
-                                        <p class="text-sm text-gray-400">{{ $student['courses_count'] }} courses • {{ $student['quizzes_completed'] }} quizzes</p>
+                                        <h3 class="font-semibold text-white"><?php echo e($student['name']); ?></h3>
+                                        <p class="text-sm text-gray-400"><?php echo e($student['courses_count']); ?> courses • <?php echo e($student['quizzes_completed']); ?> quizzes</p>
                                     </div>
                                 </div>
                                 <div class="text-right">
-                                    <div class="text-lg font-bold text-white">{{ $student['average_score'] }}%</div>
+                                    <div class="text-lg font-bold text-white"><?php echo e($student['average_score']); ?>%</div>
                                     <span class="px-2 py-1 text-xs font-medium rounded-full
-                                        {{ $student['average_score'] >= 70 ? 'bg-emerald-500/20 text-emerald-300' : ($student['average_score'] >= 50 ? 'bg-yellow-500/20 text-yellow-300' : 'bg-red-500/20 text-red-300') }}">
-                                        {{ $student['average_score'] >= 70 ? 'Excellent' : ($student['average_score'] >= 50 ? 'Good' : 'Needs Improvement') }}
+                                        <?php echo e($student['average_score'] >= 70 ? 'bg-emerald-500/20 text-emerald-300' : ($student['average_score'] >= 50 ? 'bg-yellow-500/20 text-yellow-300' : 'bg-red-500/20 text-red-300')); ?>">
+                                        <?php echo e($student['average_score'] >= 70 ? 'Excellent' : ($student['average_score'] >= 50 ? 'Good' : 'Needs Improvement')); ?>
+
                                     </span>
                                 </div>
                             </div>
                         </div>
-                    @endforeach
+                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                 </div>
-            @else
+            <?php else: ?>
                 <div class="text-center py-12">
                     <div class="w-20 h-20 mx-auto gradient-pink-purple rounded-full flex items-center justify-center mb-4">
                         <i class="fas fa-user-graduate text-white text-2xl"></i>
@@ -210,7 +209,7 @@
                     <h3 class="text-lg font-semibold text-white mb-2">No Student Data Available</h3>
                     <p class="text-gray-400">Data will appear once students start taking your quizzes.</p>
                 </div>
-            @endif
+            <?php endif; ?>
         </div>
     </div>
 
@@ -224,11 +223,11 @@
                 </h2>
             </div>
 
-            @if(isset($coursePerformance) && count($coursePerformance) > 0)
+            <?php if(isset($coursePerformance) && count($coursePerformance) > 0): ?>
                 <div class="mb-6">
                     <canvas id="quizCompletionChart" height="250"></canvas>
                 </div>
-            @else
+            <?php else: ?>
                 <div class="text-center py-12">
                     <div class="w-16 h-16 mx-auto gradient-pink-purple rounded-full flex items-center justify-center mb-4">
                         <i class="fas fa-clipboard-list text-white text-xl"></i>
@@ -236,7 +235,7 @@
                     <h3 class="text-lg font-semibold text-white mb-2">No Quiz Data</h3>
                     <p class="text-gray-400 text-sm">Create quizzes and assign them to students to see completion rates.</p>
                 </div>
-            @endif
+            <?php endif; ?>
         </div>
 
         <!-- Performance by Category -->
@@ -247,11 +246,11 @@
                 </h2>
             </div>
 
-            @if(isset($coursePerformance) && count($coursePerformance) > 0)
+            <?php if(isset($coursePerformance) && count($coursePerformance) > 0): ?>
                 <div class="mb-6">
                     <canvas id="categoryPerformanceChart" height="250"></canvas>
                 </div>
-            @else
+            <?php else: ?>
                 <div class="text-center py-12">
                     <div class="w-16 h-16 mx-auto gradient-pink-purple rounded-full flex items-center justify-center mb-4">
                         <i class="fas fa-tags text-white text-xl"></i>
@@ -259,13 +258,13 @@
                     <h3 class="text-lg font-semibold text-white mb-2">No Category Data</h3>
                     <p class="text-gray-400 text-sm">Categorize your courses to see performance by category.</p>
                 </div>
-            @endif
+            <?php endif; ?>
         </div>
     </div>
 </div>
-@endsection
+<?php $__env->stopSection(); ?>
 
-@push('scripts')
+<?php $__env->startPush('scripts'); ?>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
     document.addEventListener('DOMContentLoaded', function() {
@@ -274,10 +273,10 @@
         Chart.defaults.borderColor = '#334155'; // border color
 
         // Sample data for charts - replace with actual data from backend
-        const courseLabels = @json($courses->pluck('title')->toArray());
-        const courseScores = @json($courses->map(function($course) use ($coursePerformance) {
+        const courseLabels = <?php echo json_encode($courses->pluck('title')->toArray(), 15, 512) ?>;
+        const courseScores = <?php echo json_encode($courses->map(function($course) use ($coursePerformance) {
             return isset($coursePerformance[$course->id]) ? $coursePerformance[$course->id]['average_score'] : 0;
-        })->toArray());
+        })->toArray(), 15, 512) ?>;
 
         // Course Performance Chart
         if (document.getElementById('coursePerformanceChart')) {
@@ -411,4 +410,6 @@
         }
     });
 </script>
-@endpush
+<?php $__env->stopPush(); ?>
+
+<?php echo $__env->make('layouts.teacher', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?><?php /**PATH /var/www/resources/views/teacher/analytics.blade.php ENDPATH**/ ?>
