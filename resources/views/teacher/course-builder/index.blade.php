@@ -1,18 +1,53 @@
 @extends('layouts.teacher')
 
-@section('title', 'Course Builder - Udemy Style')
+@section('title', 'Course Builder - Create Amazing Courses')
+
+@push('styles')
+<style>
+    .gradient-pink-purple {
+        background: linear-gradient(135deg, #ec4899 0%, #8b5cf6 50%, #06b6d4 100%);
+    }
+    .gradient-pink-blue {
+        background: linear-gradient(135deg, #f472b6 0%, #a855f7 50%, #3b82f6 100%);
+    }
+    .gradient-rose-purple {
+        background: linear-gradient(135deg, #fb7185 0%, #c084fc 100%);
+    }
+    .gradient-purple-pink {
+        background: linear-gradient(135deg, #a855f7 0%, #ec4899 100%);
+    }
+    .card-hover {
+        transition: all 0.3s ease;
+    }
+    .card-hover:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 20px 40px rgba(236, 72, 153, 0.3);
+    }
+    .stats-card {
+        background: linear-gradient(135deg, rgba(236, 72, 153, 0.1) 0%, rgba(139, 92, 246, 0.1) 100%);
+        border: 1px solid rgba(236, 72, 153, 0.2);
+    }
+</style>
+@endpush
 
 @section('content')
 <!-- Page Header -->
-<div class="welcome-banner bg-gradient-to-r from-blue-600 to-purple-600 rounded-xl shadow-lg p-6 mb-8">
-    <div class="flex items-center justify-between">
+<div class="welcome-banner gradient-pink-purple rounded-2xl shadow-2xl p-8 mb-8 relative overflow-hidden">
+    <!-- Background Pattern -->
+    <div class="absolute inset-0 opacity-10">
+        <div class="absolute top-0 left-0 w-32 h-32 bg-white rounded-full -translate-x-16 -translate-y-16"></div>
+        <div class="absolute bottom-0 right-0 w-24 h-24 bg-white rounded-full translate-x-12 translate-y-12"></div>
+        <div class="absolute top-1/2 right-1/4 w-16 h-16 bg-white rounded-full"></div>
+    </div>
+
+    <div class="flex items-center justify-between relative z-10">
         <div>
-            <h1 class="text-3xl font-bold text-white">Course Builder</h1>
-            <p class="text-blue-100">Create professional courses like Udemy with multiple sections and lessons</p>
+            <h1 class="text-4xl font-bold text-white mb-2">✨ Course Builder</h1>
+            <p class="text-pink-100 text-lg">Create professional courses with beautiful design and multiple sections</p>
         </div>
         <a href="{{ route('teacher.course-builder.create') }}"
-           class="bg-white/20 hover:bg-white/30 text-white px-6 py-3 rounded-lg transition-all flex items-center font-medium">
-            <i class="fas fa-plus mr-2"></i>
+           class="bg-white/20 hover:bg-white/30 backdrop-blur-sm text-white px-8 py-4 rounded-xl transition-all flex items-center font-medium shadow-lg hover:shadow-xl transform hover:scale-105">
+            <i class="fas fa-plus mr-3 text-lg"></i>
             Create New Course
         </a>
     </div>
@@ -20,50 +55,50 @@
 
 <!-- Stats Cards -->
 <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
-    <div class="bg-gray-900 rounded-lg p-6 border border-gray-800">
+    <div class="stats-card rounded-2xl p-6 card-hover backdrop-blur-sm">
         <div class="flex items-center">
-            <div class="w-12 h-12 bg-blue-600 rounded-lg flex items-center justify-center mr-4">
-                <i class="fas fa-graduation-cap text-white text-xl"></i>
+            <div class="p-4 rounded-2xl gradient-pink-blue text-white mr-4 shadow-lg">
+                <i class="fas fa-graduation-cap text-xl"></i>
             </div>
             <div>
-                <p class="text-gray-400 text-sm">Total Courses</p>
-                <p class="text-2xl font-bold text-white">{{ $courses->total() }}</p>
+                <p class="text-gray-400 text-sm font-medium">Total Courses</p>
+                <p class="text-3xl font-bold text-white">{{ $courses->total() }}</p>
             </div>
         </div>
     </div>
 
-    <div class="bg-gray-900 rounded-lg p-6 border border-gray-800">
+    <div class="stats-card rounded-2xl p-6 card-hover backdrop-blur-sm">
         <div class="flex items-center">
-            <div class="w-12 h-12 bg-green-600 rounded-lg flex items-center justify-center mr-4">
-                <i class="fas fa-eye text-white text-xl"></i>
+            <div class="p-4 rounded-2xl bg-gradient-to-br from-emerald-500 to-teal-600 text-white mr-4 shadow-lg">
+                <i class="fas fa-eye text-xl"></i>
             </div>
             <div>
-                <p class="text-gray-400 text-sm">Published</p>
-                <p class="text-2xl font-bold text-white">{{ $courses->where('is_published', true)->count() }}</p>
+                <p class="text-gray-400 text-sm font-medium">Published</p>
+                <p class="text-3xl font-bold text-white">{{ $courses->where('is_published', true)->count() }}</p>
             </div>
         </div>
     </div>
 
-    <div class="bg-gray-900 rounded-lg p-6 border border-gray-800">
+    <div class="stats-card rounded-2xl p-6 card-hover backdrop-blur-sm">
         <div class="flex items-center">
-            <div class="w-12 h-12 bg-yellow-600 rounded-lg flex items-center justify-center mr-4">
-                <i class="fas fa-edit text-white text-xl"></i>
+            <div class="p-4 rounded-2xl bg-gradient-to-br from-amber-500 to-orange-600 text-white mr-4 shadow-lg">
+                <i class="fas fa-edit text-xl"></i>
             </div>
             <div>
-                <p class="text-gray-400 text-sm">Drafts</p>
-                <p class="text-2xl font-bold text-white">{{ $courses->where('is_published', false)->count() }}</p>
+                <p class="text-gray-400 text-sm font-medium">Drafts</p>
+                <p class="text-3xl font-bold text-white">{{ $courses->where('is_published', false)->count() }}</p>
             </div>
         </div>
     </div>
 
-    <div class="bg-gray-900 rounded-lg p-6 border border-gray-800">
+    <div class="stats-card rounded-2xl p-6 card-hover backdrop-blur-sm">
         <div class="flex items-center">
-            <div class="w-12 h-12 bg-purple-600 rounded-lg flex items-center justify-center mr-4">
-                <i class="fas fa-play-circle text-white text-xl"></i>
+            <div class="p-4 rounded-2xl gradient-purple-pink text-white mr-4 shadow-lg">
+                <i class="fas fa-play-circle text-xl"></i>
             </div>
             <div>
-                <p class="text-gray-400 text-sm">Total Lessons</p>
-                <p class="text-2xl font-bold text-white">{{ $courses->sum('lessons_count') }}</p>
+                <p class="text-gray-400 text-sm font-medium">Total Lessons</p>
+                <p class="text-3xl font-bold text-white">{{ $courses->sum('lessons_count') }}</p>
             </div>
         </div>
     </div>
@@ -73,17 +108,17 @@
 @if($courses->count() > 0)
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
         @foreach($courses as $course)
-            <div class="bg-gray-900 rounded-xl shadow-lg overflow-hidden border border-gray-800 hover:border-blue-500 transition-all">
+            <div class="bg-gray-900/50 backdrop-blur-sm rounded-2xl shadow-xl overflow-hidden border border-pink-500/20 hover:border-pink-400/50 transition-all card-hover">
                 <!-- Course Image -->
-                <div class="aspect-video bg-gray-800 relative">
+                <div class="aspect-video bg-gradient-to-br from-pink-500/20 to-purple-600/20 relative">
                     <img src="{{ $course->thumbnail_url }}" alt="{{ $course->title }}"
                          class="w-full h-full object-cover"
-                         onerror="this.onerror=null; this.parentElement.innerHTML='<div class=\'w-full h-full flex items-center justify-center\'><i class=\'fas fa-graduation-cap text-4xl text-gray-600\'></i></div>';"
+                         onerror="this.onerror=null; this.parentElement.innerHTML='<div class=\'w-full h-full flex items-center justify-center gradient-pink-blue\'><i class=\'fas fa-graduation-cap text-4xl text-white\'></i></div>';"
                          loading="lazy">
 
                     <!-- Status Badge -->
-                    <div class="absolute top-3 right-3">
-                        <span class="px-2 py-1 rounded-full text-xs font-medium {{ $course->is_published ? 'bg-green-500 text-white' : 'bg-yellow-500 text-black' }}">
+                    <div class="absolute top-4 right-4">
+                        <span class="px-3 py-1 rounded-full text-xs font-medium backdrop-blur-sm {{ $course->is_published ? 'bg-emerald-500/90 text-white' : 'bg-amber-500/90 text-white' }}">
                             {{ $course->status_label }}
                         </span>
                     </div>
@@ -123,17 +158,17 @@
                     <!-- Action Buttons -->
                     <div class="flex space-x-2">
                         <a href="{{ route('teacher.course-builder.edit', $course->id) }}"
-                           class="flex-1 bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded-lg text-center transition-all">
-                            <i class="fas fa-edit mr-1"></i>
+                           class="flex-1 gradient-pink-blue hover:opacity-90 text-white py-3 px-4 rounded-xl text-center transition-all font-medium shadow-lg">
+                            <i class="fas fa-edit mr-2"></i>
                             Edit
                         </a>
                         <button onclick="previewCourse({{ $course->id }})"
-                                class="flex-1 bg-green-600 hover:bg-green-700 text-white py-2 px-4 rounded-lg transition-all">
-                            <i class="fas fa-eye mr-1"></i>
+                                class="flex-1 bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 text-white py-3 px-4 rounded-xl transition-all font-medium shadow-lg">
+                            <i class="fas fa-eye mr-2"></i>
                             Preview
                         </button>
                         <button onclick="deleteCourse({{ $course->id }})"
-                                class="bg-red-600 hover:bg-red-700 text-white py-2 px-3 rounded-lg transition-all">
+                                class="bg-gradient-to-r from-red-500 to-pink-600 hover:from-red-600 hover:to-pink-700 text-white py-3 px-4 rounded-xl transition-all shadow-lg">
                             <i class="fas fa-trash"></i>
                         </button>
                     </div>
@@ -156,49 +191,57 @@
     </div>
 @else
     <!-- Empty State -->
-    <div class="text-center py-16">
-        <div class="mx-auto h-24 w-24 text-gray-600 mb-6">
-            <i class="fas fa-graduation-cap text-6xl"></i>
+    <div class="text-center py-20">
+        <div class="mx-auto mb-8">
+            <div class="w-32 h-32 mx-auto gradient-pink-purple rounded-full flex items-center justify-center mb-6">
+                <i class="fas fa-graduation-cap text-6xl text-white"></i>
+            </div>
         </div>
-        <h3 class="text-xl font-semibold text-gray-400 mb-4">No Courses Yet</h3>
-        <p class="text-gray-500 mb-8 max-w-md mx-auto">
-            Start creating professional courses with our Udemy-style course builder.
+        <h3 class="text-2xl font-bold text-white mb-4">✨ No Courses Yet</h3>
+        <p class="text-gray-400 mb-8 max-w-md mx-auto text-lg">
+            Start creating amazing professional courses with our beautiful course builder.
             Add sections, lessons, and multimedia content easily.
         </p>
         <a href="{{ route('teacher.course-builder.create') }}"
-           class="bg-blue-600 hover:bg-blue-700 text-white px-8 py-3 rounded-lg transition-all inline-flex items-center">
-            <i class="fas fa-plus mr-2"></i>
+           class="gradient-pink-blue hover:opacity-90 text-white px-10 py-4 rounded-xl transition-all inline-flex items-center font-medium shadow-xl transform hover:scale-105">
+            <i class="fas fa-plus mr-3 text-lg"></i>
             Create Your First Course
         </a>
     </div>
 @endif
 
 <!-- Info Section -->
-<div class="mt-12 bg-gradient-to-r from-blue-900/20 to-purple-900/20 border border-blue-500/30 rounded-lg p-6">
-    <h3 class="text-lg font-semibold text-blue-300 mb-4 flex items-center">
-        <i class="fas fa-lightbulb mr-2"></i>
-        Course Builder Features
+<div class="mt-12 bg-gradient-to-r from-pink-900/20 via-purple-900/20 to-blue-900/20 border border-pink-500/30 rounded-2xl p-8 backdrop-blur-sm">
+    <h3 class="text-2xl font-bold text-pink-300 mb-6 flex items-center">
+        <i class="fas fa-sparkles mr-3 text-pink-400"></i>
+        ✨ Course Builder Features
     </h3>
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 text-sm text-blue-200">
-        <div class="flex items-start">
-            <i class="fas fa-layer-group text-blue-400 mr-3 mt-1"></i>
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-8 text-pink-100">
+        <div class="flex items-start p-4 rounded-xl bg-pink-500/10 border border-pink-500/20">
+            <div class="p-3 rounded-xl gradient-pink-blue mr-4 flex-shrink-0">
+                <i class="fas fa-layer-group text-white text-xl"></i>
+            </div>
             <div>
-                <strong class="block mb-1">Organized Sections</strong>
-                <p>Structure your content into logical sections like Udemy</p>
+                <strong class="block mb-2 text-pink-200 text-lg">Organized Sections</strong>
+                <p class="text-pink-100/80">Structure your content into logical sections like Udemy</p>
             </div>
         </div>
-        <div class="flex items-start">
-            <i class="fas fa-video text-blue-400 mr-3 mt-1"></i>
+        <div class="flex items-start p-4 rounded-xl bg-purple-500/10 border border-purple-500/20">
+            <div class="p-3 rounded-xl gradient-purple-pink mr-4 flex-shrink-0">
+                <i class="fas fa-video text-white text-xl"></i>
+            </div>
             <div>
-                <strong class="block mb-1">Multiple Content Types</strong>
-                <p>Add videos, PDFs, text content, and more</p>
+                <strong class="block mb-2 text-purple-200 text-lg">Multiple Content Types</strong>
+                <p class="text-purple-100/80">Add videos, PDFs, text content, and more</p>
             </div>
         </div>
-        <div class="flex items-start">
-            <i class="fas fa-chart-line text-blue-400 mr-3 mt-1"></i>
+        <div class="flex items-start p-4 rounded-xl bg-blue-500/10 border border-blue-500/20">
+            <div class="p-3 rounded-xl bg-gradient-to-br from-blue-500 to-cyan-600 mr-4 flex-shrink-0">
+                <i class="fas fa-chart-line text-white text-xl"></i>
+            </div>
             <div>
-                <strong class="block mb-1">Progress Tracking</strong>
-                <p>Track student progress through lessons</p>
+                <strong class="block mb-2 text-blue-200 text-lg">Progress Tracking</strong>
+                <p class="text-blue-100/80">Track student progress through lessons</p>
             </div>
         </div>
     </div>

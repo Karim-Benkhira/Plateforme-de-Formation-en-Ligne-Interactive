@@ -1,28 +1,58 @@
 @extends('layouts.teacher')
 
-@section('title', 'Create New Course - Udemy Style')
+@section('title', 'Create New Course - Beautiful Design')
+
+@push('styles')
+<style>
+    .gradient-pink-purple {
+        background: linear-gradient(135deg, #ec4899 0%, #8b5cf6 50%, #06b6d4 100%);
+    }
+    .gradient-pink-blue {
+        background: linear-gradient(135deg, #f472b6 0%, #a855f7 50%, #3b82f6 100%);
+    }
+    .form-card {
+        background: linear-gradient(135deg, rgba(236, 72, 153, 0.05) 0%, rgba(139, 92, 246, 0.05) 100%);
+        border: 1px solid rgba(236, 72, 153, 0.2);
+        backdrop-filter: blur(10px);
+    }
+    .input-focus {
+        transition: all 0.3s ease;
+    }
+    .input-focus:focus {
+        border-color: #ec4899;
+        box-shadow: 0 0 0 3px rgba(236, 72, 153, 0.1);
+    }
+</style>
+@endpush
 
 @section('content')
 <!-- Page Header -->
-<div class="welcome-banner bg-gradient-to-r from-blue-600 to-purple-600 rounded-xl shadow-lg p-6 mb-8">
-    <div class="flex items-center">
-        <a href="{{ route('teacher.course-builder.index') }}" class="mr-4 text-white hover:text-blue-100 transition-colors">
-            <i class="fas fa-arrow-left text-xl"></i>
+<div class="welcome-banner gradient-pink-purple rounded-2xl shadow-2xl p-8 mb-8 relative overflow-hidden">
+    <!-- Background Pattern -->
+    <div class="absolute inset-0 opacity-10">
+        <div class="absolute top-0 left-0 w-32 h-32 bg-white rounded-full -translate-x-16 -translate-y-16"></div>
+        <div class="absolute bottom-0 right-0 w-24 h-24 bg-white rounded-full translate-x-12 translate-y-12"></div>
+        <div class="absolute top-1/2 right-1/4 w-16 h-16 bg-white rounded-full"></div>
+    </div>
+
+    <div class="flex items-center relative z-10">
+        <a href="{{ route('teacher.course-builder.index') }}" class="mr-6 text-white hover:text-pink-100 transition-colors transform hover:scale-110">
+            <i class="fas fa-arrow-left text-2xl"></i>
         </a>
         <div>
-            <h1 class="text-3xl font-bold text-white">Create New Course</h1>
-            <p class="text-blue-100">Build your course like Udemy - with multiple sections and lessons</p>
+            <h1 class="text-4xl font-bold text-white mb-2">✨ Create New Course</h1>
+            <p class="text-pink-100 text-lg">Build amazing courses with beautiful design and multiple sections</p>
         </div>
     </div>
 </div>
 
 <div class="max-w-4xl mx-auto">
-    <div class="bg-gray-900 rounded-xl shadow-lg overflow-hidden">
+    <div class="form-card rounded-2xl shadow-2xl overflow-hidden">
         <!-- Header -->
-        <div class="bg-gradient-to-r from-blue-600 to-purple-600 px-6 py-4">
-            <h2 class="text-xl font-bold text-white flex items-center">
-                <i class="fas fa-graduation-cap mr-3"></i>
-                Course Basic Information
+        <div class="gradient-pink-blue px-8 py-6">
+            <h2 class="text-2xl font-bold text-white flex items-center">
+                <i class="fas fa-sparkles mr-3 text-pink-200"></i>
+                ✨ Course Basic Information
             </h2>
         </div>
 
@@ -30,15 +60,15 @@
         <div class="p-8">
             <form action="{{ route('teacher.course-builder.store') }}" method="POST" enctype="multipart/form-data" id="course-form">
                 @csrf
-                
+
                 <!-- Course Title -->
-                <div class="mb-6">
-                    <label for="title" class="block text-white text-lg font-medium mb-3">
-                        <i class="fas fa-heading text-blue-400 mr-2"></i>
+                <div class="mb-8">
+                    <label for="title" class="block text-white text-lg font-medium mb-4">
+                        <i class="fas fa-heading text-pink-400 mr-2"></i>
                         Course Title
                     </label>
                     <input type="text" name="title" id="title" required
-                        class="w-full bg-gray-800 text-white border-2 border-gray-700 rounded-lg py-3 px-4 focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500 transition-colors"
+                        class="w-full bg-gray-800/50 text-white border-2 border-pink-500/30 rounded-xl py-4 px-5 input-focus backdrop-blur-sm"
                         placeholder="e.g., Complete Web Development Bootcamp 2024"
                         value="{{ old('title') }}">
                     @error('title')
@@ -47,13 +77,13 @@
                 </div>
 
                 <!-- Course Description -->
-                <div class="mb-6">
-                    <label for="description" class="block text-white text-lg font-medium mb-3">
-                        <i class="fas fa-align-left text-blue-400 mr-2"></i>
+                <div class="mb-8">
+                    <label for="description" class="block text-white text-lg font-medium mb-4">
+                        <i class="fas fa-align-left text-purple-400 mr-2"></i>
                         Course Description
                     </label>
                     <textarea name="description" id="description" rows="5" required
-                        class="w-full bg-gray-800 text-white border-2 border-gray-700 rounded-lg py-3 px-4 focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500 transition-colors"
+                        class="w-full bg-gray-800/50 text-white border-2 border-purple-500/30 rounded-xl py-4 px-5 input-focus backdrop-blur-sm"
                         placeholder="Describe what students will learn in this course...">{{ old('description') }}</textarea>
                     @error('description')
                         <p class="text-red-400 text-sm mt-2">{{ $message }}</p>
@@ -61,15 +91,15 @@
                 </div>
 
                 <!-- Category and Level -->
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
                     <!-- Category -->
                     <div>
-                        <label for="category_id" class="block text-white text-lg font-medium mb-3">
+                        <label for="category_id" class="block text-white text-lg font-medium mb-4">
                             <i class="fas fa-folder text-blue-400 mr-2"></i>
                             Category
                         </label>
                         <select name="category_id" id="category_id" required
-                            class="w-full bg-gray-800 text-white border-2 border-gray-700 rounded-lg py-3 px-4 focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500 transition-colors">
+                            class="w-full bg-gray-800/50 text-white border-2 border-blue-500/30 rounded-xl py-4 px-5 input-focus backdrop-blur-sm">
                             <option value="">Select Category</option>
                             @foreach($categories as $category)
                                 <option value="{{ $category->id }}" {{ old('category_id') == $category->id ? 'selected' : '' }}>
@@ -84,12 +114,12 @@
 
                     <!-- Level -->
                     <div>
-                        <label for="level" class="block text-white text-lg font-medium mb-3">
-                            <i class="fas fa-signal text-blue-400 mr-2"></i>
+                        <label for="level" class="block text-white text-lg font-medium mb-4">
+                            <i class="fas fa-signal text-cyan-400 mr-2"></i>
                             Difficulty Level
                         </label>
                         <select name="level" id="level" required
-                            class="w-full bg-gray-800 text-white border-2 border-gray-700 rounded-lg py-3 px-4 focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500 transition-colors">
+                            class="w-full bg-gray-800/50 text-white border-2 border-cyan-500/30 rounded-xl py-4 px-5 input-focus backdrop-blur-sm">
                             <option value="">Select Level</option>
                             <option value="beginner" {{ old('level') == 'beginner' ? 'selected' : '' }}>Beginner</option>
                             <option value="intermediate" {{ old('level') == 'intermediate' ? 'selected' : '' }}>Intermediate</option>
@@ -141,7 +171,7 @@
                             Publishing Options
                         </h3>
                         <div class="flex items-center">
-                            <input type="checkbox" id="is_published" name="is_published" value="1" 
+                            <input type="checkbox" id="is_published" name="is_published" value="1"
                                 class="w-5 h-5 text-blue-600 bg-gray-700 border-gray-600 rounded focus:ring-blue-500 focus:ring-2">
                             <label for="is_published" class="ml-3 text-white font-medium">
                                 Publish course immediately
@@ -154,16 +184,16 @@
                 </div>
 
                 <!-- Action Buttons -->
-                <div class="flex flex-col sm:flex-row justify-between items-center space-y-4 sm:space-y-0 sm:space-x-4">
-                    <a href="{{ route('teacher.course-builder.index') }}" 
-                        class="w-full sm:w-auto px-8 py-3 bg-gray-700 text-white rounded-lg hover:bg-gray-600 transition-all flex items-center justify-center">
-                        <i class="fas fa-arrow-left mr-2"></i>
+                <div class="flex flex-col sm:flex-row justify-between items-center space-y-4 sm:space-y-0 sm:space-x-6">
+                    <a href="{{ route('teacher.course-builder.index') }}"
+                        class="w-full sm:w-auto px-10 py-4 bg-gray-700/50 text-white rounded-xl hover:bg-gray-600/50 transition-all flex items-center justify-center backdrop-blur-sm border border-gray-600/50">
+                        <i class="fas fa-arrow-left mr-3"></i>
                         Cancel
                     </a>
-                    
-                    <button type="submit" 
-                        class="w-full sm:w-auto px-8 py-3 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-lg hover:from-blue-700 hover:to-purple-700 transition-all flex items-center justify-center font-medium shadow-lg">
-                        <i class="fas fa-plus mr-2"></i>
+
+                    <button type="submit"
+                        class="w-full sm:w-auto px-10 py-4 gradient-pink-blue hover:opacity-90 text-white rounded-xl transition-all flex items-center justify-center font-medium shadow-xl transform hover:scale-105">
+                        <i class="fas fa-sparkles mr-3"></i>
                         Create Course & Add Content
                     </button>
                 </div>
@@ -172,31 +202,37 @@
     </div>
 
     <!-- Info Card -->
-    <div class="mt-8 bg-blue-900/20 border border-blue-500/30 rounded-lg p-6">
-        <h3 class="text-lg font-semibold text-blue-300 mb-3 flex items-center">
-            <i class="fas fa-info-circle mr-2"></i>
-            What's Next?
+    <div class="mt-8 bg-gradient-to-r from-pink-900/20 via-purple-900/20 to-blue-900/20 border border-pink-500/30 rounded-2xl p-8 backdrop-blur-sm">
+        <h3 class="text-2xl font-bold text-pink-300 mb-6 flex items-center">
+            <i class="fas fa-magic mr-3 text-pink-400"></i>
+            ✨ What's Next?
         </h3>
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm text-blue-200">
-            <div class="flex items-start">
-                <i class="fas fa-layer-group text-blue-400 mr-2 mt-1"></i>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 text-pink-100">
+            <div class="flex items-start p-4 rounded-xl bg-pink-500/10 border border-pink-500/20">
+                <div class="p-3 rounded-xl gradient-pink-blue mr-4 flex-shrink-0">
+                    <i class="fas fa-layer-group text-white text-lg"></i>
+                </div>
                 <div>
-                    <strong>Add Sections</strong>
-                    <p>Organize your content into logical sections</p>
+                    <strong class="block mb-2 text-pink-200">Add Sections</strong>
+                    <p class="text-pink-100/80">Organize your content into logical sections</p>
                 </div>
             </div>
-            <div class="flex items-start">
-                <i class="fas fa-play-circle text-blue-400 mr-2 mt-1"></i>
+            <div class="flex items-start p-4 rounded-xl bg-purple-500/10 border border-purple-500/20">
+                <div class="p-3 rounded-xl bg-gradient-to-br from-purple-500 to-pink-600 mr-4 flex-shrink-0">
+                    <i class="fas fa-play-circle text-white text-lg"></i>
+                </div>
                 <div>
-                    <strong>Upload Lessons</strong>
-                    <p>Add videos, PDFs, and text content</p>
+                    <strong class="block mb-2 text-purple-200">Upload Lessons</strong>
+                    <p class="text-purple-100/80">Add videos, PDFs, and text content</p>
                 </div>
             </div>
-            <div class="flex items-start">
-                <i class="fas fa-rocket text-blue-400 mr-2 mt-1"></i>
+            <div class="flex items-start p-4 rounded-xl bg-blue-500/10 border border-blue-500/20">
+                <div class="p-3 rounded-xl bg-gradient-to-br from-blue-500 to-cyan-600 mr-4 flex-shrink-0">
+                    <i class="fas fa-rocket text-white text-lg"></i>
+                </div>
                 <div>
-                    <strong>Publish</strong>
-                    <p>Make your course available to students</p>
+                    <strong class="block mb-2 text-blue-200">Publish</strong>
+                    <p class="text-blue-100/80">Make your course available to students</p>
                 </div>
             </div>
         </div>
