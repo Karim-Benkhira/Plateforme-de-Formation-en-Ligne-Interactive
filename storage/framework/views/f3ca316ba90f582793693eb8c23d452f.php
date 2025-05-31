@@ -1,143 +1,202 @@
 <?php $__env->startSection('title', 'Manage Courses'); ?>
 
+<?php $__env->startPush('styles'); ?>
+<style>
+    .gradient-pink-purple {
+        background: linear-gradient(135deg, #ec4899 0%, #8b5cf6 50%, #06b6d4 100%);
+    }
+    .gradient-pink-blue {
+        background: linear-gradient(135deg, #f472b6 0%, #a855f7 50%, #3b82f6 100%);
+    }
+    .card-hover {
+        transition: all 0.3s ease;
+    }
+    .card-hover:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 20px 40px rgba(236, 72, 153, 0.3);
+    }
+
+    /* Clean layout styles */
+    .section-spacing {
+        margin-bottom: 2rem;
+    }
+
+    /* Responsive grid improvements */
+    @media (max-width: 768px) {
+        .grid {
+            gap: 1rem;
+        }
+    }
+
+    /* Better text readability */
+    .text-shadow {
+        text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+    }
+</style>
+<?php $__env->stopPush(); ?>
+
 <?php $__env->startSection('content'); ?>
 <!-- Page Header -->
-<div class="welcome-banner bg-gradient-to-r from-primary-600 to-secondary-600 rounded-xl shadow-lg p-6 mb-8">
-    <div class="flex flex-col md:flex-row justify-between items-center">
+<div class="gradient-pink-purple rounded-2xl shadow-2xl p-8 mb-8 relative overflow-hidden">
+    <div class="absolute inset-0 opacity-10">
+        <div class="absolute top-0 left-0 w-32 h-32 bg-white rounded-full -translate-x-16 -translate-y-16"></div>
+        <div class="absolute bottom-0 right-0 w-24 h-24 bg-white rounded-full translate-x-12 translate-y-12"></div>
+    </div>
+
+    <div class="flex flex-col md:flex-row justify-between items-center relative z-10">
         <div>
-            <h1 class="text-3xl font-bold mb-2 text-white">Manage Courses</h1>
-            <p class="text-blue-100">Create and manage your educational courses</p>
+            <h1 class="text-4xl font-bold mb-2 text-white text-shadow">📚 Manage Courses</h1>
+            <p class="text-pink-100 text-lg">Create and manage your educational courses</p>
         </div>
-        <div class="mt-4 md:mt-0">
-            <a href="<?php echo e(route('teacher.courses.create')); ?>" class="btn-white">
-                <i class="fas fa-plus mr-2"></i> Create New Course
+        <div class="mt-6 md:mt-0">
+            <a href="<?php echo e(route('teacher.courses.create')); ?>"
+               class="bg-white/20 hover:bg-white/30 backdrop-blur-sm text-white px-8 py-4 rounded-xl transition-all flex items-center font-medium shadow-lg hover:shadow-xl transform hover:scale-105">
+                <i class="fas fa-plus mr-3 text-lg"></i> Create New Course
             </a>
         </div>
     </div>
 </div>
 
-<!-- Courses List -->
-<div class="section-card">
-    <div class="section-header">
-        <i class="fas fa-book-open mr-2"></i> Your Courses
+<!-- Courses Section -->
+<div class="mb-8">
+    <div class="flex items-center justify-between mb-6">
+        <h2 class="text-2xl font-bold text-white flex items-center">
+            <i class="fas fa-sparkles mr-3 text-pink-400"></i> Your Courses
+        </h2>
     </div>
-    <div class="section-content">
-        <?php if(count($courses) > 0): ?>
-            <div class="overflow-x-auto">
-                <table class="min-w-full">
-                    <thead>
-                        <tr>
-                            <th class="py-3 px-4 bg-gray-700 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">Title</th>
-                            <th class="py-3 px-4 bg-gray-700 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">Category</th>
-                            <th class="py-3 px-4 bg-gray-700 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">Status</th>
-                            <th class="py-3 px-4 bg-gray-700 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">Created</th>
-                            <th class="py-3 px-4 bg-gray-700 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody class="divide-y divide-gray-700">
-                        <?php $__currentLoopData = $courses; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $course): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
-                            <tr class="hover:bg-gray-700 transition-colors">
-                                <td class="py-4 px-4">
-                                    <div class="flex items-center">
-                                        <?php if($course->image): ?>
-                                            <img class="h-10 w-10 rounded-full object-cover mr-4" src="<?php echo e(asset('storage/' . $course->image)); ?>" alt="<?php echo e($course->title); ?>">
-                                        <?php else: ?>
-                                            <div class="h-10 w-10 rounded-full bg-gray-600 flex items-center justify-center mr-4">
-                                                <i class="fas fa-book text-gray-300"></i>
-                                            </div>
-                                        <?php endif; ?>
-                                        <div>
-                                            <div class="text-sm font-medium text-white"><?php echo e($course->title); ?></div>
-                                            <div class="text-sm text-gray-400"><?php echo e(Str::limit($course->description, 50)); ?></div>
-                                        </div>
-                                    </div>
-                                </td>
-                                <td class="py-4 px-4 text-sm text-gray-200">
-                                    <?php echo e($course->category ? $course->category->name : 'Uncategorized'); ?>
 
-                                </td>
-                                <td class="py-4 px-4">
-                                    <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full
-                                        <?php echo e($course->is_published ? 'bg-primary-900 text-primary-300' : 'bg-secondary-900 text-secondary-300'); ?>">
-                                        <?php echo e($course->is_published ? 'Published' : 'Draft'); ?>
+    <?php if(count($courses) > 0): ?>
+        <!-- Courses Grid -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <?php $__currentLoopData = $courses; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $course): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                <div class="bg-gray-900/50 backdrop-blur-sm rounded-2xl shadow-xl overflow-hidden border border-pink-500/20 hover:border-pink-400/50 transition-all card-hover">
+                    <!-- Course Image -->
+                    <div class="aspect-video bg-gradient-to-br from-pink-500/20 to-purple-600/20 relative">
+                        <?php if($course->image): ?>
+                            <img src="<?php echo e(asset('storage/' . $course->image)); ?>" alt="<?php echo e($course->title); ?>"
+                                 class="w-full h-full object-cover">
+                        <?php else: ?>
+                            <div class="w-full h-full flex items-center justify-center gradient-pink-blue">
+                                <i class="fas fa-graduation-cap text-4xl text-white"></i>
+                            </div>
+                        <?php endif; ?>
 
-                                    </span>
-                                </td>
-                                <td class="py-4 px-4 text-sm text-gray-200">
-                                    <?php echo e($course->created_at->format('M d, Y')); ?>
+                        <!-- Status Badge -->
+                        <div class="absolute top-4 right-4">
+                            <span class="px-3 py-1 rounded-full text-xs font-medium backdrop-blur-sm <?php echo e($course->is_published ? 'bg-emerald-500/90 text-white' : 'bg-amber-500/90 text-white'); ?>">
+                                <?php echo e($course->is_published ? 'Published' : 'Draft'); ?>
 
-                                </td>
-                                <td class="py-4 px-4 text-sm font-medium">
-                                    <div class="flex space-x-3">
-                                        <a href="<?php echo e(route('teacher.courses.show', $course->id)); ?>" class="action-icon primary" title="View Course">
-                                            <i class="fas fa-eye"></i>
-                                        </a>
-                                        <a href="<?php echo e(route('teacher.generate-quiz', $course->id)); ?>" class="action-icon secondary" title="Generate AI Quiz">
-                                            <i class="fas fa-magic"></i>
-                                        </a>
-                                        <a href="<?php echo e(route('teacher.course-analytics', $course->id)); ?>" class="action-icon primary" title="View Analytics">
-                                            <i class="fas fa-chart-bar"></i>
-                                        </a>
-                                    </div>
-                                </td>
-                            </tr>
-                        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
-                    </tbody>
-                </table>
-            </div>
-            <div class="px-4 py-3 border-t border-gray-700 mt-4">
-                <?php echo e($courses->links()); ?>
+                            </span>
+                        </div>
+                    </div>
 
-            </div>
-        <?php else: ?>
-            <div class="p-6 text-center">
-                <div class="inline-flex items-center justify-center w-16 h-16 rounded-full bg-primary-900 mb-4">
-                    <i class="fas fa-book-open text-primary-400 text-2xl"></i>
+                    <!-- Course Info -->
+                    <div class="p-6">
+                        <div class="mb-4">
+                            <h3 class="text-lg font-semibold text-white mb-2"><?php echo e($course->title); ?></h3>
+                            <p class="text-gray-400 text-sm"><?php echo e(Str::limit($course->description, 100)); ?></p>
+                        </div>
+
+                        <!-- Course Meta -->
+                        <div class="grid grid-cols-2 gap-4 mb-4 text-center">
+                            <div>
+                                <p class="text-sm text-gray-400">Category</p>
+                                <p class="text-white font-medium"><?php echo e($course->category ? $course->category->name : 'Uncategorized'); ?></p>
+                            </div>
+                            <div>
+                                <p class="text-sm text-gray-400">Created</p>
+                                <p class="text-white font-medium"><?php echo e($course->created_at->format('M d, Y')); ?></p>
+                            </div>
+                        </div>
+
+                        <!-- Action Buttons -->
+                        <div class="flex space-x-2">
+                            <a href="<?php echo e(route('teacher.courses.show', $course->id)); ?>"
+                               class="flex-1 gradient-pink-blue hover:opacity-90 text-white py-3 px-4 rounded-xl text-center transition-all font-medium shadow-lg">
+                                <i class="fas fa-eye mr-2"></i>
+                                View
+                            </a>
+                            <a href="<?php echo e(route('teacher.generate-quiz', $course->id)); ?>"
+                               class="flex-1 bg-gradient-to-r from-purple-500 to-pink-600 hover:from-purple-600 hover:to-pink-700 text-white py-3 px-4 rounded-xl text-center transition-all font-medium shadow-lg">
+                                <i class="fas fa-magic mr-2"></i>
+                                AI Quiz
+                            </a>
+                            <a href="<?php echo e(route('teacher.course-analytics', $course->id)); ?>"
+                               class="bg-gradient-to-r from-blue-500 to-cyan-600 hover:from-blue-600 hover:to-cyan-700 text-white py-3 px-4 rounded-xl transition-all shadow-lg">
+                                <i class="fas fa-chart-bar"></i>
+                            </a>
+                        </div>
+                    </div>
                 </div>
-                <p class="text-gray-400 mb-4">You haven't created any courses yet.</p>
-                <a href="<?php echo e(route('teacher.courses.create')); ?>" class="btn-primary">
-                    <i class="fas fa-plus mr-2"></i> Create Your First Course
-                </a>
+            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+        </div>
+
+        <!-- Pagination -->
+        <div class="flex justify-center mt-8">
+            <?php echo e($courses->links()); ?>
+
+        </div>
+    <?php else: ?>
+        <!-- Empty State -->
+        <div class="text-center py-20 bg-gray-900/30 rounded-2xl border border-pink-500/20">
+            <div class="w-32 h-32 mx-auto gradient-pink-purple rounded-full flex items-center justify-center mb-6">
+                <i class="fas fa-graduation-cap text-6xl text-white"></i>
             </div>
-        <?php endif; ?>
-    </div>
+            <h3 class="text-2xl font-bold text-white mb-4">📚 No Courses Yet</h3>
+            <p class="text-gray-400 mb-8 max-w-md mx-auto text-lg">
+                Start creating amazing educational courses and share your knowledge with students worldwide.
+            </p>
+            <a href="<?php echo e(route('teacher.courses.create')); ?>"
+               class="gradient-pink-blue hover:opacity-90 text-white px-10 py-4 rounded-xl transition-all inline-flex items-center font-medium shadow-xl transform hover:scale-105">
+                <i class="fas fa-plus mr-3 text-lg"></i>
+                Create Your First Course
+            </a>
+        </div>
+    <?php endif; ?>
 </div>
 
 <!-- Quick Actions -->
-<div class="section-card mt-8">
-    <div class="section-header">
-        <i class="fas fa-bolt mr-2"></i> Quick Actions
+<div class="mb-8">
+    <div class="flex items-center justify-between mb-6">
+        <h2 class="text-2xl font-bold text-white flex items-center">
+            <i class="fas fa-bolt mr-3 text-purple-400"></i> Quick Actions
+        </h2>
     </div>
-    <div class="section-content">
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <a href="<?php echo e(route('teacher.courses.create')); ?>" class="action-card">
-                <div class="action-icon primary">
-                    <i class="fas fa-plus"></i>
+
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <a href="<?php echo e(route('teacher.courses.create')); ?>" class="bg-gray-900/30 rounded-2xl p-6 border border-pink-500/20 hover:border-pink-400/50 transition-all card-hover">
+            <div class="flex items-center">
+                <div class="p-4 rounded-2xl gradient-pink-blue mr-4 shadow-lg">
+                    <i class="fas fa-plus text-white text-xl"></i>
                 </div>
                 <div>
-                    <h3 class="action-title">Create New Course</h3>
-                    <p class="action-description">Add a new course to your catalog</p>
+                    <h3 class="text-lg font-bold text-white mb-1">Create New Course</h3>
+                    <p class="text-gray-400 text-sm">Add a new course to your catalog</p>
                 </div>
-            </a>
-            <a href="<?php echo e(route('teacher.quizzes')); ?>" class="action-card">
-                <div class="action-icon secondary">
-                    <i class="fas fa-question-circle"></i>
-                </div>
-                <div>
-                    <h3 class="action-title">Manage Quizzes</h3>
-                    <p class="action-description">View and edit your quizzes</p>
-                </div>
-            </a>
-            <a href="<?php echo e(route('teacher.analytics')); ?>" class="action-card">
-                <div class="action-icon primary">
-                    <i class="fas fa-chart-line"></i>
+            </div>
+        </a>
+        <a href="<?php echo e(route('teacher.quizzes')); ?>" class="bg-gray-900/30 rounded-2xl p-6 border border-purple-500/20 hover:border-purple-400/50 transition-all card-hover">
+            <div class="flex items-center">
+                <div class="p-4 rounded-2xl bg-gradient-to-br from-purple-500 to-pink-600 mr-4 shadow-lg">
+                    <i class="fas fa-question-circle text-white text-xl"></i>
                 </div>
                 <div>
-                    <h3 class="action-title">View Analytics</h3>
-                    <p class="action-description">Track student performance</p>
+                    <h3 class="text-lg font-bold text-white mb-1">Manage Quizzes</h3>
+                    <p class="text-gray-400 text-sm">View and edit your quizzes</p>
                 </div>
-            </a>
-        </div>
+            </div>
+        </a>
+        <a href="<?php echo e(route('teacher.analytics')); ?>" class="bg-gray-900/30 rounded-2xl p-6 border border-blue-500/20 hover:border-blue-400/50 transition-all card-hover">
+            <div class="flex items-center">
+                <div class="p-4 rounded-2xl bg-gradient-to-br from-blue-500 to-cyan-600 mr-4 shadow-lg">
+                    <i class="fas fa-chart-line text-white text-xl"></i>
+                </div>
+                <div>
+                    <h3 class="text-lg font-bold text-white mb-1">View Analytics</h3>
+                    <p class="text-gray-400 text-sm">Track student performance</p>
+                </div>
+            </div>
+        </a>
     </div>
 </div>
 <?php $__env->stopSection(); ?>
