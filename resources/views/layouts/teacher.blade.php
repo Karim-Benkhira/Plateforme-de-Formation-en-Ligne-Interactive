@@ -80,6 +80,7 @@
                     <!-- Navigation -->
                     <nav class="dashboard-nav hidden md:flex items-center space-x-6">
                         <a href="{{ route('teacher.dashboard') }}" class="dashboard-nav-link {{ request()->routeIs('teacher.dashboard') ? 'active' : '' }}">Dashboard</a>
+                        <a href="{{ route('teacher.course-builder.index') }}" class="dashboard-nav-link {{ request()->routeIs('teacher.course-builder*') ? 'active' : '' }}">Course Builder</a>
                         <a href="{{ route('teacher.courses') }}" class="dashboard-nav-link {{ request()->routeIs('teacher.courses*') ? 'active' : '' }}">Courses</a>
                         <a href="{{ route('teacher.quizzes') }}" class="dashboard-nav-link {{ request()->routeIs('teacher.quizzes*') ? 'active' : '' }}">Quizzes</a>
                         <a href="{{ route('teacher.analytics') }}" class="dashboard-nav-link {{ request()->routeIs('teacher.analytics*') ? 'active' : '' }}">Analytics</a>
@@ -151,6 +152,7 @@
             <div class="md:hidden hidden" id="mobile-menu">
                 <div class="px-2 pt-2 pb-3 space-y-1">
                     <a href="{{ route('teacher.dashboard') }}" class="block px-3 py-2 rounded-md text-base font-medium text-gray-300 hover:text-white hover:bg-gray-700">Dashboard</a>
+                    <a href="{{ route('teacher.course-builder.index') }}" class="block px-3 py-2 rounded-md text-base font-medium text-gray-300 hover:text-white hover:bg-gray-700">Course Builder</a>
                     <a href="{{ route('teacher.courses') }}" class="block px-3 py-2 rounded-md text-base font-medium text-gray-300 hover:text-white hover:bg-gray-700">Courses</a>
                     <a href="{{ route('teacher.quizzes') }}" class="block px-3 py-2 rounded-md text-base font-medium text-gray-300 hover:text-white hover:bg-gray-700">Quizzes</a>
                     <a href="{{ route('teacher.analytics') }}" class="block px-3 py-2 rounded-md text-base font-medium text-gray-300 hover:text-white hover:bg-gray-700">Analytics</a>

@@ -193,4 +193,12 @@ class User extends Authenticatable
     {
         return $this->hasMany(ActivityLog::class)->where('user_id', $this->id)->latest();
     }
+
+    /**
+     * Get the practice questions for the student.
+     */
+    public function practiceQuestions()
+    {
+        return $this->hasMany(\App\Models\PracticeQuestion::class);
+    }
 }

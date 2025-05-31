@@ -15,6 +15,7 @@ use App\Http\Controllers\ActivityLogController;
 use App\Http\Controllers\SessionController;
 use App\Http\Controllers\TwoFactorAuthController;
 use App\Http\Controllers\TeacherController;
+use App\Http\Controllers\PracticeQuestionController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -88,6 +89,9 @@ Route::get('/about', function() {
     return view('public.about-updated');
 });
 Route::get('/courses', [UserController::class, 'showCourses']);
+
+// Image routes
+Route::get('/images/default-course.svg', [\App\Http\Controllers\ImageController::class, 'defaultCourse'])->name('images.default-course');
 
 // Legal Routes
 Route::prefix('legal')->name('legal.')->group(function () {
@@ -204,6 +208,22 @@ Route::middleware(['auth','role:user'])->group(function () {
     Route::post('/student/support', [StudentController::class, 'submitSupport'])->name('student.support.submit');
 
     Route::get('/student/achievements', [StudentController::class, 'showAchievements'])->name('student.achievements');
+
+    // Practice Questions Routes
+    Route::prefix('student/practice')->name('student.practice.')->group(function () {
+        Route::get('/course/{courseId}', [PracticeQuestionController::class, 'dashboard'])->name('dashboard');
+        Route::get('/course/{courseId}/generate', [PracticeQuestionController::class, 'showGenerateForm'])->name('generate.form');
+        Route::post('/course/{courseId}/generate', [PracticeQuestionController::class, 'generateQuestions'])->name('generate');
+        Route::get('/course/{courseId}/session', [PracticeQuestionController::class, 'practiceSession'])->name('session');
+        Route::get('/course/{courseId}/question/{questionId}', [PracticeQuestionController::class, 'showQuestion'])->name('question');
+        Route::post('/course/{courseId}/question/{questionId}/answer', [PracticeQuestionController::class, 'submitAnswer'])->name('answer');
+        Route::get('/course/{courseId}/results', [PracticeQuestionController::class, 'showResults'])->name('results');
+        Route::delete('/course/{courseId}/reset', [PracticeQuestionController::class, 'resetQuestions'])->name('reset');
+
+        // AJAX Routes
+        Route::get('/course/{courseId}/questions', [PracticeQuestionController::class, 'getQuestions'])->name('questions.ajax');
+        Route::get('/course/{courseId}/next-question', [PracticeQuestionController::class, 'getNextQuestion'])->name('next.question');
+    });
 });
 
 Route::middleware(['auth','role:agent'])->group(function () {
@@ -227,10 +247,43 @@ Route::middleware(['auth','role:teacher'])->group(function () {
     Route::post('/teacher/profile/password', [TeacherController::class, 'updatePassword'])->name('teacher.profile.password');
     Route::post('/teacher/profile/image', [TeacherController::class, 'updateProfileImage'])->name('teacher.profile.image');
 
-    // Courses
+    // Courses (Legacy)
     Route::get('/teacher/courses', [TeacherController::class, 'showCourses'])->name('teacher.courses');
     Route::get('/teacher/courses/create', [TeacherController::class, 'createCourse'])->name('teacher.courses.create');
-    Route::post('/teacher/courses', [CourseController::class, 'storeCourse'])->name('teacher.courses.store');
+    Route::post('/teacher/courses', [\App\Http\Controllers\Teacher\CourseBuilderController::class, 'store'])->name('teacher.courses.store');
+
+    // Course Builder (New Udemy-style system)
+    Route::prefix('teacher/course-builder')->name('teacher.course-builder.')->group(function () {
+        Route::get('/', [\App\Http\Controllers\Teacher\CourseBuilderController::class, 'index'])->name('index');
+        Route::get('/create', [\App\Http\Controllers\Teacher\CourseBuilderController::class, 'create'])->name('create');
+        Route::post('/', [\App\Http\Controllers\Teacher\CourseBuilderController::class, 'store'])->name('store');
+        Route::get('/{id}/edit', [\App\Http\Controllers\Teacher\CourseBuilderController::class, 'edit'])->name('edit');
+        Route::put('/{id}', [\App\Http\Controllers\Teacher\CourseBuilderController::class, 'update'])->name('update');
+        Route::delete('/{id}', [\App\Http\Controllers\Teacher\CourseBuilderController::class, 'destroy'])->name('destroy');
+        Route::get('/{id}/stats', [\App\Http\Controllers\Teacher\CourseBuilderController::class, 'getStats'])->name('stats');
+
+        // Sections
+        Route::get('/{courseId}/sections/{sectionId}', [\App\Http\Controllers\Teacher\SectionController::class, 'show'])->name('sections.show');
+        Route::post('/{courseId}/sections', [\App\Http\Controllers\Teacher\SectionController::class, 'store'])->name('sections.store');
+        Route::put('/{courseId}/sections/{sectionId}', [\App\Http\Controllers\Teacher\SectionController::class, 'update'])->name('sections.update');
+        Route::delete('/{courseId}/sections/{sectionId}', [\App\Http\Controllers\Teacher\SectionController::class, 'destroy'])->name('sections.destroy');
+        Route::post('/{courseId}/sections/order', [\App\Http\Controllers\Teacher\SectionController::class, 'updateOrder'])->name('sections.order');
+        Route::post('/{courseId}/sections/{sectionId}/toggle-publish', [\App\Http\Controllers\Teacher\SectionController::class, 'togglePublish'])->name('sections.toggle-publish');
+
+        // Lessons
+        Route::get('/{courseId}/sections/{sectionId}/lessons/{lessonId}', [\App\Http\Controllers\Teacher\LessonController::class, 'show'])->name('lessons.show');
+        Route::post('/{courseId}/sections/{sectionId}/lessons', [\App\Http\Controllers\Teacher\LessonController::class, 'store'])->name('lessons.store');
+        Route::put('/{courseId}/sections/{sectionId}/lessons/{lessonId}', [\App\Http\Controllers\Teacher\LessonController::class, 'update'])->name('lessons.update');
+        Route::delete('/{courseId}/sections/{sectionId}/lessons/{lessonId}', [\App\Http\Controllers\Teacher\LessonController::class, 'destroy'])->name('lessons.destroy');
+        Route::post('/{courseId}/sections/{sectionId}/lessons/order', [\App\Http\Controllers\Teacher\LessonController::class, 'updateOrder'])->name('lessons.order');
+        Route::post('/{courseId}/sections/{sectionId}/lessons/{lessonId}/toggle-publish', [\App\Http\Controllers\Teacher\LessonController::class, 'togglePublish'])->name('lessons.toggle-publish');
+    });
+
+    // Video Upload Routes
+    Route::post('/teacher/upload-video', [\App\Http\Controllers\Teacher\VideoUploadController::class, 'uploadVideo'])->name('teacher.upload-video');
+    Route::delete('/teacher/delete-video', [\App\Http\Controllers\Teacher\VideoUploadController::class, 'deleteVideo'])->name('teacher.delete-video');
+    Route::get('/teacher/video-info', [\App\Http\Controllers\Teacher\VideoUploadController::class, 'getVideoInfo'])->name('teacher.video-info');
+
     Route::get('/teacher/courses/{id}', function($id) {
         $course = \App\Models\Course::where('id', $id)
             ->where('creator_id', \Illuminate\Support\Facades\Auth::id())

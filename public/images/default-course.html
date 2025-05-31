@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <style>
+        .course-placeholder {
+            width: 400px;
+            height: 225px;
+            background: linear-gradient(135deg, #3B82F6, #8B5CF6);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-family: Arial, sans-serif;
+            position: relative;
+        }
+        .play-icon {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+        .play-triangle {
+            width: 0;
+            height: 0;
+            border-left: 20px solid rgba(255, 255, 255, 0.8);
+            border-top: 12px solid transparent;
+            border-bottom: 12px solid transparent;
+            margin-left: 5px;
+        }
+        .course-text {
+            font-size: 16px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="course-placeholder">
+        <div class="play-icon">
+            <div class="play-triangle"></div>
+        </div>
+        <div class="course-text">Course Content</div>
+    </div>
+</body>
+</html>

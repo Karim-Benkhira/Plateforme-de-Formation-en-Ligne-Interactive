@@ -41,4 +41,10 @@ return [
         'model' => env('HUGGINGFACE_MODEL', 'google/flan-t5-base'),
     ],
 
+    'gemini' => [
+        'api_key' => env('GEMINI_API_KEY'),
+        'base_url' => env('GEMINI_BASE_URL', 'https://generativelanguage.googleapis.com/v1beta'),
+        'model' => env('GEMINI_MODEL', 'gemini-pro'),
+    ],
+
 ];

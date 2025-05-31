@@ -213,6 +213,77 @@
                     </a>
 
                     @if($isEnrolled)
+                        <!-- AI Practice Questions Button -->
+                        <a href="{{ route('student.practice.dashboard', $course->id) }}" class="ai-practice-btn w-full block">
+                            <div class="ai-practice-content">
+                                <!-- Header Section -->
+                                <div class="flex items-center justify-between mb-4">
+                                    <div class="relative">
+                                        <div class="w-12 h-12 bg-white/20 rounded-full flex items-center justify-center">
+                                            <i class="fas fa-robot text-2xl ai-robot-icon"></i>
+                                        </div>
+                                        <div class="absolute -top-1 -right-1 w-4 h-4 bg-green-400 rounded-full ai-status-dot flex items-center justify-center">
+                                            <div class="w-2 h-2 bg-white rounded-full"></div>
+                                        </div>
+                                    </div>
+                                    <div class="text-center flex-1 mx-4">
+                                        <div class="text-xl font-bold tracking-wide mb-1 flex items-center justify-center">
+                                            <span class="mr-2">🤖</span>
+                                            <span>AI Practice Questions</span>
+                                            <span class="ml-2">🧠</span>
+                                        </div>
+                                        <div class="text-sm opacity-90 font-medium flex items-center justify-center bg-white/10 rounded-full px-3 py-1">
+                                            <i class="fab fa-google mr-2 text-blue-300"></i>
+                                            <span>Powered by Gemini AI</span>
+                                            <i class="fas fa-star ml-2 text-yellow-300 ai-sparkle"></i>
+                                        </div>
+                                    </div>
+                                    <div class="relative">
+                                        <div class="w-12 h-12 bg-white/20 rounded-full flex items-center justify-center">
+                                            <i class="fas fa-brain text-2xl ai-brain-icon"></i>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Features Section -->
+                                <div class="bg-white/15 rounded-xl p-4 mb-4 border border-white/20">
+                                    <div class="grid grid-cols-2 gap-3 text-sm">
+                                        <div class="flex items-center bg-white/10 rounded-lg p-2">
+                                            <i class="fas fa-magic text-yellow-300 mr-2 ai-sparkle text-lg"></i>
+                                            <span class="font-medium">Smart Generation</span>
+                                        </div>
+                                        <div class="flex items-center bg-white/10 rounded-lg p-2">
+                                            <i class="fas fa-language text-blue-300 mr-2 text-lg"></i>
+                                            <span class="font-medium">Multi-Language</span>
+                                        </div>
+                                        <div class="flex items-center bg-white/10 rounded-lg p-2">
+                                            <i class="fas fa-chart-line text-green-300 mr-2 text-lg"></i>
+                                            <span class="font-medium">Progress Tracking</span>
+                                        </div>
+                                        <div class="flex items-center bg-white/10 rounded-lg p-2">
+                                            <i class="fas fa-gift text-purple-300 mr-2 text-lg"></i>
+                                            <span class="font-medium">100% Free</span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Call to Action -->
+                                <div class="text-center">
+                                    <div class="inline-flex items-center space-x-3 bg-gradient-to-r from-yellow-400 via-orange-400 to-red-400 text-gray-900 rounded-full px-6 py-3 font-bold text-base shadow-xl hover:shadow-2xl transition-all duration-300 transform hover:scale-105">
+                                        <i class="fas fa-rocket text-lg"></i>
+                                        <span class="tracking-wide">Start Smart Practice Now</span>
+                                        <div class="flex items-center">
+                                            <i class="fas fa-arrow-right text-lg animate-bounce"></i>
+                                        </div>
+                                    </div>
+                                    <div class="mt-2 text-xs opacity-75">
+                                        <i class="fas fa-clock mr-1"></i>
+                                        Ready in seconds • No setup required
+                                    </div>
+                                </div>
+                            </div>
+                        </a>
+
                         @if($course->quizzes->isNotEmpty())
                             <a href="{{ route('student.quiz', $course->quizzes[0]->id) }}" class="action-button primary w-full">
                                 <i class="fas fa-question-circle mr-2"></i> Take Quiz
@@ -240,3 +311,202 @@
     </div>
 </div>
 @endsection
+
+<style>
+/* AI Practice Questions Button Custom Styles */
+.ai-practice-btn {
+    position: relative;
+    overflow: hidden;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
+    border-radius: 20px;
+    padding: 3px;
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    box-shadow:
+        0 10px 40px rgba(102, 126, 234, 0.4),
+        0 0 0 1px rgba(255, 255, 255, 0.1),
+        inset 0 1px 0 rgba(255, 255, 255, 0.2);
+    animation: glow-pulse 3s ease-in-out infinite;
+}
+
+.ai-practice-btn:hover {
+    transform: translateY(-4px) scale(1.03);
+    box-shadow:
+        0 20px 60px rgba(102, 126, 234, 0.6),
+        0 0 0 1px rgba(255, 255, 255, 0.2),
+        inset 0 1px 0 rgba(255, 255, 255, 0.3);
+}
+
+@keyframes glow-pulse {
+    0%, 100% {
+        box-shadow:
+            0 10px 40px rgba(102, 126, 234, 0.4),
+            0 0 0 1px rgba(255, 255, 255, 0.1),
+            inset 0 1px 0 rgba(255, 255, 255, 0.2);
+    }
+    50% {
+        box-shadow:
+            0 15px 50px rgba(102, 126, 234, 0.6),
+            0 0 0 1px rgba(255, 255, 255, 0.15),
+            inset 0 1px 0 rgba(255, 255, 255, 0.25);
+    }
+}
+
+.ai-practice-btn::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    transition: left 0.5s;
+}
+
+.ai-practice-btn:hover::before {
+    left: 100%;
+}
+
+.ai-practice-content {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
+    border-radius: 17px;
+    padding: 24px;
+    color: white;
+    position: relative;
+    z-index: 1;
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.ai-robot-icon {
+    animation: float 3s ease-in-out infinite;
+}
+
+.ai-brain-icon {
+    animation: pulse-glow 2s ease-in-out infinite alternate;
+}
+
+.ai-status-dot {
+    animation: ping 1s cubic-bezier(0, 0, 0.2, 1) infinite;
+}
+
+@keyframes float {
+    0%, 100% { transform: translateY(0px); }
+    50% { transform: translateY(-5px); }
+}
+
+@keyframes pulse-glow {
+    0% {
+        opacity: 0.7;
+        transform: scale(1);
+    }
+    100% {
+        opacity: 1;
+        transform: scale(1.1);
+    }
+}
+
+@keyframes ping {
+    75%, 100% {
+        transform: scale(2);
+        opacity: 0;
+    }
+}
+
+.ai-sparkle {
+    animation: sparkle 1.5s ease-in-out infinite;
+}
+
+@keyframes sparkle {
+    0%, 100% {
+        opacity: 1;
+        transform: scale(1) rotate(0deg);
+        color: #fbbf24;
+    }
+    50% {
+        opacity: 0.7;
+        transform: scale(1.3) rotate(180deg);
+        color: #f59e0b;
+    }
+}
+
+/* Additional enhancements */
+.ai-practice-btn .bg-gradient-to-r {
+    transition: all 0.3s ease;
+}
+
+.ai-practice-btn:hover .bg-gradient-to-r {
+    background: linear-gradient(to right, #fbbf24, #f59e0b);
+    transform: scale(1.05);
+}
+
+.ai-practice-content:hover .ai-robot-icon {
+    animation-duration: 1s;
+}
+
+.ai-practice-content:hover .ai-brain-icon {
+    animation-duration: 1s;
+}
+
+/* Glowing text effect */
+.ai-practice-content .text-xl {
+    text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+}
+
+/* Feature icons glow */
+.ai-practice-content .text-yellow-300,
+.ai-practice-content .text-blue-300,
+.ai-practice-content .text-green-300,
+.ai-practice-content .text-purple-300 {
+    filter: drop-shadow(0 0 3px currentColor);
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .ai-practice-btn {
+        padding: 2px;
+        border-radius: 16px;
+    }
+
+    .ai-practice-content {
+        padding: 20px;
+        border-radius: 14px;
+    }
+
+    .ai-practice-content .text-xl {
+        font-size: 1.1rem;
+    }
+
+    .ai-practice-content .text-2xl {
+        font-size: 1.5rem;
+    }
+
+    .ai-practice-content .grid-cols-2 {
+        grid-template-columns: 1fr;
+        gap: 2px;
+    }
+
+    .ai-practice-content .text-base {
+        font-size: 0.9rem;
+    }
+
+    .ai-practice-content .px-6 {
+        padding-left: 1rem;
+        padding-right: 1rem;
+    }
+}
+
+/* Hover effects for desktop */
+@media (min-width: 769px) {
+    .ai-practice-btn:hover .ai-robot-icon {
+        transform: rotate(10deg) scale(1.1);
+    }
+
+    .ai-practice-btn:hover .ai-brain-icon {
+        transform: rotate(-10deg) scale(1.1);
+    }
+
+    .ai-practice-btn:hover .ai-sparkle {
+        animation-duration: 0.5s;
+    }
+}
+</style>

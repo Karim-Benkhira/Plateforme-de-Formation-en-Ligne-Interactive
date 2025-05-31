@@ -72,22 +72,42 @@
             </div>
             <div class="section-content">
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <a href="{{ route('teacher.courses') }}" class="action-card">
-                        <div class="action-icon primary">
-                            <i class="fas fa-list"></i>
+                    <!-- New Course Builder -->
+                    <a href="{{ route('teacher.course-builder.index') }}" class="action-card featured">
+                        <div class="action-icon featured">
+                            <i class="fas fa-layer-group"></i>
                         </div>
                         <div>
-                            <h3 class="action-title">Manage Courses</h3>
-                            <p class="action-description">View and edit your courses</p>
+                            <h3 class="action-title">Course Builder</h3>
+                            <p class="action-description">Create courses like Udemy with sections & lessons</p>
+                            <span class="new-badge">NEW</span>
                         </div>
                     </a>
-                    <a href="{{ route('teacher.courses.create') }}" class="action-card">
+                    <a href="{{ route('teacher.course-builder.create') }}" class="action-card">
                         <div class="action-icon primary">
                             <i class="fas fa-plus"></i>
                         </div>
                         <div>
                             <h3 class="action-title">Create New Course</h3>
-                            <p class="action-description">Add a new course to your catalog</p>
+                            <p class="action-description">Start building a professional course</p>
+                        </div>
+                    </a>
+                    <a href="{{ route('teacher.courses') }}" class="action-card">
+                        <div class="action-icon secondary">
+                            <i class="fas fa-list"></i>
+                        </div>
+                        <div>
+                            <h3 class="action-title">Legacy Courses</h3>
+                            <p class="action-description">View old course format</p>
+                        </div>
+                    </a>
+                    <a href="{{ route('teacher.courses.create') }}" class="action-card">
+                        <div class="action-icon secondary">
+                            <i class="fas fa-file-plus"></i>
+                        </div>
+                        <div>
+                            <h3 class="action-title">Simple Course</h3>
+                            <p class="action-description">Create basic course (old format)</p>
                         </div>
                     </a>
                 </div>
@@ -247,6 +267,55 @@
     </div>
 </div>
 @endsection
+
+@push('styles')
+<style>
+.action-card.featured {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border: 2px solid #667eea;
+    position: relative;
+    overflow: hidden;
+}
+
+.action-card.featured:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 25px rgba(102, 126, 234, 0.3);
+}
+
+.action-icon.featured {
+    background: rgba(255, 255, 255, 0.2);
+    color: white;
+}
+
+.new-badge {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    background: linear-gradient(45deg, #ff6b6b, #feca57);
+    color: white;
+    font-size: 10px;
+    font-weight: bold;
+    padding: 2px 6px;
+    border-radius: 8px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+}
+
+.action-card.featured .action-title {
+    color: white;
+}
+
+.action-card.featured .action-description {
+    color: rgba(255, 255, 255, 0.9);
+}
+</style>
+@endpush
 
 @push('scripts')
 <script>

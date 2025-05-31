@@ -11,21 +11,56 @@
         </a>
         <div>
             <h1 class="text-3xl font-bold text-white">Create New Course</h1>
-            <p class="text-blue-100">Add a new course to your teaching portfolio</p>
+            <p class="text-blue-100">Start with basic information, then add your videos</p>
         </div>
     </div>
 </div>
 
 <div class="max-w-5xl mx-auto">
+    <!-- Process Steps -->
+    <div class="mb-8">
+        <div class="bg-gradient-to-r from-green-900/50 to-blue-900/50 p-6 rounded-lg border border-green-700">
+            <h2 class="text-xl font-semibold text-white mb-4 flex items-center">
+                <i class="fas fa-route text-green-400 mr-3"></i>
+                Course Creation Process (Like Udemy)
+            </h2>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div class="flex items-center p-4 bg-green-800/30 rounded-lg border border-green-600">
+                    <div class="w-8 h-8 rounded-full bg-green-600 text-white flex items-center justify-center mr-3 font-bold">1</div>
+                    <div>
+                        <h3 class="text-white font-medium">Basic Info</h3>
+                        <p class="text-green-100 text-sm">Title, description, category</p>
+                    </div>
+                </div>
+                <div class="flex items-center p-4 bg-blue-800/30 rounded-lg border border-blue-600">
+                    <div class="w-8 h-8 rounded-full bg-blue-600 text-white flex items-center justify-center mr-3 font-bold">2</div>
+                    <div>
+                        <h3 class="text-white font-medium">Add Content</h3>
+                        <p class="text-blue-100 text-sm">Sections & multiple videos</p>
+                    </div>
+                </div>
+                <div class="flex items-center p-4 bg-purple-800/30 rounded-lg border border-purple-600">
+                    <div class="w-8 h-8 rounded-full bg-purple-600 text-white flex items-center justify-center mr-3 font-bold">3</div>
+                    <div>
+                        <h3 class="text-white font-medium">Publish</h3>
+                        <p class="text-purple-100 text-sm">Review & make live</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <div class="section-card">
         <div class="section-header">
-            <i class="fas fa-edit mr-2"></i> Course Details
+            <i class="fas fa-edit mr-2"></i> Course Basic Information
         </div>
         <div class="section-content bg-gray-900">
             <form action="{{ route('teacher.courses.store') }}" method="POST" enctype="multipart/form-data" id="course-form">
             @csrf
             <input type="hidden" name="creator_id" value="{{ Auth::id() }}">
             <input type="hidden" name="score" value="100">
+            <input type="hidden" name="content_type" value="video">
+            <input type="hidden" name="is_published" value="0">
 
             @if ($errors->any())
             <div class="bg-red-900/50 border border-red-700 text-red-300 p-4 rounded-lg mb-6">
@@ -177,295 +212,46 @@
                 </div>
             </div>
 
-            <!-- Course Content -->
+            <!-- Next Steps Info -->
             <div class="mb-8">
-                <div class="form-section-title mb-6">
-                    <i class="fas fa-book-open mr-2 text-blue-400"></i>Course Content
-                </div>
-
-                <div class="bg-gray-800 p-6 rounded-lg border-2 border-gray-700 mb-6">
-                    <h3 class="text-xl font-semibold text-white mb-6 flex items-center">
-                        <i class="fas fa-layer-group text-blue-400 mr-3"></i>
-                        <span>Select Content Type</span>
-                    </h3>
-                    <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
-                        <div class="content-type-option">
-                            <input type="radio" name="content_type" id="content_type_text" value="text" class="hidden" checked>
-                            <label for="content_type_text" class="content-type-label group">
-                                <div class="w-16 h-16 rounded-full bg-blue-900/30 flex items-center justify-center mb-4 group-hover:bg-blue-800/50 transition-all transform group-hover:scale-110 mx-auto">
-                                    <i class="fas fa-file-alt text-2xl text-blue-400"></i>
-                                </div>
-                                <span class="block text-center text-lg font-medium text-gray-300 group-hover:text-white transition-colors">Text</span>
-                                <span class="block text-center text-xs text-gray-500 mt-1">Rich text content</span>
-                            </label>
+                <div class="bg-gradient-to-r from-blue-900/50 to-purple-900/50 p-6 rounded-lg border border-blue-700">
+                    <div class="flex items-start">
+                        <div class="w-12 h-12 rounded-full bg-blue-600 flex items-center justify-center mr-4 flex-shrink-0">
+                            <i class="fas fa-info-circle text-white text-xl"></i>
                         </div>
-                        <div class="content-type-option">
-                            <input type="radio" name="content_type" id="content_type_pdf" value="pdf" class="hidden">
-                            <label for="content_type_pdf" class="content-type-label group">
-                                <div class="w-16 h-16 rounded-full bg-red-900/30 flex items-center justify-center mb-4 group-hover:bg-red-800/50 transition-all transform group-hover:scale-110 mx-auto">
-                                    <i class="fas fa-file-pdf text-2xl text-red-400"></i>
-                                </div>
-                                <span class="block text-center text-lg font-medium text-gray-300 group-hover:text-white transition-colors">PDF</span>
-                                <span class="block text-center text-xs text-gray-500 mt-1">Upload document</span>
-                            </label>
-                        </div>
-                        <div class="content-type-option">
-                            <input type="radio" name="content_type" id="content_type_video" value="video" class="hidden">
-                            <label for="content_type_video" class="content-type-label group">
-                                <div class="w-16 h-16 rounded-full bg-green-900/30 flex items-center justify-center mb-4 group-hover:bg-green-800/50 transition-all transform group-hover:scale-110 mx-auto">
-                                    <i class="fas fa-file-video text-2xl text-green-400"></i>
-                                </div>
-                                <span class="block text-center text-lg font-medium text-gray-300 group-hover:text-white transition-colors">Video</span>
-                                <span class="block text-center text-xs text-gray-500 mt-1">Upload video file</span>
-                            </label>
-                        </div>
-                        <div class="content-type-option">
-                            <input type="radio" name="content_type" id="content_type_youtube" value="youtube" class="hidden">
-                            <label for="content_type_youtube" class="content-type-label group">
-                                <div class="w-16 h-16 rounded-full bg-red-900/30 flex items-center justify-center mb-4 group-hover:bg-red-800/50 transition-all transform group-hover:scale-110 mx-auto">
-                                    <i class="fab fa-youtube text-2xl text-red-500"></i>
-                                </div>
-                                <span class="block text-center text-lg font-medium text-gray-300 group-hover:text-white transition-colors">YouTube</span>
-                                <span class="block text-center text-xs text-gray-500 mt-1">Embed video link</span>
-                            </label>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Text Content -->
-                <div id="text_content_section" class="content-section mb-6">
-                    <div class="bg-gray-800 p-6 rounded-lg border-2 border-gray-700 shadow-lg">
-                        <h3 class="text-xl font-semibold text-white mb-4 flex items-center">
-                            <div class="w-10 h-10 rounded-full bg-blue-900/30 flex items-center justify-center mr-3">
-                                <i class="fas fa-file-alt text-blue-400"></i>
-                            </div>
-                            <span>Text Content</span>
-                        </h3>
-                        <div class="mb-6">
-                            <textarea name="content" id="content" rows="12"
-                                class="w-full bg-gray-900 text-white border-2 border-gray-700 rounded-lg p-4 focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500 transition-colors"
-                                placeholder="Enter your course content here. You can use Markdown formatting."></textarea>
-                        </div>
-                        <div class="bg-gray-900/50 p-4 rounded-lg border border-gray-700">
-                            <p class="text-sm text-gray-300 flex items-start">
-                                <i class="fas fa-lightbulb text-yellow-400 mr-3 text-xl mt-1"></i>
-                                <span>
-                                    <strong class="block text-white text-base mb-2">Markdown Formatting Tips:</strong>
-                                    <span class="grid grid-cols-1 md:grid-cols-2 gap-2 text-gray-300">
-                                        <code class="bg-gray-800 px-2 py-1 rounded text-xs inline-block">## Heading</code>
-                                        <code class="bg-gray-800 px-2 py-1 rounded text-xs inline-block">* Bullet point</code>
-                                        <code class="bg-gray-800 px-2 py-1 rounded text-xs inline-block">**bold text**</code>
-                                        <code class="bg-gray-800 px-2 py-1 rounded text-xs inline-block">*italic text*</code>
-                                        <code class="bg-gray-800 px-2 py-1 rounded text-xs inline-block">[link text](url)</code>
-                                        <code class="bg-gray-800 px-2 py-1 rounded text-xs inline-block">![image alt](image url)</code>
-                                    </span>
-                                </span>
-                            </p>
-                        </div>
-                        @error('content')
-                            <p class="form-error mt-3">{{ $message }}</p>
-                        @enderror
-                    </div>
-                </div>
-
-                <!-- PDF Upload -->
-                <div id="pdf_content_section" class="content-section mb-6 hidden">
-                    <div class="bg-gray-800 p-6 rounded-lg border-2 border-gray-700 shadow-lg">
-                        <h3 class="text-xl font-semibold text-white mb-4 flex items-center">
-                            <div class="w-10 h-10 rounded-full bg-red-900/30 flex items-center justify-center mr-3">
-                                <i class="fas fa-file-pdf text-red-400"></i>
-                            </div>
-                            <span>PDF Document</span>
-                        </h3>
-                        <div class="file-upload-area bg-gray-900 p-8 flex flex-col items-center justify-center border-2 border-dashed border-gray-700 rounded-lg hover:border-red-500 transition-colors">
-                            <i class="fas fa-file-pdf text-5xl text-red-400 mb-6"></i>
-                            <p class="text-gray-400 mb-6 text-center">Upload your PDF document to share with students</p>
-                            <div class="relative mb-4">
-                                <input type="file" name="pdf_file" id="pdf_file" accept=".pdf" class="hidden" aria-label="PDF document" aria-describedby="pdf-requirements">
-                                <label for="pdf_file" class="flex items-center justify-center px-6 py-3 bg-gradient-to-r from-red-600 to-red-500 text-white rounded-lg cursor-pointer hover:from-red-700 hover:to-red-600 transition-all shadow-lg hover:shadow-red-500/20" role="button" tabindex="0">
-                                    <i class="fas fa-cloud-upload-alt text-xl mr-2" aria-hidden="true"></i>
-                                    <span class="font-medium">Choose PDF File</span>
-                                </label>
-                            </div>
-                            <div id="pdf-file-name" class="mt-3 text-gray-300 flex items-center">
-                                <i class="fas fa-file-pdf text-red-400 mr-2"></i>
-                                <span>No file chosen</span>
-                            </div>
-                        </div>
-                        <div id="pdf-requirements" class="bg-gray-900/50 p-4 rounded-lg border border-gray-700 mt-6">
-                            <p class="text-sm text-gray-300 flex items-start">
-                                <i class="fas fa-info-circle text-red-400 mr-3 text-xl mt-1" aria-hidden="true"></i>
-                                <span>
-                                    <strong class="block text-white text-base mb-2">PDF Requirements:</strong>
-                                    <ul class="list-disc pl-5 space-y-1 text-gray-300">
-                                        <li>Maximum file size: 10MB</li>
-                                        <li>Ensure your PDF is properly formatted for online viewing</li>
-                                        <li>Text in the PDF should be selectable for better accessibility</li>
-                                    </ul>
-                                </span>
-                            </p>
-                        </div>
-                        @error('pdf_file')
-                            <p class="form-error mt-3">{{ $message }}</p>
-                        @enderror
-                    </div>
-                </div>
-
-                <!-- Video Upload -->
-                <div id="video_content_section" class="content-section mb-6 hidden">
-                    <div class="bg-gray-800 p-6 rounded-lg border-2 border-gray-700 shadow-lg">
-                        <h3 class="text-xl font-semibold text-white mb-4 flex items-center">
-                            <div class="w-10 h-10 rounded-full bg-green-900/30 flex items-center justify-center mr-3">
-                                <i class="fas fa-file-video text-green-400"></i>
-                            </div>
-                            <span>Video File</span>
-                        </h3>
-                        <div class="file-upload-area bg-gray-900 p-8 flex flex-col items-center justify-center border-2 border-dashed border-gray-700 rounded-lg hover:border-green-500 transition-colors">
-                            <i class="fas fa-film text-5xl text-green-400 mb-6"></i>
-                            <p class="text-gray-400 mb-6 text-center">Upload your video file to share with students</p>
-                            <div class="relative mb-4">
-                                <input type="file" name="video_file" id="video_file" accept="video/*" class="hidden" aria-label="Video file" aria-describedby="video-requirements">
-                                <label for="video_file" class="flex items-center justify-center px-6 py-3 bg-gradient-to-r from-green-600 to-green-500 text-white rounded-lg cursor-pointer hover:from-green-700 hover:to-green-600 transition-all shadow-lg hover:shadow-green-500/20" role="button" tabindex="0">
-                                    <i class="fas fa-cloud-upload-alt text-xl mr-2" aria-hidden="true"></i>
-                                    <span class="font-medium">Choose Video File</span>
-                                </label>
-                            </div>
-                            <div id="video-file-name" class="mt-3 text-gray-300 flex items-center">
-                                <i class="fas fa-file-video text-green-400 mr-2"></i>
-                                <span>No file chosen</span>
-                            </div>
-                        </div>
-                        <div id="video-requirements" class="bg-gray-900/50 p-4 rounded-lg border border-gray-700 mt-6">
-                            <p class="text-sm text-gray-300 flex items-start">
-                                <i class="fas fa-info-circle text-green-400 mr-3 text-xl mt-1" aria-hidden="true"></i>
-                                <span>
-                                    <strong class="block text-white text-base mb-2">Video Requirements:</strong>
-                                    <ul class="list-disc pl-5 space-y-1 text-gray-300">
-                                        <li>Supported formats: MP4, WebM, Ogg</li>
-                                        <li>Maximum file size: 100MB</li>
-                                        <li>Recommended resolution: 720p or 1080p</li>
-                                        <li>Keep videos concise and focused on the topic</li>
-                                    </ul>
-                                </span>
-                            </p>
-                        </div>
-                        @error('video_file')
-                            <p class="form-error mt-3">{{ $message }}</p>
-                        @enderror
-                    </div>
-                </div>
-
-                <!-- YouTube Link -->
-                <div id="youtube_content_section" class="content-section mb-6 hidden">
-                    <div class="bg-gray-800 p-6 rounded-lg border-2 border-gray-700 shadow-lg">
-                        <h3 class="text-xl font-semibold text-white mb-4 flex items-center">
-                            <div class="w-10 h-10 rounded-full bg-red-900/30 flex items-center justify-center mr-3">
-                                <i class="fab fa-youtube text-red-500"></i>
-                            </div>
-                            <span>YouTube Video</span>
-                        </h3>
-                        <div class="bg-gray-900/50 p-6 rounded-lg border-2 border-gray-700">
-                            <div class="flex items-center justify-center mb-6">
-                                <div class="w-16 h-16 rounded-full bg-red-900/20 flex items-center justify-center">
-                                    <i class="fab fa-youtube text-5xl text-red-500"></i>
-                                </div>
-                            </div>
-                            <div class="relative mb-6">
-                                <label for="youtube_link" class="block text-white text-lg font-medium mb-2">YouTube Video URL</label>
-                                <div class="relative">
-                                    <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-red-500">
-                                        <i class="fab fa-youtube"></i>
-                                    </span>
-                                    <input type="url" name="youtube_link" id="youtube_link"
-                                        class="w-full bg-gray-800 text-white border-2 border-gray-700 rounded-lg py-3 pl-10 pr-4 focus:outline-none focus:border-red-500 focus:ring-2 focus:ring-red-500 transition-colors"
-                                        placeholder="https://www.youtube.com/watch?v=..."
-                                        aria-label="YouTube video URL"
-                                        aria-describedby="youtube-tips">
-                                </div>
-                            </div>
-                            <div id="youtube-tips" class="bg-gray-900/80 p-4 rounded-lg border border-gray-700 mt-4">
-                                <p class="text-sm text-gray-300 flex items-start">
-                                    <i class="fas fa-info-circle text-red-400 mr-3 text-xl mt-1" aria-hidden="true"></i>
-                                    <span>
-                                        <strong class="block text-white text-base mb-2">YouTube Tips:</strong>
-                                        <ul class="list-disc pl-5 space-y-1 text-gray-300">
-                                            <li>Paste the full YouTube URL (e.g., https://www.youtube.com/watch?v=XXXXXXXXXXX)</li>
-                                            <li>Make sure the video is publicly accessible or unlisted</li>
-                                            <li>You can also use YouTube Shorts or specific timestamps</li>
-                                            <li>Verify that the content doesn't violate copyright restrictions</li>
-                                        </ul>
-                                    </span>
-                                </p>
-                            </div>
-                            <div class="mt-6 bg-black/50 p-4 rounded-lg border border-gray-700">
-                                <div id="youtube-preview-container">
-                                    <h4 class="text-white font-medium mb-3 flex items-center">
-                                        <i class="fas fa-play-circle text-red-500 mr-2"></i>
-                                        Video Preview
-                                    </h4>
-                                    <div id="youtube-preview" class="aspect-video bg-black rounded-lg flex items-center justify-center">
-                                        <p class="text-gray-500">Enter a valid YouTube URL to see preview</p>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        @error('youtube_link')
-                            <p class="form-error mt-3">{{ $message }}</p>
-                        @enderror
-                    </div>
-                </div>
-            </div>
-
-            <!-- Publishing Options -->
-            <div class="mb-8">
-                <div class="form-section-title mb-6">
-                    <i class="fas fa-cog mr-2 text-blue-400"></i>Publishing Options
-                </div>
-
-                <div class="bg-gray-800 rounded-lg p-6 border-2 border-gray-700 shadow-lg">
-                    <div class="flex flex-col md:flex-row items-start">
-                        <div class="mr-6 mb-4 md:mb-0">
-                            <div class="w-16 h-16 rounded-full bg-blue-900/30 flex items-center justify-center">
-                                <i class="fas fa-globe text-2xl text-blue-400"></i>
-                            </div>
-                        </div>
-                        <div class="flex-1">
-                            <h3 class="text-xl font-semibold text-white mb-3">Course Visibility</h3>
-                            <p class="text-gray-300 mb-6 leading-relaxed">
-                                Choose whether to publish your course immediately or save it as a draft for later publication.
-                            </p>
-                            <div class="flex items-center p-5 bg-gray-900/70 rounded-lg border-2 border-gray-700 hover:border-blue-600 transition-colors">
-                                <div class="toggle-switch">
-                                    <input type="checkbox" id="is_published_toggle" class="toggle-input" onchange="updatePublishValue(this)">
-                                    <input type="hidden" name="is_published" id="is_published" value="0">
-                                    <label for="is_published_toggle" class="toggle-label"></label>
-                                </div>
-                                <label for="is_published_toggle" class="ml-3 block text-white font-medium text-lg cursor-pointer">Publish course immediately</label>
-                            </div>
-                            <div class="mt-4 bg-gray-900/50 p-4 rounded-lg border border-gray-700">
-                                <p class="text-sm text-gray-300 flex items-start">
-                                    <i class="fas fa-info-circle text-blue-400 mr-3 text-xl mt-1"></i>
-                                    <span>
-                                        <strong class="block text-white text-base mb-2">Publishing Information:</strong>
-                                        <ul class="list-disc pl-5 space-y-1 text-gray-300">
-                                            <li>If enabled, the course will be visible to students immediately after creation</li>
-                                            <li>Draft courses can be published later from your course management dashboard</li>
-                                            <li>You can always unpublish a course if you need to make significant changes</li>
-                                        </ul>
-                                    </span>
-                                </p>
-                            </div>
+                        <div>
+                            <h3 class="text-xl font-semibold text-white mb-2">What happens next?</h3>
+                            <p class="text-blue-100 mb-4">After creating your course, you'll be able to:</p>
+                            <ul class="space-y-2 text-blue-100">
+                                <li class="flex items-center">
+                                    <i class="fas fa-plus-circle text-green-400 mr-2"></i>
+                                    Add multiple sections to organize your content
+                                </li>
+                                <li class="flex items-center">
+                                    <i class="fas fa-video text-green-400 mr-2"></i>
+                                    Upload multiple videos per section (like Udemy)
+                                </li>
+                                <li class="flex items-center">
+                                    <i class="fas fa-link text-green-400 mr-2"></i>
+                                    Add YouTube/Vimeo videos or upload local files
+                                </li>
+                                <li class="flex items-center">
+                                    <i class="fas fa-edit text-green-400 mr-2"></i>
+                                    Organize and reorder your content easily
+                                </li>
+                            </ul>
                         </div>
                     </div>
                 </div>
             </div>
 
+            <!-- Action Buttons -->
             <div class="bg-gray-800 rounded-lg p-8 border-2 border-gray-700 mb-6 shadow-lg">
                 <div class="flex flex-col md:flex-row justify-between items-center">
                     <div class="mb-6 md:mb-0">
                         <h3 class="text-2xl font-semibold text-white mb-2">Ready to create your course?</h3>
                         <p class="text-gray-300 leading-relaxed">
-                            You can edit all information after creating the course. Your students will appreciate your effort!
+                            Start with basic information, then add your videos and content in the next step.
                         </p>
                     </div>
                     <div class="flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-4">
@@ -476,8 +262,8 @@
                         </a>
                         <button type="submit" id="submit-button"
                             class="px-8 py-4 bg-gradient-to-r from-blue-600 to-blue-500 text-white rounded-lg hover:from-blue-700 hover:to-blue-600 transition-all flex items-center justify-center font-medium shadow-lg hover:shadow-blue-500/30 transform hover:-translate-y-1">
-                            <i class="fas fa-save mr-2"></i>
-                            <span>Create Course</span>
+                            <i class="fas fa-plus mr-2"></i>
+                            <span>Create Course & Add Videos</span>
                             <span class="loading-spinner ml-2 hidden">
                                 <i class="fas fa-circle-notch fa-spin"></i>
                             </span>
