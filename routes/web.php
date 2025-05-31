@@ -89,6 +89,7 @@ Route::get('/about', function() {
     return view('public.about-updated');
 });
 Route::get('/courses', [UserController::class, 'showCourses']);
+Route::get('/courses/{id}', [\App\Http\Controllers\CourseController::class, 'showCourse'])->name('course.show');
 
 // Image routes
 Route::get('/images/default-course.svg', [\App\Http\Controllers\ImageController::class, 'defaultCourse'])->name('images.default-course');

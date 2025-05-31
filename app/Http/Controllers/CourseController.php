@@ -256,4 +256,49 @@ class CourseController extends Controller
         return redirect()->route($redirectRoute)->with('success', 'Course deleted successfully.');
     }
 
+    /**
+     * Show course preview for all users.
+     */
+    public function showCourse($id)
+    {
+        $course = Course::with([
+            'sections' => function($query) {
+                $query->where('is_published', true)->orderBy('order_index');
+            },
+            'sections.lessons' => function($query) {
+                $query->where('is_published', true)->orderBy('order_index');
+            },
+            'category',
+            'creator'
+        ])->findOrFail($id);
+
+        // Check if user is enrolled (if authenticated)
+        $isEnrolled = false;
+        $userProgress = 0;
+
+        if (auth()->check()) {
+            $user = auth()->user();
+            $isEnrolled = $user->enrolledCourses()->where('course_id', $id)->exists();
+
+            if ($isEnrolled) {
+                $enrollment = $user->enrolledCourses()->where('course_id', $id)->first();
+                $userProgress = $enrollment->pivot->progress ?? 0;
+            }
+        }
+
+        // Calculate course statistics
+        $totalLessons = $course->publishedLessons()->count();
+        $totalDuration = $course->total_duration;
+        $completionRate = $totalLessons > 0 ? ($userProgress / $totalLessons) * 100 : 0;
+
+        return view('course.preview', compact(
+            'course',
+            'isEnrolled',
+            'userProgress',
+            'totalLessons',
+            'totalDuration',
+            'completionRate'
+        ));
+    }
+
 }
