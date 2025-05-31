@@ -1,8 +1,6 @@
-@extends('layouts.teacher')
+<?php $__env->startSection('title', 'Teacher Dashboard'); ?>
 
-@section('title', 'Teacher Dashboard')
-
-@push('styles')
+<?php $__env->startPush('styles'); ?>
 <style>
     .gradient-pink-purple {
         background: linear-gradient(135deg, #ec4899 0%, #8b5cf6 50%, #06b6d4 100%);
@@ -44,9 +42,9 @@
         transform: translateY(-2px);
     }
 </style>
-@endpush
+<?php $__env->stopPush(); ?>
 
-@section('content')
+<?php $__env->startSection('content'); ?>
 <!-- Welcome Banner -->
 <div class="gradient-pink-purple rounded-2xl shadow-2xl p-8 mb-8 relative overflow-hidden">
     <div class="absolute inset-0 opacity-10">
@@ -60,7 +58,7 @@
             <p class="text-pink-100 text-lg">Manage your courses, create interactive quizzes, and track student progress.</p>
         </div>
         <div class="mt-6 md:mt-0">
-            <a href="{{ route('teacher.courses.create') }}"
+            <a href="<?php echo e(route('teacher.courses.create')); ?>"
                class="bg-white/20 hover:bg-white/30 backdrop-blur-sm text-white px-8 py-4 rounded-xl transition-all flex items-center font-medium shadow-lg hover:shadow-xl transform hover:scale-105">
                 <i class="fas fa-plus mr-3 text-lg"></i> Create Course
             </a>
@@ -77,7 +75,7 @@
             </div>
             <div>
                 <p class="text-gray-400 text-sm">Total Courses</p>
-                <p class="text-2xl font-bold text-white">{{ $coursesCount ?? 0 }}</p>
+                <p class="text-2xl font-bold text-white"><?php echo e($coursesCount ?? 0); ?></p>
             </div>
         </div>
     </div>
@@ -89,7 +87,7 @@
             </div>
             <div>
                 <p class="text-gray-400 text-sm">Total Quizzes</p>
-                <p class="text-2xl font-bold text-white">{{ $quizzesCount ?? 0 }}</p>
+                <p class="text-2xl font-bold text-white"><?php echo e($quizzesCount ?? 0); ?></p>
             </div>
         </div>
     </div>
@@ -101,7 +99,7 @@
             </div>
             <div>
                 <p class="text-gray-400 text-sm">Total Students</p>
-                <p class="text-2xl font-bold text-white">{{ $studentCount ?? 0 }}</p>
+                <p class="text-2xl font-bold text-white"><?php echo e($studentCount ?? 0); ?></p>
             </div>
         </div>
     </div>
@@ -113,7 +111,7 @@
             </div>
             <div>
                 <p class="text-gray-400 text-sm">Avg. Score</p>
-                <p class="text-2xl font-bold text-white">{{ count($recentQuizResults ?? []) > 0 ? round($recentQuizResults->avg('score')) : 0 }}%</p>
+                <p class="text-2xl font-bold text-white"><?php echo e(count($recentQuizResults ?? []) > 0 ? round($recentQuizResults->avg('score')) : 0); ?>%</p>
             </div>
         </div>
     </div>
@@ -133,7 +131,7 @@
 
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <!-- New Course Builder -->
-                <a href="{{ route('teacher.course-builder.index') }}" class="relative bg-gradient-to-br from-purple-600 to-pink-600 rounded-xl p-6 text-white transition-all card-hover border-2 border-purple-500/50 hover:border-purple-400">
+                <a href="<?php echo e(route('teacher.course-builder.index')); ?>" class="relative bg-gradient-to-br from-purple-600 to-pink-600 rounded-xl p-6 text-white transition-all card-hover border-2 border-purple-500/50 hover:border-purple-400">
                     <div class="flex items-start justify-between mb-4">
                         <div class="p-3 bg-white/20 rounded-xl">
                             <i class="fas fa-layer-group text-xl"></i>
@@ -144,7 +142,7 @@
                     <p class="text-purple-100 text-sm">Create courses like Udemy with sections & lessons</p>
                 </a>
 
-                <a href="{{ route('teacher.course-builder.create') }}" class="bg-gray-800/50 rounded-xl p-6 border border-gray-700/50 hover:border-pink-400/50 transition-all card-hover">
+                <a href="<?php echo e(route('teacher.course-builder.create')); ?>" class="bg-gray-800/50 rounded-xl p-6 border border-gray-700/50 hover:border-pink-400/50 transition-all card-hover">
                     <div class="flex items-start mb-4">
                         <div class="p-3 gradient-pink-blue rounded-xl mr-4">
                             <i class="fas fa-plus text-white text-xl"></i>
@@ -154,7 +152,7 @@
                     <p class="text-gray-400 text-sm">Start building a professional course</p>
                 </a>
 
-                <a href="{{ route('teacher.courses') }}" class="bg-gray-800/50 rounded-xl p-6 border border-gray-700/50 hover:border-blue-400/50 transition-all card-hover">
+                <a href="<?php echo e(route('teacher.courses')); ?>" class="bg-gray-800/50 rounded-xl p-6 border border-gray-700/50 hover:border-blue-400/50 transition-all card-hover">
                     <div class="flex items-start mb-4">
                         <div class="p-3 bg-gradient-to-r from-blue-500 to-cyan-600 rounded-xl mr-4">
                             <i class="fas fa-list text-white text-xl"></i>
@@ -164,7 +162,7 @@
                     <p class="text-gray-400 text-sm">View and edit your existing courses</p>
                 </a>
 
-                <a href="{{ route('teacher.courses.create') }}" class="bg-gray-800/50 rounded-xl p-6 border border-gray-700/50 hover:border-emerald-400/50 transition-all card-hover">
+                <a href="<?php echo e(route('teacher.courses.create')); ?>" class="bg-gray-800/50 rounded-xl p-6 border border-gray-700/50 hover:border-emerald-400/50 transition-all card-hover">
                     <div class="flex items-start mb-4">
                         <div class="p-3 bg-gradient-to-r from-emerald-500 to-teal-600 rounded-xl mr-4">
                             <i class="fas fa-file-plus text-white text-xl"></i>
@@ -185,7 +183,7 @@
             </div>
 
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <a href="{{ route('teacher.quizzes') }}" class="bg-gray-800/50 rounded-xl p-6 border border-gray-700/50 hover:border-purple-400/50 transition-all card-hover">
+                <a href="<?php echo e(route('teacher.quizzes')); ?>" class="bg-gray-800/50 rounded-xl p-6 border border-gray-700/50 hover:border-purple-400/50 transition-all card-hover">
                     <div class="flex items-start mb-4">
                         <div class="p-3 bg-gradient-to-r from-purple-500 to-pink-600 rounded-xl mr-4">
                             <i class="fas fa-list-alt text-white text-xl"></i>
@@ -195,7 +193,7 @@
                     <p class="text-gray-400 text-sm">View and edit your existing quizzes</p>
                 </a>
 
-                <a href="{{ route('teacher.quizzes.create') }}" class="bg-gray-800/50 rounded-xl p-6 border border-gray-700/50 hover:border-pink-400/50 transition-all card-hover">
+                <a href="<?php echo e(route('teacher.quizzes.create')); ?>" class="bg-gray-800/50 rounded-xl p-6 border border-gray-700/50 hover:border-pink-400/50 transition-all card-hover">
                     <div class="flex items-start mb-4">
                         <div class="p-3 gradient-pink-blue rounded-xl mr-4">
                             <i class="fas fa-plus text-white text-xl"></i>
@@ -205,7 +203,7 @@
                     <p class="text-gray-400 text-sm">Create a quiz manually with custom questions</p>
                 </a>
 
-                <a href="{{ route('teacher.courses') }}" class="bg-gray-800/50 rounded-xl p-6 border border-gray-700/50 hover:border-yellow-400/50 transition-all card-hover">
+                <a href="<?php echo e(route('teacher.courses')); ?>" class="bg-gray-800/50 rounded-xl p-6 border border-gray-700/50 hover:border-yellow-400/50 transition-all card-hover">
                     <div class="flex items-start mb-4">
                         <div class="p-3 bg-gradient-to-r from-yellow-500 to-orange-600 rounded-xl mr-4">
                             <i class="fas fa-robot text-white text-xl"></i>
@@ -215,7 +213,7 @@
                     <p class="text-gray-400 text-sm">Create quiz automatically using AI</p>
                 </a>
 
-                <a href="{{ route('face.exam.monitoring') }}" class="bg-gray-800/50 rounded-xl p-6 border border-gray-700/50 hover:border-red-400/50 transition-all card-hover">
+                <a href="<?php echo e(route('face.exam.monitoring')); ?>" class="bg-gray-800/50 rounded-xl p-6 border border-gray-700/50 hover:border-red-400/50 transition-all card-hover">
                     <div class="flex items-start mb-4">
                         <div class="p-3 bg-gradient-to-r from-red-500 to-pink-600 rounded-xl mr-4">
                             <i class="fas fa-video text-white text-xl"></i>
@@ -236,7 +234,7 @@
             </div>
 
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <a href="{{ route('teacher.analytics') }}" class="bg-gray-800/50 rounded-xl p-6 border border-gray-700/50 hover:border-blue-400/50 transition-all card-hover">
+                <a href="<?php echo e(route('teacher.analytics')); ?>" class="bg-gray-800/50 rounded-xl p-6 border border-gray-700/50 hover:border-blue-400/50 transition-all card-hover">
                     <div class="flex items-start mb-4">
                         <div class="p-3 bg-gradient-to-r from-blue-500 to-cyan-600 rounded-xl mr-4">
                             <i class="fas fa-chart-bar text-white text-xl"></i>
@@ -246,7 +244,7 @@
                     <p class="text-gray-400 text-sm">View comprehensive analytics and insights</p>
                 </a>
 
-                <a href="{{ route('teacher.analytics') }}" class="bg-gray-800/50 rounded-xl p-6 border border-gray-700/50 hover:border-emerald-400/50 transition-all card-hover">
+                <a href="<?php echo e(route('teacher.analytics')); ?>" class="bg-gray-800/50 rounded-xl p-6 border border-gray-700/50 hover:border-emerald-400/50 transition-all card-hover">
                     <div class="flex items-start mb-4">
                         <div class="p-3 bg-gradient-to-r from-emerald-500 to-teal-600 rounded-xl mr-4">
                             <i class="fas fa-user-graduate text-white text-xl"></i>
@@ -269,32 +267,32 @@
                 </h2>
             </div>
 
-            @if(isset($recentQuizResults) && count($recentQuizResults) > 0)
+            <?php if(isset($recentQuizResults) && count($recentQuizResults) > 0): ?>
                 <div class="space-y-4">
-                    @foreach($recentQuizResults as $result)
+                    <?php $__currentLoopData = $recentQuizResults; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $result): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                         <div class="flex items-center p-4 bg-gray-800/50 rounded-xl border border-gray-700/50 hover:border-pink-400/50 transition-all">
                             <div class="flex-shrink-0 mr-4">
                                 <div class="w-12 h-12 rounded-full gradient-pink-blue flex items-center justify-center">
-                                    <span class="text-white font-bold text-lg">{{ substr($result->student_name, 0, 1) }}</span>
+                                    <span class="text-white font-bold text-lg"><?php echo e(substr($result->student_name, 0, 1)); ?></span>
                                 </div>
                             </div>
                             <div class="flex-grow">
                                 <div class="flex justify-between items-center mb-2">
-                                    <h3 class="font-semibold text-white">{{ $result->student_name }}</h3>
+                                    <h3 class="font-semibold text-white"><?php echo e($result->student_name); ?></h3>
                                     <span class="px-3 py-1 text-xs font-semibold rounded-full
-                                        {{ $result->score >= 70 ? 'bg-emerald-500/20 text-emerald-300' : ($result->score >= 50 ? 'bg-yellow-500/20 text-yellow-300' : 'bg-red-500/20 text-red-300') }}">
-                                        {{ $result->score }}%
+                                        <?php echo e($result->score >= 70 ? 'bg-emerald-500/20 text-emerald-300' : ($result->score >= 50 ? 'bg-yellow-500/20 text-yellow-300' : 'bg-red-500/20 text-red-300')); ?>">
+                                        <?php echo e($result->score); ?>%
                                     </span>
                                 </div>
                                 <div class="flex justify-between text-sm">
-                                    <p class="text-gray-400">{{ $result->quiz_name }}</p>
-                                    <p class="text-gray-500">{{ $result->created_at->diffForHumans() }}</p>
+                                    <p class="text-gray-400"><?php echo e($result->quiz_name); ?></p>
+                                    <p class="text-gray-500"><?php echo e($result->created_at->diffForHumans()); ?></p>
                                 </div>
                             </div>
                         </div>
-                    @endforeach
+                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                 </div>
-            @else
+            <?php else: ?>
                 <div class="text-center py-12">
                     <div class="w-16 h-16 mx-auto gradient-pink-purple rounded-full flex items-center justify-center mb-4">
                         <i class="fas fa-clipboard text-white text-2xl"></i>
@@ -302,7 +300,7 @@
                     <h3 class="text-lg font-semibold text-white mb-2">No Recent Results</h3>
                     <p class="text-gray-400 text-sm">Results will appear here once students complete quizzes</p>
                 </div>
-            @endif
+            <?php endif; ?>
         </div>
 
         <!-- Teaching Tips -->
@@ -338,4 +336,6 @@
         </div>
     </div>
 </div>
-@endsection
+<?php $__env->stopSection(); ?>
+
+<?php echo $__env->make('layouts.teacher', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?><?php /**PATH /var/www/resources/views/teacher/dashboard.blade.php ENDPATH**/ ?>
