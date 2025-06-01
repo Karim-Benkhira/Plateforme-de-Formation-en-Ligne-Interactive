@@ -62,9 +62,18 @@
                                     </div>
                                 </div>
                                 <div class="flex items-center space-x-2">
+                                    <span class="px-2 py-1 rounded text-xs <?php echo e($section->is_published ? 'bg-green-600 text-white' : 'bg-yellow-600 text-black'); ?>">
+                                        <?php echo e($section->is_published ? 'Published' : 'Draft'); ?>
+
+                                    </span>
                                     <button onclick="toggleSection(<?php echo e($section->id); ?>)"
                                         class="text-gray-400 hover:text-white transition-colors">
                                         <i class="fas fa-chevron-down"></i>
+                                    </button>
+                                    <button onclick="toggleSectionPublish(<?php echo e($section->id); ?>)"
+                                        class="text-yellow-400 hover:text-yellow-300 transition-colors"
+                                        title="<?php echo e($section->is_published ? 'Unpublish Section' : 'Publish Section'); ?>">
+                                        <i class="fas <?php echo e($section->is_published ? 'fa-eye-slash' : 'fa-eye'); ?>"></i>
                                     </button>
                                     <button onclick="editSection(<?php echo e($section->id); ?>)"
                                         class="text-blue-400 hover:text-blue-300 transition-colors">
@@ -203,6 +212,10 @@
                 <button onclick="previewCourse()" class="w-full bg-green-600 hover:bg-green-700 text-white py-2 px-4 rounded-lg transition-all">
                     <i class="fas fa-eye mr-2"></i>
                     Preview Course
+                </button>
+                <button onclick="publishAllContent()" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white py-2 px-4 rounded-lg transition-all">
+                    <i class="fas fa-rocket mr-2"></i>
+                    Publish All Content
                 </button>
                 <button onclick="toggleCoursePublish()" class="w-full <?php echo e($course->is_published ? 'bg-yellow-600 hover:bg-yellow-700' : 'bg-purple-600 hover:bg-purple-700'); ?> text-white py-2 px-4 rounded-lg transition-all">
                     <i class="fas <?php echo e($course->is_published ? 'fa-eye-slash' : 'fa-rocket'); ?> mr-2"></i>
@@ -539,6 +552,140 @@ function toggleCoursePublish() {
         // Restore button state
         button.innerHTML = originalText;
         button.disabled = false;
+    });
+}
+
+// Publish all content function
+function publishAllContent() {
+    console.log('Publish all content clicked');
+
+    if (!confirm('Are you sure you want to publish ALL sections and lessons in this course? This will make all content visible to students.')) {
+        return;
+    }
+
+    const csrfToken = document.querySelector('meta[name="csrf-token"]');
+    if (!csrfToken) {
+        alert('CSRF token not found. Please refresh the page.');
+        return;
+    }
+
+    const url = `/teacher/course-builder/${currentCourseId}/publish-all`;
+    console.log('Request URL:', url);
+
+    // Show loading state
+    const button = event.target;
+    const originalText = button.innerHTML;
+    button.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>Publishing...';
+    button.disabled = true;
+
+    fetch(url, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRF-TOKEN': csrfToken.getAttribute('content'),
+            'Accept': 'application/json',
+        }
+    })
+    .then(response => {
+        console.log('Response status:', response.status);
+
+        if (!response.ok) {
+            return response.text().then(text => {
+                throw new Error(`HTTP ${response.status}: ${text}`);
+            });
+        }
+
+        return response.json();
+    })
+    .then(data => {
+        console.log('Response data:', data);
+
+        if (data.success) {
+            // Show success message
+            const successMsg = document.createElement('div');
+            successMsg.className = 'fixed top-4 right-4 bg-emerald-600 text-white px-6 py-3 rounded-lg shadow-lg z-50';
+            successMsg.innerHTML = `<i class="fas fa-check mr-2"></i>${data.message}`;
+            document.body.appendChild(successMsg);
+
+            // Auto remove message after 3 seconds
+            setTimeout(() => {
+                if (successMsg.parentNode) {
+                    successMsg.parentNode.removeChild(successMsg);
+                }
+            }, 3000);
+
+            // Reload page after 1.5 seconds
+            setTimeout(() => {
+                location.reload();
+            }, 1500);
+        } else {
+            throw new Error(data.message || 'Unknown error occurred');
+        }
+    })
+    .catch(error => {
+        console.error('Fetch error:', error);
+
+        // Show error message
+        const errorMsg = document.createElement('div');
+        errorMsg.className = 'fixed top-4 right-4 bg-red-600 text-white px-6 py-3 rounded-lg shadow-lg z-50';
+        errorMsg.innerHTML = `<i class="fas fa-exclamation-triangle mr-2"></i>Error: ${error.message}`;
+        document.body.appendChild(errorMsg);
+
+        // Auto remove error message after 5 seconds
+        setTimeout(() => {
+            if (errorMsg.parentNode) {
+                errorMsg.parentNode.removeChild(errorMsg);
+            }
+        }, 5000);
+    })
+    .finally(() => {
+        // Restore button state
+        button.innerHTML = originalText;
+        button.disabled = false;
+    });
+}
+
+// Toggle section publish status
+function toggleSectionPublish(sectionId) {
+    console.log('Toggle section publish clicked for section:', sectionId);
+
+    if (!confirm('Are you sure you want to change the publish status of this section?')) {
+        return;
+    }
+
+    fetch(`/teacher/course-builder/${currentCourseId}/sections/${sectionId}/toggle-publish`, {
+        method: 'POST',
+        headers: {
+            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            // Show success message
+            const successMsg = document.createElement('div');
+            successMsg.className = 'fixed top-4 right-4 bg-emerald-600 text-white px-6 py-3 rounded-lg shadow-lg z-50';
+            successMsg.innerHTML = `<i class="fas fa-check mr-2"></i>${data.message}`;
+            document.body.appendChild(successMsg);
+
+            // Auto remove message after 3 seconds
+            setTimeout(() => {
+                if (successMsg.parentNode) {
+                    successMsg.parentNode.removeChild(successMsg);
+                }
+            }, 3000);
+
+            // Reload page after 1 second
+            setTimeout(() => {
+                location.reload();
+            }, 1000);
+        } else {
+            alert('Error updating section status');
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('Error updating section status');
     });
 }
 

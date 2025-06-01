@@ -272,4 +272,50 @@ class CourseBuilderController extends Controller
 
         return response()->json($stats);
     }
+
+    /**
+     * Publish all sections and lessons in a course.
+     */
+    public function publishAll($courseId)
+    {
+        try {
+            $course = Course::where('id', $courseId)
+                ->where('creator_id', Auth::id())
+                ->with(['sections.lessons'])
+                ->firstOrFail();
+
+            $publishedSections = 0;
+            $publishedLessons = 0;
+
+            // Publish all sections and their lessons
+            foreach ($course->sections as $section) {
+                if (!$section->is_published) {
+                    $section->is_published = true;
+                    $section->save();
+                    $publishedSections++;
+                }
+
+                foreach ($section->lessons as $lesson) {
+                    if (!$lesson->is_published) {
+                        $lesson->is_published = true;
+                        $lesson->save();
+                        $publishedLessons++;
+                    }
+                }
+            }
+
+            return response()->json([
+                'success' => true,
+                'message' => "Published {$publishedSections} sections and {$publishedLessons} lessons successfully!",
+                'published_sections' => $publishedSections,
+                'published_lessons' => $publishedLessons
+            ]);
+
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to publish content: ' . $e->getMessage()
+            ], 500);
+        }
+    }
 }

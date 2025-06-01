@@ -85,7 +85,6 @@
                         <a href="<?php echo e(route('teacher.quizzes')); ?>" class="dashboard-nav-link <?php echo e(request()->routeIs('teacher.quizzes*') ? 'active' : ''); ?>">Quizzes</a>
                         <a href="<?php echo e(route('teacher.analytics')); ?>" class="dashboard-nav-link <?php echo e(request()->routeIs('teacher.analytics*') ? 'active' : ''); ?>">Analytics</a>
                         <a href="<?php echo e(route('teacher.profile')); ?>" class="dashboard-nav-link <?php echo e(request()->routeIs('teacher.profile') ? 'active' : ''); ?>">Profile</a>
-                        <a href="<?php echo e(url('/about')); ?>" class="dashboard-nav-link">About</a>
                     </nav>
 
                     <!-- User Menu -->
@@ -158,7 +157,6 @@
                     <a href="<?php echo e(route('teacher.quizzes')); ?>" class="block px-3 py-2 rounded-md text-base font-medium text-gray-300 hover:text-white hover:bg-gray-700">Quizzes</a>
                     <a href="<?php echo e(route('teacher.analytics')); ?>" class="block px-3 py-2 rounded-md text-base font-medium text-gray-300 hover:text-white hover:bg-gray-700">Analytics</a>
                     <a href="<?php echo e(route('teacher.profile')); ?>" class="block px-3 py-2 rounded-md text-base font-medium text-gray-300 hover:text-white hover:bg-gray-700">Profile</a>
-                    <a href="<?php echo e(url('/about')); ?>" class="block px-3 py-2 rounded-md text-base font-medium text-gray-300 hover:text-white hover:bg-gray-700">About</a>
                 </div>
             </div>
         </header>

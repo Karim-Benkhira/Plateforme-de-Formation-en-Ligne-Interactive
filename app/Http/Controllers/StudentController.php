@@ -302,15 +302,118 @@ class StudentController extends UserController
     }
 
     public function showCourse($id) {
-        $course = Course::with(['contents', 'quizzes'])->findOrFail($id);
+        $course = Course::with([
+            'contents',
+            'quizzes',
+            'sections' => function($query) {
+                $query->where('is_published', true)->orderBy('order_index');
+            },
+            'sections.lessons' => function($query) {
+                $query->where('is_published', true)->orderBy('order_index');
+            },
+            'category',
+            'teacher'
+        ])->findOrFail($id);
+
         $isEnrolled = false;
+        $userProgress = [];
+        $courseProgress = 0;
+        $totalLessons = 0;
+        $completedLessons = 0;
+        $canTakeQuiz = false;
 
         if (auth()->check()) {
             $user = auth()->user();
             $isEnrolled = $user->enrolledCourses()->where('course_id', $id)->exists();
+
+            if ($isEnrolled) {
+                // Get user progress for all lessons (new system)
+                $lessonIds = [];
+                foreach ($course->sections as $section) {
+                    foreach ($section->lessons as $lesson) {
+                        $lessonIds[] = $lesson->id;
+                        $totalLessons++;
+                    }
+                }
+
+                // Also count old system contents as lessons
+                $contentIds = [];
+                foreach ($course->contents as $content) {
+                    $contentIds[] = 'content_' . $content->id; // Prefix to distinguish from lessons
+                    $totalLessons++;
+                }
+
+                // Get progress for new system lessons
+                if (!empty($lessonIds)) {
+                    $progressRecords = \App\Models\LessonProgress::where('user_id', $user->id)
+                        ->whereIn('lesson_id', $lessonIds)
+                        ->get()
+                        ->keyBy('lesson_id');
+
+                    foreach ($lessonIds as $lessonId) {
+                        $progress = $progressRecords->get($lessonId);
+                        $userProgress[$lessonId] = [
+                            'is_completed' => $progress ? $progress->is_completed : false,
+                            'progress_percentage' => $progress ? $progress->progress_percentage : 0,
+                            'last_position' => $progress ? $progress->last_position : 0,
+                        ];
+
+                        if ($progress && $progress->is_completed) {
+                            $completedLessons++;
+                        }
+                    }
+                }
+
+                // For old system contents, we'll simulate progress (since there's no lesson_progress table for contents)
+                // We'll use a simple session-based tracking for now
+                foreach ($course->contents as $content) {
+                    $contentKey = 'content_' . $content->id;
+                    $isContentCompleted = session()->get("content_completed_{$user->id}_{$content->id}", false);
+
+                    $userProgress[$contentKey] = [
+                        'is_completed' => $isContentCompleted,
+                        'progress_percentage' => $isContentCompleted ? 100 : 0,
+                        'last_position' => 0,
+                    ];
+
+                    if ($isContentCompleted) {
+                        $completedLessons++;
+                    }
+                }
+
+                // Calculate course progress
+                $courseProgress = $totalLessons > 0 ? round(($completedLessons / $totalLessons) * 100) : 0;
+
+                // Check if user can take quiz (must complete all lessons)
+                $canTakeQuiz = $courseProgress >= 100;
+
+                // Debug information
+                \Log::info('Course Progress Debug DETAILED', [
+                    'course_id' => $id,
+                    'user_id' => $user->id,
+                    'total_lessons' => $totalLessons,
+                    'completed_lessons' => $completedLessons,
+                    'course_progress' => $courseProgress,
+                    'lesson_ids' => $lessonIds ?? [],
+                    'content_ids' => $contentIds ?? [],
+                    'user_progress_keys' => array_keys($userProgress),
+                    'user_progress_details' => $userProgress,
+                    'sections_count' => $course->sections->count(),
+                    'contents_count' => $course->contents->count(),
+                    'calculation' => "($completedLessons / $totalLessons) * 100 = $courseProgress"
+                ]);
+            }
         }
 
-        return view('student.courseDetails-new', compact('course', 'isEnrolled'));
+        return view('student.courseDetails-new', compact(
+            'course',
+            'isEnrolled',
+            'userProgress',
+            'courseProgress',
+            'totalLessons',
+            'completedLessons',
+            'canTakeQuiz'
+        ));
     }
 
     public function enrollCourse($id) {
@@ -384,5 +487,86 @@ class StudentController extends UserController
         $user->save();
 
         return back()->with('password_success', 'Password updated successfully!');
+    }
+
+    /**
+     * Mark lesson as completed
+     */
+    public function markLessonCompleted(Request $request, $courseId, $lessonId)
+    {
+        $user = auth()->user();
+        $course = \App\Models\Course::findOrFail($courseId);
+
+        // Check if user is enrolled
+        if (!$user->enrolledCourses()->where('course_id', $courseId)->exists()) {
+            return response()->json(['error' => 'Not enrolled in this course'], 403);
+        }
+
+        // Update or create lesson progress
+        $progress = \App\Models\LessonProgress::updateOrCreate([
+            'user_id' => $user->id,
+            'lesson_id' => $lessonId,
+        ], [
+            'is_completed' => true,
+            'progress_percentage' => 100,
+            'completed_at' => now(),
+        ]);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Lesson completed successfully!',
+            'progress' => $progress
+        ]);
+    }
+
+    /**
+     * Update lesson progress
+     */
+    public function updateLessonProgress(Request $request, $courseId, $lessonId)
+    {
+        $user = auth()->user();
+        $course = \App\Models\Course::findOrFail($courseId);
+
+        // Check if user is enrolled
+        if (!$user->enrolledCourses()->where('course_id', $courseId)->exists()) {
+            return response()->json(['error' => 'Not enrolled in this course'], 403);
+        }
+
+        $progress = \App\Models\LessonProgress::updateOrCreate([
+            'user_id' => $user->id,
+            'lesson_id' => $lessonId,
+        ], [
+            'progress_percentage' => $request->input('progress', 0),
+            'last_position' => $request->input('position', 0),
+            'is_completed' => $request->input('progress', 0) >= 100,
+            'completed_at' => $request->input('progress', 0) >= 100 ? now() : null,
+        ]);
+
+        return response()->json([
+            'success' => true,
+            'progress' => $progress
+        ]);
+    }
+
+    /**
+     * Mark content (old system) as completed
+     */
+    public function markContentCompleted(Request $request, $courseId, $contentId)
+    {
+        $user = auth()->user();
+        $course = \App\Models\Course::findOrFail($courseId);
+
+        // Check if user is enrolled
+        if (!$user->enrolledCourses()->where('course_id', $courseId)->exists()) {
+            return response()->json(['error' => 'Not enrolled in this course'], 403);
+        }
+
+        // Mark content as completed in session
+        session()->put("content_completed_{$user->id}_{$contentId}", true);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Content completed successfully!'
+        ]);
     }
 }

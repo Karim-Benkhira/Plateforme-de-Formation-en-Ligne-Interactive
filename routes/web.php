@@ -178,6 +178,24 @@ Route::middleware(['auth','role:user'])->group(function () {
     Route::get('/student/courses', [StudentController::class, 'showCourses'])->name('student.courses');
     Route::get('/student/courses/{id}', [StudentController::class, 'showCourse'])->name('student.showCourse');
     Route::post('/student/courses/{id}/enroll', [StudentController::class, 'enrollCourse'])->name('student.enrollCourse');
+
+    // Lesson Progress Routes
+    Route::post('/student/courses/{courseId}/lessons/{lessonId}/complete', [StudentController::class, 'markLessonCompleted'])->name('student.lesson.complete');
+    Route::post('/student/courses/{courseId}/lessons/{lessonId}/progress', [StudentController::class, 'updateLessonProgress'])->name('student.lesson.progress');
+
+    // Content Progress Routes (for old system)
+    Route::post('/student/courses/{courseId}/contents/{contentId}/complete', [StudentController::class, 'markContentCompleted'])->name('student.content.complete');
+
+    // Simple test route
+    Route::get('/test-complete-simple/{courseId}/{contentId}', function($courseId, $contentId) {
+        $user = auth()->user();
+        if (!$user) return 'Not logged in';
+
+        session()->put("content_completed_{$user->id}_{$contentId}", true);
+
+        return redirect()->route('student.showCourse', $courseId)->with('success', 'Content marked as completed!');
+    });
+
     Route::get('/student/myCourses', [StudentController::class, 'showMyCourses'])->name('student.myCourses');
     Route::get('/student/course-content', [StudentController::class, 'showCourseContent'])->name('student.courseContent');
 
@@ -278,6 +296,9 @@ Route::middleware(['auth','role:teacher'])->group(function () {
         Route::delete('/{courseId}/sections/{sectionId}/lessons/{lessonId}', [\App\Http\Controllers\Teacher\LessonController::class, 'destroy'])->name('lessons.destroy');
         Route::post('/{courseId}/sections/{sectionId}/lessons/order', [\App\Http\Controllers\Teacher\LessonController::class, 'updateOrder'])->name('lessons.order');
         Route::post('/{courseId}/sections/{sectionId}/lessons/{lessonId}/toggle-publish', [\App\Http\Controllers\Teacher\LessonController::class, 'togglePublish'])->name('lessons.toggle-publish');
+
+        // Bulk publish actions
+        Route::post('/{courseId}/publish-all', [\App\Http\Controllers\Teacher\CourseBuilderController::class, 'publishAll'])->name('publish-all');
     });
 
     // Video Upload Routes
