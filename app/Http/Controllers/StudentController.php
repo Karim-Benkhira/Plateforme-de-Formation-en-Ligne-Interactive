@@ -32,17 +32,59 @@ class StudentController extends UserController
 
     public function showMyCourses(){
         $userId = auth()->id();
-        $results = QuizResult::with(['quiz.course.creator', 'quiz.course.category'])
-            ->where('user_id', $userId)
+        $user = auth()->user();
+
+        // Get all enrolled courses for the user (regardless of approval status)
+        $enrolledCourses = $user->enrolledCourses()
+            ->with(['category', 'creator', 'quizzes'])
             ->get();
 
-        $courses = $results
-            ->groupBy(function($result) {
-                return $result->quiz->course->id;
-            })
-            ->map(function($courseResults) {
-                return $courseResults->sortByDesc('created_at')->first();
-            });
+        $courses = collect();
+
+        foreach ($enrolledCourses as $course) {
+            // Get the latest quiz result for this course if any
+            $latestQuizResult = QuizResult::where('user_id', $userId)
+                ->whereHas('quiz', function($query) use ($course) {
+                    $query->where('course_id', $course->id);
+                })
+                ->with('quiz')
+                ->latest()
+                ->first();
+
+            if ($latestQuizResult) {
+                // If there's a quiz result, use it and add enrollment status
+                $latestQuizResult->enrollment_status = $course->pivot->status;
+                $latestQuizResult->enrollment_date = $course->pivot->created_at;
+                $courses->push($latestQuizResult);
+            } else {
+                // Create a mock result for display (even if no quiz exists)
+                $firstQuiz = $course->quizzes->first();
+
+                $mockResult = new \stdClass();
+                $mockResult->id = null;
+                $mockResult->score = 0;
+                $mockResult->correct_answers = 0;
+                $mockResult->answers_count = 1;
+                $mockResult->created_at = $course->pivot->created_at;
+                $mockResult->enrollment_status = $course->pivot->status;
+                $mockResult->enrollment_date = $course->pivot->created_at;
+
+                if ($firstQuiz) {
+                    $mockResult->quiz = (object) [
+                        'id' => $firstQuiz->id,
+                        'course' => $course
+                    ];
+                } else {
+                    // Create a mock quiz object if no quiz exists
+                    $mockResult->quiz = (object) [
+                        'id' => null,
+                        'course' => $course
+                    ];
+                }
+
+                $courses->push($mockResult);
+            }
+        }
 
         return view('student.myCourses-new', ['courses' => $courses]);
     }
@@ -316,6 +358,7 @@ class StudentController extends UserController
         ])->findOrFail($id);
 
         $isEnrolled = false;
+        $enrollmentStatus = null;
         $userProgress = [];
         $courseProgress = 0;
         $totalLessons = 0;
@@ -324,7 +367,12 @@ class StudentController extends UserController
 
         if (auth()->check()) {
             $user = auth()->user();
-            $isEnrolled = $user->enrolledCourses()->where('course_id', $id)->exists();
+            $enrollment = $user->enrolledCourses()->where('course_id', $id)->first();
+
+            if ($enrollment) {
+                $enrollmentStatus = $enrollment->pivot->status;
+                $isEnrolled = ($enrollmentStatus === 'approved');
+            }
 
             if ($isEnrolled) {
                 // Get user progress for all lessons (new system)
@@ -408,6 +456,7 @@ class StudentController extends UserController
         return view('student.courseDetails-new', compact(
             'course',
             'isEnrolled',
+            'enrollmentStatus',
             'userProgress',
             'courseProgress',
             'totalLessons',
@@ -420,26 +469,38 @@ class StudentController extends UserController
         $course = Course::findOrFail($id);
         $user = auth()->user();
 
-        // Check if already enrolled
-        if (!$user->enrolledCourses()->where('course_id', $id)->exists()) {
-            $user->enrolledCourses()->attach($id, [
-                'progress' => 0,
-                'completed' => false
-            ]);
+        // Check if already has any enrollment record (pending, approved, or rejected)
+        $existingEnrollment = $user->enrolledCourses()->where('course_id', $id)->first();
 
-            // Log activity if the model exists
-            if (class_exists('App\\Models\\ActivityLog')) {
-                \App\Models\ActivityLog::create([
-                    'user_id' => $user->id,
-                    'action' => 'course.enroll',
-                    'description' => "Enrolled in course: {$course->title}",
-                ]);
+        if ($existingEnrollment) {
+            $status = $existingEnrollment->pivot->status;
+
+            if ($status === 'pending') {
+                return redirect()->route('student.showCourse', $id)->with('info', 'Your enrollment request is pending teacher approval.');
+            } elseif ($status === 'approved') {
+                return redirect()->route('student.showCourse', $id)->with('info', 'You are already enrolled in this course.');
+            } elseif ($status === 'rejected') {
+                return redirect()->route('student.showCourse', $id)->with('error', 'Your enrollment request was rejected by the teacher.');
             }
-
-            return redirect()->route('student.showCourse', $id)->with('success', 'You have successfully enrolled in this course!');
         }
 
-        return redirect()->route('student.showCourse', $id)->with('info', 'You are already enrolled in this course.');
+        // Create new enrollment request with pending status
+        $user->enrolledCourses()->attach($id, [
+            'progress' => 0,
+            'completed' => false,
+            'status' => 'pending'
+        ]);
+
+        // Log activity if the model exists
+        if (class_exists('App\\Models\\ActivityLog')) {
+            \App\Models\ActivityLog::create([
+                'user_id' => $user->id,
+                'action' => 'course.enroll.request',
+                'description' => "Requested enrollment in course: {$course->title}",
+            ]);
+        }
+
+        return redirect()->route('student.showCourse', $id)->with('success', 'Enrollment request sent! Please wait for teacher approval.');
     }
 
     public function updateProfile(Request $request)
@@ -497,9 +558,10 @@ class StudentController extends UserController
         $user = auth()->user();
         $course = \App\Models\Course::findOrFail($courseId);
 
-        // Check if user is enrolled
-        if (!$user->enrolledCourses()->where('course_id', $courseId)->exists()) {
-            return response()->json(['error' => 'Not enrolled in this course'], 403);
+        // Check if user is enrolled and approved
+        $enrollment = $user->enrolledCourses()->where('course_id', $courseId)->first();
+        if (!$enrollment || $enrollment->pivot->status !== 'approved') {
+            return response()->json(['error' => 'Not enrolled or not approved for this course'], 403);
         }
 
         // Update or create lesson progress
@@ -527,9 +589,10 @@ class StudentController extends UserController
         $user = auth()->user();
         $course = \App\Models\Course::findOrFail($courseId);
 
-        // Check if user is enrolled
-        if (!$user->enrolledCourses()->where('course_id', $courseId)->exists()) {
-            return response()->json(['error' => 'Not enrolled in this course'], 403);
+        // Check if user is enrolled and approved
+        $enrollment = $user->enrolledCourses()->where('course_id', $courseId)->first();
+        if (!$enrollment || $enrollment->pivot->status !== 'approved') {
+            return response()->json(['error' => 'Not enrolled or not approved for this course'], 403);
         }
 
         $progress = \App\Models\LessonProgress::updateOrCreate([
@@ -556,9 +619,10 @@ class StudentController extends UserController
         $user = auth()->user();
         $course = \App\Models\Course::findOrFail($courseId);
 
-        // Check if user is enrolled
-        if (!$user->enrolledCourses()->where('course_id', $courseId)->exists()) {
-            return response()->json(['error' => 'Not enrolled in this course'], 403);
+        // Check if user is enrolled and approved
+        $enrollment = $user->enrolledCourses()->where('course_id', $courseId)->first();
+        if (!$enrollment || $enrollment->pivot->status !== 'approved') {
+            return response()->json(['error' => 'Not enrolled or not approved for this course'], 403);
         }
 
         // Mark content as completed in session

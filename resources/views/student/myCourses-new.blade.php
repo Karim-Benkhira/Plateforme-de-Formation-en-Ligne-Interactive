@@ -23,24 +23,34 @@
 </div>
 
 <!-- Course Stats -->
-<div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+<div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
     <div class="stats-card bg-gradient-to-br from-primary-900 to-primary-800 transform transition-all duration-300 hover:scale-105 hover:shadow-lg">
         <div class="stats-icon primary">
             <i class="fas fa-book"></i>
         </div>
         <div>
-            <div class="stats-label">Enrolled Courses</div>
+            <div class="stats-label">Total Courses</div>
             <div class="stats-value">{{ count($courses) }}</div>
         </div>
     </div>
 
     <div class="stats-card bg-gradient-to-br from-green-900 to-green-800 transform transition-all duration-300 hover:scale-105 hover:shadow-lg">
         <div class="stats-icon success">
-            <i class="fas fa-graduation-cap"></i>
+            <i class="fas fa-check-circle"></i>
         </div>
         <div>
-            <div class="stats-label">Completed Quizzes</div>
-            <div class="stats-value">{{ count($courses) }}</div>
+            <div class="stats-label">Approved</div>
+            <div class="stats-value">{{ $courses->where('enrollment_status', 'approved')->count() }}</div>
+        </div>
+    </div>
+
+    <div class="stats-card bg-gradient-to-br from-yellow-900 to-yellow-800 transform transition-all duration-300 hover:scale-105 hover:shadow-lg">
+        <div class="stats-icon warning">
+            <i class="fas fa-clock"></i>
+        </div>
+        <div>
+            <div class="stats-label">Pending</div>
+            <div class="stats-value">{{ $courses->where('enrollment_status', 'pending')->count() }}</div>
         </div>
     </div>
 
@@ -51,8 +61,11 @@
         <div>
             <div class="stats-label">Average Score</div>
             <div class="stats-value">
-                @if(count($courses) > 0)
-                    {{ round($courses->avg('score'), 1) }}
+                @php
+                    $approvedCourses = $courses->where('enrollment_status', 'approved');
+                @endphp
+                @if($approvedCourses->count() > 0)
+                    {{ round($approvedCourses->avg('score'), 1) }}
                 @else
                     0
                 @endif
@@ -91,8 +104,25 @@
                                     <i class="fas fa-book text-4xl text-white opacity-50"></i>
                                 </div>
                             @endif
-                            <div class="absolute top-3 right-3 bg-primary-600 text-white text-xs font-bold px-2 py-1 rounded-full">
-                                {{ $result->quiz->course->category->name ?? 'General' }}
+                            <div class="absolute top-3 right-3 flex flex-col space-y-1">
+                                <div class="bg-primary-600 text-white text-xs font-bold px-2 py-1 rounded-full">
+                                    {{ $result->quiz->course->category->name ?? 'General' }}
+                                </div>
+                                @if(isset($result->enrollment_status))
+                                    @if($result->enrollment_status === 'pending')
+                                        <div class="bg-yellow-500 text-white text-xs font-bold px-2 py-1 rounded-full">
+                                            <i class="fas fa-clock mr-1"></i>Pending
+                                        </div>
+                                    @elseif($result->enrollment_status === 'approved')
+                                        <div class="bg-green-500 text-white text-xs font-bold px-2 py-1 rounded-full">
+                                            <i class="fas fa-check mr-1"></i>Approved
+                                        </div>
+                                    @elseif($result->enrollment_status === 'rejected')
+                                        <div class="bg-red-500 text-white text-xs font-bold px-2 py-1 rounded-full">
+                                            <i class="fas fa-times mr-1"></i>Rejected
+                                        </div>
+                                    @endif
+                                @endif
                             </div>
                             <div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-gray-900 to-transparent p-4">
                                 <div class="flex items-center mb-2">
@@ -128,13 +158,51 @@
                             </div>
                             
                             <div class="flex justify-between items-center">
-                                <a href="{{ route('student.quiz', $result->quiz->id) }}" class="text-primary-400 hover:text-primary-300 text-sm flex items-center transition-colors">
-                                    <i class="fas fa-redo-alt mr-1"></i> Retake Quiz
-                                </a>
-                                <a href="{{ route('student.showCourse', $result->quiz->course->id) }}"
-                                    class="bg-primary-600 hover:bg-primary-700 text-white font-medium py-2 px-4 rounded-lg transition-all duration-200 inline-flex items-center">
-                                    <i class="fas fa-book-open mr-2"></i> Continue
-                                </a>
+                                @if(isset($result->enrollment_status) && $result->enrollment_status === 'approved')
+                                    @if($result->quiz->id)
+                                        <a href="{{ route('student.quiz', $result->quiz->id) }}" class="text-primary-400 hover:text-primary-300 text-sm flex items-center transition-colors">
+                                            <i class="fas fa-redo-alt mr-1"></i> Retake Quiz
+                                        </a>
+                                    @else
+                                        <span class="text-gray-400 text-sm flex items-center">
+                                            <i class="fas fa-info-circle mr-1"></i> No quiz available
+                                        </span>
+                                    @endif
+                                    <a href="{{ route('student.showCourse', $result->quiz->course->id) }}"
+                                        class="bg-primary-600 hover:bg-primary-700 text-white font-medium py-2 px-4 rounded-lg transition-all duration-200 inline-flex items-center">
+                                        <i class="fas fa-book-open mr-2"></i> Continue
+                                    </a>
+                                @elseif(isset($result->enrollment_status) && $result->enrollment_status === 'pending')
+                                    <span class="text-yellow-400 text-sm flex items-center">
+                                        <i class="fas fa-clock mr-1"></i> Waiting for approval
+                                    </span>
+                                    <a href="{{ route('student.showCourse', $result->quiz->course->id) }}"
+                                        class="bg-gray-600 text-white font-medium py-2 px-4 rounded-lg inline-flex items-center cursor-not-allowed opacity-50">
+                                        <i class="fas fa-lock mr-2"></i> Locked
+                                    </a>
+                                @elseif(isset($result->enrollment_status) && $result->enrollment_status === 'rejected')
+                                    <span class="text-red-400 text-sm flex items-center">
+                                        <i class="fas fa-times mr-1"></i> Request rejected
+                                    </span>
+                                    <a href="{{ route('student.showCourse', $result->quiz->course->id) }}"
+                                        class="bg-gray-600 text-white font-medium py-2 px-4 rounded-lg inline-flex items-center cursor-not-allowed opacity-50">
+                                        <i class="fas fa-ban mr-2"></i> Rejected
+                                    </a>
+                                @else
+                                    @if($result->quiz->id)
+                                        <a href="{{ route('student.quiz', $result->quiz->id) }}" class="text-primary-400 hover:text-primary-300 text-sm flex items-center transition-colors">
+                                            <i class="fas fa-redo-alt mr-1"></i> Retake Quiz
+                                        </a>
+                                    @else
+                                        <span class="text-gray-400 text-sm flex items-center">
+                                            <i class="fas fa-info-circle mr-1"></i> No quiz available
+                                        </span>
+                                    @endif
+                                    <a href="{{ route('student.showCourse', $result->quiz->course->id) }}"
+                                        class="bg-primary-600 hover:bg-primary-700 text-white font-medium py-2 px-4 rounded-lg transition-all duration-200 inline-flex items-center">
+                                        <i class="fas fa-book-open mr-2"></i> Continue
+                                    </a>
+                                @endif
                             </div>
                         </div>
                     </div>
@@ -155,8 +223,25 @@
                                         <i class="fas fa-book text-4xl text-white opacity-50"></i>
                                     </div>
                                 @endif
-                                <div class="absolute top-3 right-3 bg-primary-600 text-white text-xs font-bold px-2 py-1 rounded-full">
-                                    {{ $result->quiz->course->category->name ?? 'General' }}
+                                <div class="absolute top-3 right-3 flex flex-col space-y-1">
+                                    <div class="bg-primary-600 text-white text-xs font-bold px-2 py-1 rounded-full">
+                                        {{ $result->quiz->course->category->name ?? 'General' }}
+                                    </div>
+                                    @if(isset($result->enrollment_status))
+                                        @if($result->enrollment_status === 'pending')
+                                            <div class="bg-yellow-500 text-white text-xs font-bold px-2 py-1 rounded-full">
+                                                <i class="fas fa-clock mr-1"></i>Pending
+                                            </div>
+                                        @elseif($result->enrollment_status === 'approved')
+                                            <div class="bg-green-500 text-white text-xs font-bold px-2 py-1 rounded-full">
+                                                <i class="fas fa-check mr-1"></i>Approved
+                                            </div>
+                                        @elseif($result->enrollment_status === 'rejected')
+                                            <div class="bg-red-500 text-white text-xs font-bold px-2 py-1 rounded-full">
+                                                <i class="fas fa-times mr-1"></i>Rejected
+                                            </div>
+                                        @endif
+                                    @endif
                                 </div>
                             </div>
                             <div class="md:w-3/4 p-4">
@@ -183,13 +268,51 @@
                                 </div>
                                 
                                 <div class="flex justify-end items-center space-x-3">
-                                    <a href="{{ route('student.quiz', $result->quiz->id) }}" class="text-primary-400 hover:text-primary-300 text-sm flex items-center transition-colors">
-                                        <i class="fas fa-redo-alt mr-1"></i> Retake Quiz
-                                    </a>
-                                    <a href="{{ route('student.showCourse', $result->quiz->course->id) }}"
-                                        class="bg-primary-600 hover:bg-primary-700 text-white font-medium py-2 px-4 rounded-lg transition-all duration-200 inline-flex items-center">
-                                        <i class="fas fa-book-open mr-2"></i> Continue
-                                    </a>
+                                    @if(isset($result->enrollment_status) && $result->enrollment_status === 'approved')
+                                        @if($result->quiz->id)
+                                            <a href="{{ route('student.quiz', $result->quiz->id) }}" class="text-primary-400 hover:text-primary-300 text-sm flex items-center transition-colors">
+                                                <i class="fas fa-redo-alt mr-1"></i> Retake Quiz
+                                            </a>
+                                        @else
+                                            <span class="text-gray-400 text-sm flex items-center">
+                                                <i class="fas fa-info-circle mr-1"></i> No quiz available
+                                            </span>
+                                        @endif
+                                        <a href="{{ route('student.showCourse', $result->quiz->course->id) }}"
+                                            class="bg-primary-600 hover:bg-primary-700 text-white font-medium py-2 px-4 rounded-lg transition-all duration-200 inline-flex items-center">
+                                            <i class="fas fa-book-open mr-2"></i> Continue
+                                        </a>
+                                    @elseif(isset($result->enrollment_status) && $result->enrollment_status === 'pending')
+                                        <span class="text-yellow-400 text-sm flex items-center">
+                                            <i class="fas fa-clock mr-1"></i> Waiting for approval
+                                        </span>
+                                        <a href="{{ route('student.showCourse', $result->quiz->course->id) }}"
+                                            class="bg-gray-600 text-white font-medium py-2 px-4 rounded-lg inline-flex items-center cursor-not-allowed opacity-50">
+                                            <i class="fas fa-lock mr-2"></i> Locked
+                                        </a>
+                                    @elseif(isset($result->enrollment_status) && $result->enrollment_status === 'rejected')
+                                        <span class="text-red-400 text-sm flex items-center">
+                                            <i class="fas fa-times mr-1"></i> Request rejected
+                                        </span>
+                                        <a href="{{ route('student.showCourse', $result->quiz->course->id) }}"
+                                            class="bg-gray-600 text-white font-medium py-2 px-4 rounded-lg inline-flex items-center cursor-not-allowed opacity-50">
+                                            <i class="fas fa-ban mr-2"></i> Rejected
+                                        </a>
+                                    @else
+                                        @if($result->quiz->id)
+                                            <a href="{{ route('student.quiz', $result->quiz->id) }}" class="text-primary-400 hover:text-primary-300 text-sm flex items-center transition-colors">
+                                                <i class="fas fa-redo-alt mr-1"></i> Retake Quiz
+                                            </a>
+                                        @else
+                                            <span class="text-gray-400 text-sm flex items-center">
+                                                <i class="fas fa-info-circle mr-1"></i> No quiz available
+                                            </span>
+                                        @endif
+                                        <a href="{{ route('student.showCourse', $result->quiz->course->id) }}"
+                                            class="bg-primary-600 hover:bg-primary-700 text-white font-medium py-2 px-4 rounded-lg transition-all duration-200 inline-flex items-center">
+                                            <i class="fas fa-book-open mr-2"></i> Continue
+                                        </a>
+                                    @endif
                                 </div>
                             </div>
                         </div>

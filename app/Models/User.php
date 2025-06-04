@@ -157,7 +157,29 @@ class User extends Authenticatable
     public function enrolledCourses()
     {
         return $this->belongsToMany(Course::class, 'course_user', 'user_id', 'course_id')
-            ->withPivot('progress', 'completed')
+            ->withPivot('progress', 'completed', 'status', 'approved_at', 'approved_by')
+            ->withTimestamps();
+    }
+
+    /**
+     * Get the approved enrolled courses for the student.
+     */
+    public function approvedCourses()
+    {
+        return $this->belongsToMany(Course::class, 'course_user', 'user_id', 'course_id')
+            ->withPivot('progress', 'completed', 'status', 'approved_at', 'approved_by')
+            ->wherePivot('status', 'approved')
+            ->withTimestamps();
+    }
+
+    /**
+     * Get the pending enrollment requests for the student.
+     */
+    public function pendingCourses()
+    {
+        return $this->belongsToMany(Course::class, 'course_user', 'user_id', 'course_id')
+            ->withPivot('progress', 'completed', 'status', 'approved_at', 'approved_by')
+            ->wherePivot('status', 'pending')
             ->withTimestamps();
     }
 

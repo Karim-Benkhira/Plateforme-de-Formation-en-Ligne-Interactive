@@ -354,4 +354,37 @@ Route::middleware(['auth','role:teacher'])->group(function () {
     // Analytics
     Route::get('/teacher/analytics', [TeacherController::class, 'showAnalytics'])->name('teacher.analytics');
     Route::get('/teacher/analytics/course/{courseId}', [TeacherController::class, 'showCourseAnalytics'])->name('teacher.course-analytics');
+
+    // Enrollment Management
+    Route::prefix('teacher/enrollments')->name('teacher.enrollments.')->group(function () {
+        Route::get('/', [\App\Http\Controllers\Teacher\EnrollmentController::class, 'index'])->name('index');
+        Route::post('/{courseId}/approve/{studentId}', [\App\Http\Controllers\Teacher\EnrollmentController::class, 'approve'])->name('approve');
+        Route::post('/{courseId}/reject/{studentId}', [\App\Http\Controllers\Teacher\EnrollmentController::class, 'reject'])->name('reject');
+        Route::get('/pending-count', [\App\Http\Controllers\Teacher\EnrollmentController::class, 'getPendingCount'])->name('pending-count');
+        Route::get('/course/{courseId}/students', [\App\Http\Controllers\Teacher\EnrollmentController::class, 'showCourseStudents'])->name('course-students');
+    });
 });
+
+// Temporary route to create test enrollment
+Route::get('/test-enrollment', function () {
+    $user = auth()->user();
+    $course = \App\Models\Course::first();
+
+    if ($user && $course) {
+        // Check if already enrolled
+        $existing = $user->enrolledCourses()->where('course_id', $course->id)->first();
+
+        if (!$existing) {
+            $user->enrolledCourses()->attach($course->id, [
+                'progress' => 0,
+                'completed' => false,
+                'status' => 'pending'
+            ]);
+            return "Test enrollment created for course: " . $course->title;
+        } else {
+            return "Already enrolled in course: " . $course->title . " with status: " . $existing->pivot->status;
+        }
+    }
+
+    return "No user or course found";
+})->middleware('auth');

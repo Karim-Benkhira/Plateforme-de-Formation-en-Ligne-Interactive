@@ -108,11 +108,21 @@
                     <i class="fas fa-check-circle mr-3 text-lg"></i>
                     <span class="font-medium">Enrolled Successfully</span>
                 </div>
+            <?php elseif($enrollmentStatus === 'pending'): ?>
+                <div class="bg-yellow-500/20 backdrop-blur-sm border border-yellow-400/50 text-yellow-300 px-6 py-3 rounded-xl inline-flex items-center">
+                    <i class="fas fa-clock mr-3 text-lg"></i>
+                    <span class="font-medium">Pending Approval</span>
+                </div>
+            <?php elseif($enrollmentStatus === 'rejected'): ?>
+                <div class="bg-red-500/20 backdrop-blur-sm border border-red-400/50 text-red-300 px-6 py-3 rounded-xl inline-flex items-center">
+                    <i class="fas fa-times-circle mr-3 text-lg"></i>
+                    <span class="font-medium">Request Rejected</span>
+                </div>
             <?php else: ?>
                 <form action="<?php echo e(route('student.enrollCourse', $course->id)); ?>" method="POST">
                     <?php echo csrf_field(); ?>
                     <button type="submit" class="bg-white/20 hover:bg-white/30 backdrop-blur-sm text-white px-8 py-4 rounded-xl transition-all flex items-center font-medium shadow-lg hover:shadow-xl transform hover:scale-105">
-                        <i class="fas fa-graduation-cap mr-3 text-lg"></i> Enroll Now
+                        <i class="fas fa-graduation-cap mr-3 text-lg"></i> Request Enrollment
                     </button>
                 </form>
             <?php endif; ?>
@@ -706,12 +716,20 @@
                             <i class="fas fa-question-circle mr-2"></i> No Quiz Available
                         </button>
                     <?php endif; ?>
+                <?php elseif($enrollmentStatus === 'pending'): ?>
+                    <div class="w-full bg-yellow-500/20 border border-yellow-400/50 text-yellow-300 font-medium py-4 px-4 rounded-xl inline-flex items-center justify-center">
+                        <i class="fas fa-clock mr-2"></i> Enrollment Pending Approval
+                    </div>
+                <?php elseif($enrollmentStatus === 'rejected'): ?>
+                    <div class="w-full bg-red-500/20 border border-red-400/50 text-red-300 font-medium py-4 px-4 rounded-xl inline-flex items-center justify-center">
+                        <i class="fas fa-times-circle mr-2"></i> Enrollment Request Rejected
+                    </div>
                 <?php else: ?>
                     <form action="<?php echo e(route('student.enrollCourse', $course->id)); ?>" method="POST">
                         <?php echo csrf_field(); ?>
                         <button type="submit"
                                 class="w-full gradient-pink-blue hover:opacity-90 text-white font-bold py-4 px-4 rounded-xl transition-all transform hover:scale-105 shadow-lg">
-                            <i class="fas fa-graduation-cap mr-2"></i> Enroll in This Course
+                            <i class="fas fa-graduation-cap mr-2"></i> Request Enrollment
                         </button>
                     </form>
                 <?php endif; ?>

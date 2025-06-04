@@ -82,6 +82,10 @@
                         <a href="{{ route('teacher.dashboard') }}" class="dashboard-nav-link {{ request()->routeIs('teacher.dashboard') ? 'active' : '' }}">Dashboard</a>
                         <a href="{{ route('teacher.course-builder.index') }}" class="dashboard-nav-link {{ request()->routeIs('teacher.course-builder*') ? 'active' : '' }}">Course Builder</a>
                         <a href="{{ route('teacher.courses') }}" class="dashboard-nav-link {{ request()->routeIs('teacher.courses*') ? 'active' : '' }}">Courses</a>
+                        <a href="{{ route('teacher.enrollments.index') }}" class="dashboard-nav-link {{ request()->routeIs('teacher.enrollments*') ? 'active' : '' }} relative">
+                            Enrollments
+                            <span id="pending-count-badge" class="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center hidden"></span>
+                        </a>
                         <a href="{{ route('teacher.quizzes') }}" class="dashboard-nav-link {{ request()->routeIs('teacher.quizzes*') ? 'active' : '' }}">Quizzes</a>
                         <a href="{{ route('teacher.analytics') }}" class="dashboard-nav-link {{ request()->routeIs('teacher.analytics*') ? 'active' : '' }}">Analytics</a>
                         <a href="{{ route('teacher.profile') }}" class="dashboard-nav-link {{ request()->routeIs('teacher.profile') ? 'active' : '' }}">Profile</a>
@@ -153,6 +157,7 @@
                     <a href="{{ route('teacher.dashboard') }}" class="block px-3 py-2 rounded-md text-base font-medium text-gray-300 hover:text-white hover:bg-gray-700">Dashboard</a>
                     <a href="{{ route('teacher.course-builder.index') }}" class="block px-3 py-2 rounded-md text-base font-medium text-gray-300 hover:text-white hover:bg-gray-700">Course Builder</a>
                     <a href="{{ route('teacher.courses') }}" class="block px-3 py-2 rounded-md text-base font-medium text-gray-300 hover:text-white hover:bg-gray-700">Courses</a>
+                    <a href="{{ route('teacher.enrollments.index') }}" class="block px-3 py-2 rounded-md text-base font-medium text-gray-300 hover:text-white hover:bg-gray-700">Enrollments</a>
                     <a href="{{ route('teacher.quizzes') }}" class="block px-3 py-2 rounded-md text-base font-medium text-gray-300 hover:text-white hover:bg-gray-700">Quizzes</a>
                     <a href="{{ route('teacher.analytics') }}" class="block px-3 py-2 rounded-md text-base font-medium text-gray-300 hover:text-white hover:bg-gray-700">Analytics</a>
                     <a href="{{ route('teacher.profile') }}" class="block px-3 py-2 rounded-md text-base font-medium text-gray-300 hover:text-white hover:bg-gray-700">Profile</a>
@@ -182,6 +187,28 @@
                 mobileMenu.classList.toggle('hidden');
             });
         }
+
+        // Load pending enrollments count
+        function loadPendingCount() {
+            fetch('{{ route("teacher.enrollments.pending-count") }}')
+                .then(response => response.json())
+                .then(data => {
+                    const badge = document.getElementById('pending-count-badge');
+                    if (badge && data.count > 0) {
+                        badge.textContent = data.count;
+                        badge.classList.remove('hidden');
+                    } else if (badge) {
+                        badge.classList.add('hidden');
+                    }
+                })
+                .catch(error => console.log('Error loading pending count:', error));
+        }
+
+        // Load count on page load
+        document.addEventListener('DOMContentLoaded', loadPendingCount);
+
+        // Refresh count every 30 seconds
+        setInterval(loadPendingCount, 30000);
     </script>
 
     <!-- Alpine.js -->

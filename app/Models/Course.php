@@ -19,7 +19,31 @@ class Course extends Model
 
     public function users()
     {
-        return $this->belongsToMany(User::class);
+        return $this->belongsToMany(User::class, 'course_user')
+            ->withPivot('progress', 'completed', 'status', 'approved_at', 'approved_by')
+            ->withTimestamps();
+    }
+
+    /**
+     * Get pending enrollment requests for this course.
+     */
+    public function pendingEnrollments()
+    {
+        return $this->belongsToMany(User::class, 'course_user')
+            ->withPivot('progress', 'completed', 'status', 'approved_at', 'approved_by')
+            ->wherePivot('status', 'pending')
+            ->withTimestamps();
+    }
+
+    /**
+     * Get approved enrollments for this course.
+     */
+    public function approvedEnrollments()
+    {
+        return $this->belongsToMany(User::class, 'course_user')
+            ->withPivot('progress', 'completed', 'status', 'approved_at', 'approved_by')
+            ->wherePivot('status', 'approved')
+            ->withTimestamps();
     }
 
     public function category()
