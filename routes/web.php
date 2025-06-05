@@ -327,6 +327,7 @@ Route::middleware(['auth','role:teacher'])->group(function () {
     Route::get('/teacher/quizzes', [TeacherController::class, 'showQuizzes'])->name('teacher.quizzes');
     Route::get('/teacher/quizzes/create', [TeacherController::class, 'createQuiz'])->name('teacher.quizzes.create');
     Route::post('/teacher/quizzes', [QuizController::class, 'storeQuiz'])->name('teacher.quizzes.store');
+    Route::post('/teacher/quizzes/store-with-questions', [QuizController::class, 'storeQuizWithQuestions'])->name('teacher.quizzes.store-with-questions');
     Route::get('/teacher/quizzes/{id}/edit', [QuizController::class, 'editQuiz'])->name('teacher.quizzes.edit');
     Route::put('/teacher/quizzes/{id}', [QuizController::class, 'updateQuiz'])->name('teacher.quizzes.update');
     Route::delete('/teacher/quizzes/{id}', [QuizController::class, 'deleteQuiz'])->name('teacher.quizzes.delete');

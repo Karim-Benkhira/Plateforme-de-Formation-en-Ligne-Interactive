@@ -53,6 +53,60 @@ class QuizController extends Controller
         return redirect()->route($redirectRoute)->with('success', 'Quiz created successfully. Now add questions to your quiz.');
     }
 
+    public function storeQuizWithQuestions(Request $request) {
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'course_id' => 'required|exists:courses,id',
+            'description' => 'nullable|string',
+            'duration' => 'required|integer|min:1|max:180',
+            'passing_score' => 'required|integer|min:1|max:100',
+            'attempts_allowed' => 'required|integer|min:1|max:10',
+            'is_published' => 'nullable|boolean',
+            'requires_face_verification' => 'nullable|boolean',
+            'questions' => 'required|array|min:1',
+            'questions.*.question' => 'required|string',
+            'questions.*.options' => 'required|array|size:4',
+            'questions.*.options.*' => 'required|string',
+            'questions.*.correct' => 'required|integer|min:0|max:3',
+            'questions.*.type' => 'required|in:multiple_choice',
+        ]);
+
+        try {
+            // Create the quiz
+            $quiz = new Quiz();
+            $quiz->name = $request->name;
+            $quiz->course_id = $request->course_id;
+            $quiz->description = $request->description;
+            $quiz->duration = $request->duration;
+            $quiz->passing_score = $request->passing_score;
+            $quiz->attempts_allowed = $request->attempts_allowed;
+            $quiz->is_published = $request->boolean('is_published');
+            $quiz->requires_face_verification = $request->boolean('requires_face_verification');
+            $quiz->creator_id = auth()->id();
+            $quiz->save();
+
+            // Create questions
+            foreach ($request->questions as $questionData) {
+                $question = new Question();
+                $question->quiz_id = $quiz->id;
+                $question->question = $questionData['question'];
+                $question->type = 'multiple_choice';
+                $question->answers = implode(',', $questionData['options']);
+                $question->correct = (int) $questionData['correct'];
+                $question->options = $questionData['options'];
+                $question->save();
+            }
+
+            // Determine the redirect route based on user role
+            $redirectRoute = auth()->user()->role === 'admin' ? 'admin.quizzes' : 'teacher.quizzes';
+
+            return redirect()->route($redirectRoute)->with('success', 'Quiz created successfully with ' . count($request->questions) . ' questions!');
+
+        } catch (\Exception $e) {
+            return redirect()->back()->withErrors(['error' => 'An error occurred while creating the quiz: ' . $e->getMessage()])->withInput();
+        }
+    }
+
     public function editQuiz($id) {
         $quiz = Quiz::findOrFail($id);
         $courses = Course::all();

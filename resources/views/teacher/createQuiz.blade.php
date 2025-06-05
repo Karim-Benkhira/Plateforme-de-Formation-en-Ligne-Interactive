@@ -185,6 +185,196 @@
         margin-top: 0.25rem;
     }
 
+    /* Question Styles - Kahoot-like */
+    .question-card {
+        background-color: #0f172a;
+        border-radius: 0.75rem;
+        border: 1px solid #1e293b;
+        margin-bottom: 1.5rem;
+        overflow: hidden;
+        transition: all 0.3s ease;
+    }
+
+    .question-card:hover {
+        border-color: #38bdf8;
+        box-shadow: 0 4px 12px rgba(56, 189, 248, 0.1);
+    }
+
+    .question-header {
+        background: linear-gradient(90deg, #7c3aed, #0284c7);
+        padding: 1rem 1.5rem;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+    }
+
+    .question-number {
+        background-color: rgba(255, 255, 255, 0.2);
+        color: white;
+        padding: 0.5rem 1rem;
+        border-radius: 2rem;
+        font-weight: 600;
+        font-size: 0.875rem;
+    }
+
+    .question-content {
+        padding: 1.5rem;
+    }
+
+    .question-input {
+        width: 100%;
+        padding: 1rem;
+        background-color: #1e293b;
+        border: 2px solid #334155;
+        border-radius: 0.5rem;
+        color: white;
+        font-size: 1rem;
+        transition: all 0.2s ease;
+        margin-bottom: 1rem;
+    }
+
+    .question-input:focus {
+        border-color: #38bdf8;
+        box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.1);
+        outline: none;
+    }
+
+    .options-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 1rem;
+        margin-top: 1rem;
+    }
+
+    .option-card {
+        background-color: #1e293b;
+        border: 2px solid #334155;
+        border-radius: 0.75rem;
+        padding: 1rem;
+        transition: all 0.2s ease;
+        cursor: pointer;
+        position: relative;
+    }
+
+    .option-card.option-a { border-color: #ef4444; }
+    .option-card.option-b { border-color: #3b82f6; }
+    .option-card.option-c { border-color: #f59e0b; }
+    .option-card.option-d { border-color: #10b981; }
+
+    .option-card.correct {
+        background: linear-gradient(135deg, rgba(16, 185, 129, 0.2), rgba(16, 185, 129, 0.1));
+        border-color: #10b981;
+        box-shadow: 0 0 0 2px rgba(16, 185, 129, 0.3);
+    }
+
+    .option-label {
+        display: flex;
+        align-items: center;
+        font-weight: 600;
+        color: white;
+        margin-bottom: 0.5rem;
+    }
+
+    .option-letter {
+        width: 2rem;
+        height: 2rem;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: bold;
+        margin-right: 0.75rem;
+        font-size: 0.875rem;
+    }
+
+    .option-a .option-letter { background-color: #ef4444; }
+    .option-b .option-letter { background-color: #3b82f6; }
+    .option-c .option-letter { background-color: #f59e0b; }
+    .option-d .option-letter { background-color: #10b981; }
+
+    .option-input {
+        width: 100%;
+        background: transparent;
+        border: none;
+        color: #e2e8f0;
+        font-size: 0.875rem;
+        outline: none;
+    }
+
+    .option-input::placeholder {
+        color: #64748b;
+    }
+
+    .correct-indicator {
+        position: absolute;
+        top: 0.5rem;
+        right: 0.5rem;
+        background-color: #10b981;
+        color: white;
+        border-radius: 50%;
+        width: 1.5rem;
+        height: 1.5rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 0.75rem;
+        opacity: 0;
+        transition: opacity 0.2s ease;
+    }
+
+    .option-card.correct .correct-indicator {
+        opacity: 1;
+    }
+
+    .question-actions {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding-top: 1rem;
+        border-top: 1px solid rgba(255, 255, 255, 0.1);
+        margin-top: 1rem;
+    }
+
+    .btn-remove-question {
+        background-color: #dc2626;
+        color: white;
+        border: none;
+        padding: 0.5rem 1rem;
+        border-radius: 0.5rem;
+        font-size: 0.875rem;
+        cursor: pointer;
+        transition: all 0.2s ease;
+    }
+
+    .btn-remove-question:hover {
+        background-color: #b91c1c;
+        transform: translateY(-1px);
+    }
+
+    .btn-add-question {
+        background: linear-gradient(90deg, #10b981, #059669);
+        color: white;
+        border: none;
+        padding: 1rem 2rem;
+        border-radius: 0.75rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        display: flex;
+        align-items: center;
+        margin: 2rem auto;
+        font-size: 1rem;
+    }
+
+    .btn-add-question:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(16, 185, 129, 0.3);
+    }
+
+    .btn-add-question i {
+        margin-right: 0.5rem;
+    }
+
     .btn-container {
         display: flex;
         justify-content: flex-end;
@@ -216,6 +406,8 @@
         transition: all 0.3s ease;
         display: inline-flex;
         align-items: center;
+        border: none;
+        cursor: pointer;
     }
 
     .btn-submit:hover {
@@ -266,6 +458,64 @@
         font-size: 0.875rem;
         color: #e2e8f0;
     }
+
+    /* Animation for adding questions */
+    .question-card {
+        animation: slideIn 0.3s ease-out;
+    }
+
+    @keyframes slideIn {
+        from {
+            opacity: 0;
+            transform: translateY(-20px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    /* Responsive design */
+    @media (max-width: 768px) {
+        .options-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .question-header {
+            flex-direction: column;
+            gap: 1rem;
+            text-align: center;
+        }
+    }
+
+    /* Empty state */
+    .empty-questions {
+        text-align: center;
+        padding: 3rem 1rem;
+        color: #64748b;
+    }
+
+    .empty-questions i {
+        font-size: 3rem;
+        margin-bottom: 1rem;
+        color: #38bdf8;
+    }
+
+    .questions-counter {
+        background: linear-gradient(90deg, #10b981, #059669);
+        color: white;
+        padding: 0.5rem 1rem;
+        border-radius: 2rem;
+        font-size: 0.875rem;
+        font-weight: 600;
+        display: inline-flex;
+        align-items: center;
+        margin-bottom: 1rem;
+    }
+
+    .questions-counter i {
+        margin-right: 0.5rem;
+    }
 </style>
 @endpush
 
@@ -295,7 +545,7 @@
             <h2 class="text-white font-semibold">Quiz Details</h2>
         </div>
         <div class="form-content">
-            <form action="{{ route('teacher.quizzes.store') }}" method="POST" class="space-y-6">
+            <form action="{{ route('teacher.quizzes.store-with-questions') }}" method="POST" class="space-y-6" id="quizForm">
                 @csrf
 
                 <!-- Quiz Information -->
@@ -389,12 +639,38 @@
                     </div>
                 </div>
 
+                <!-- Questions Section -->
+                <div class="mb-6">
+                    <div class="flex items-center justify-between mb-4">
+                        <h3 class="section-title mb-0">
+                            <i class="fas fa-question-circle"></i>Quiz Questions
+                        </h3>
+                        <div class="questions-counter">
+                            <i class="fas fa-list-ol"></i>
+                            <span id="questionsCount">0</span> Questions
+                        </div>
+                    </div>
+
+                    <div id="questionsContainer">
+                        <div class="empty-questions" id="emptyState">
+                            <i class="fas fa-question-circle"></i>
+                            <h4 class="text-lg font-semibold mb-2">No questions yet</h4>
+                            <p>Click "Add Question" to start creating your quiz questions</p>
+                        </div>
+                    </div>
+
+                    <button type="button" class="btn-add-question" onclick="addQuestion()">
+                        <i class="fas fa-plus"></i>
+                        Add Question
+                    </button>
+                </div>
+
                 <div class="btn-container">
                     <button type="button" onclick="window.location.href='{{ route('teacher.quizzes') }}'" class="btn-cancel">
                         Cancel
                     </button>
-                    <button type="submit" class="btn-submit">
-                        <i class="fas fa-save mr-2"></i> Create Quiz and Add Questions
+                    <button type="submit" class="btn-submit" id="submitBtn">
+                        <i class="fas fa-save mr-2"></i> Create Quiz with Questions
                     </button>
                 </div>
             </form>
@@ -446,4 +722,176 @@
         </div>
     </div>
 </div>
+
+<script>
+let questionCount = 0;
+
+function addQuestion() {
+    questionCount++;
+
+    const questionsContainer = document.getElementById('questionsContainer');
+    const emptyState = document.getElementById('emptyState');
+
+    // Hide empty state
+    if (emptyState) {
+        emptyState.style.display = 'none';
+    }
+
+    const questionHtml = `
+        <div class="question-card" id="question-${questionCount}">
+            <div class="question-header">
+                <div class="question-number">Question ${questionCount}</div>
+                <button type="button" class="btn-remove-question" onclick="removeQuestion(${questionCount})">
+                    <i class="fas fa-trash"></i> Remove
+                </button>
+            </div>
+            <div class="question-content">
+                <div class="input-group">
+                    <label class="input-label">
+                        <i class="fas fa-question text-blue-400 mr-1"></i> Question Text
+                    </label>
+                    <input type="text" name="questions[${questionCount}][question]"
+                           placeholder="Enter your question here..."
+                           class="question-input" required>
+                </div>
+
+                <div class="options-grid">
+                    <div class="option-card option-a" onclick="selectCorrectAnswer(${questionCount}, 0)">
+                        <div class="option-label">
+                            <div class="option-letter">A</div>
+                            <span>Option A</span>
+                        </div>
+                        <input type="text" name="questions[${questionCount}][options][0]"
+                               placeholder="Enter option A..."
+                               class="option-input" required>
+                        <div class="correct-indicator">
+                            <i class="fas fa-check"></i>
+                        </div>
+                    </div>
+
+                    <div class="option-card option-b" onclick="selectCorrectAnswer(${questionCount}, 1)">
+                        <div class="option-label">
+                            <div class="option-letter">B</div>
+                            <span>Option B</span>
+                        </div>
+                        <input type="text" name="questions[${questionCount}][options][1]"
+                               placeholder="Enter option B..."
+                               class="option-input" required>
+                        <div class="correct-indicator">
+                            <i class="fas fa-check"></i>
+                        </div>
+                    </div>
+
+                    <div class="option-card option-c" onclick="selectCorrectAnswer(${questionCount}, 2)">
+                        <div class="option-label">
+                            <div class="option-letter">C</div>
+                            <span>Option C</span>
+                        </div>
+                        <input type="text" name="questions[${questionCount}][options][2]"
+                               placeholder="Enter option C..."
+                               class="option-input" required>
+                        <div class="correct-indicator">
+                            <i class="fas fa-check"></i>
+                        </div>
+                    </div>
+
+                    <div class="option-card option-d" onclick="selectCorrectAnswer(${questionCount}, 3)">
+                        <div class="option-label">
+                            <div class="option-letter">D</div>
+                            <span>Option D</span>
+                        </div>
+                        <input type="text" name="questions[${questionCount}][options][3]"
+                               placeholder="Enter option D..."
+                               class="option-input" required>
+                        <div class="correct-indicator">
+                            <i class="fas fa-check"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <input type="hidden" name="questions[${questionCount}][correct]" id="correct-${questionCount}" value="">
+                <input type="hidden" name="questions[${questionCount}][type]" value="multiple_choice">
+
+                <div class="question-actions">
+                    <div class="text-sm text-gray-400">
+                        <i class="fas fa-info-circle mr-1"></i>
+                        Click on an option to mark it as the correct answer
+                    </div>
+                </div>
+            </div>
+        </div>
+    `;
+
+    questionsContainer.insertAdjacentHTML('beforeend', questionHtml);
+    updateQuestionsCount();
+}
+
+function removeQuestion(questionId) {
+    const questionElement = document.getElementById(`question-${questionId}`);
+    if (questionElement) {
+        questionElement.remove();
+        updateQuestionsCount();
+
+        // Show empty state if no questions
+        const remainingQuestions = document.querySelectorAll('.question-card').length;
+        if (remainingQuestions === 0) {
+            document.getElementById('emptyState').style.display = 'block';
+        }
+    }
+}
+
+function selectCorrectAnswer(questionId, optionIndex) {
+    // Remove correct class from all options in this question
+    const questionElement = document.getElementById(`question-${questionId}`);
+    const options = questionElement.querySelectorAll('.option-card');
+    options.forEach(option => option.classList.remove('correct'));
+
+    // Add correct class to selected option
+    options[optionIndex].classList.add('correct');
+
+    // Update hidden input
+    document.getElementById(`correct-${questionId}`).value = optionIndex;
+}
+
+function updateQuestionsCount() {
+    const count = document.querySelectorAll('.question-card').length;
+    document.getElementById('questionsCount').textContent = count;
+}
+
+// Form validation
+document.getElementById('quizForm').addEventListener('submit', function(e) {
+    const questions = document.querySelectorAll('.question-card');
+
+    if (questions.length === 0) {
+        e.preventDefault();
+        alert('Please add at least one question to your quiz.');
+        return;
+    }
+
+    // Check if all questions have correct answers selected
+    let hasErrors = false;
+    questions.forEach((question, index) => {
+        const correctInput = question.querySelector('input[name*="[correct]"]');
+        if (!correctInput.value) {
+            hasErrors = true;
+            question.scrollIntoView({ behavior: 'smooth' });
+            question.style.border = '2px solid #ef4444';
+            setTimeout(() => {
+                question.style.border = '';
+            }, 3000);
+        }
+    });
+
+    if (hasErrors) {
+        e.preventDefault();
+        alert('Please select the correct answer for all questions.');
+    }
+});
+
+// Add first question by default
+document.addEventListener('DOMContentLoaded', function() {
+    // You can uncomment this line if you want to add a question by default
+    // addQuestion();
+});
+</script>
 @endsection
