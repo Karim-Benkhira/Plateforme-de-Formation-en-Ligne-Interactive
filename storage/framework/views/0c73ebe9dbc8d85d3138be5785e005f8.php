@@ -125,6 +125,61 @@ use Illuminate\Support\Facades\Route;
             </div>
         </div>
 
+        <!-- AI Practice Questions -->
+        <div class="section-card">
+            <div class="section-header">
+                <i class="fas fa-robot mr-2"></i> AI Practice Questions
+            </div>
+            <div class="section-content">
+                <?php
+                    $enrolledCourses = Auth::user()->enrolledCourses ?? collect();
+                    $completedCourses = $enrolledCourses->filter(function($course) {
+                        return Auth::user()->quizResults()->whereHas('quiz', function($query) use ($course) {
+                            $query->where('course_id', $course->id);
+                        })->exists();
+                    });
+                ?>
+
+                <?php if($completedCourses->count() > 0): ?>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                        <?php $__currentLoopData = $completedCourses->take(4); $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $course): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                            <a href="<?php echo e(route('student.ai.quiz', $course->id)); ?>" class="action-card bg-gradient-to-r from-purple-900 to-indigo-900 hover:from-purple-800 hover:to-indigo-800">
+                                <div class="action-icon">
+                                    <i class="fas fa-brain text-purple-300"></i>
+                                </div>
+                                <div>
+                                    <h3 class="action-title"><?php echo e(Str::limit($course->title, 20)); ?></h3>
+                                    <p class="action-description">Take AI Quiz</p>
+                                </div>
+                            </a>
+                        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                    </div>
+
+                    <?php if($completedCourses->count() > 4): ?>
+                        <div class="text-center">
+                            <p class="text-gray-400 text-sm">And <?php echo e($completedCourses->count() - 4); ?> more courses available for practice</p>
+                        </div>
+                    <?php endif; ?>
+                <?php else: ?>
+                    <div class="text-center py-6">
+                        <div class="inline-flex items-center justify-center w-16 h-16 rounded-full bg-purple-900 mb-4">
+                            <i class="fas fa-robot text-purple-400 text-2xl"></i>
+                        </div>
+                        <p class="text-gray-400">Complete a course quiz to unlock AI practice questions</p>
+                        <p class="text-sm text-gray-500 mt-2">Finish your first quiz to start practicing with AI-generated questions</p>
+
+                        <!-- Test Button -->
+                        <div class="mt-4">
+                            <a href="<?php echo e(route('student.test.practice')); ?>"
+                               class="bg-purple-600 hover:bg-purple-700 text-white font-medium py-2 px-4 rounded-lg transition-all duration-200 inline-flex items-center">
+                                <i class="fas fa-flask mr-2"></i> Test AI Practice Questions
+                            </a>
+                        </div>
+                    </div>
+                <?php endif; ?>
+            </div>
+        </div>
+
         <!-- Progress & Performance -->
         <div class="section-card">
             <div class="section-header">

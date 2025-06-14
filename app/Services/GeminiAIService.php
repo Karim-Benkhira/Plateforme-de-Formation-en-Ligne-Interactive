@@ -44,8 +44,8 @@ class GeminiAIService
         } catch (Exception $e) {
             Log::error('Error generating practice questions with Gemini: ' . $e->getMessage());
 
-            // Fallback to local generation if API fails
-            return $this->localFallbackGeneration($courseContent, $numQuestions, $difficulty, $questionType, $language);
+            // Return empty array to let the controller handle fallback
+            return [];
         }
     }
 
@@ -242,8 +242,8 @@ class GeminiAIService
             Log::error('Error parsing Gemini response: ' . $e->getMessage());
             Log::error('Response content: ' . $response);
 
-            // Return fallback questions if parsing fails
-            return $this->createFallbackQuestions();
+            // Return empty array to let the controller handle fallback
+            return [];
         }
     }
 
@@ -254,12 +254,13 @@ class GeminiAIService
     {
         $validQuestions = [];
 
-        foreach ($questions as $question) {
+        foreach ($questions as $index => $question) {
             if (!isset($question['type']) || !isset($question['question'])) {
                 continue;
             }
 
             $formattedQuestion = [
+                'id' => $index + 1,
                 'type' => $question['type'],
                 'question' => $question['question'],
                 'difficulty' => 'medium', // Default difficulty
@@ -316,15 +317,27 @@ class GeminiAIService
             $sentence = $sentences[$i];
 
             if ($questionType === 'multiple_choice' || $questionType === 'mixed') {
+                // Generate better options based on content
+                $options = $language === 'ar' ? [
+                    'الأسس النظرية والمفاهيم الأساسية',
+                    'التطبيقات العملية والأمثلة',
+                    'الطرق والتقنيات المتقدمة',
+                    'الفهم الشامل لجميع المفاهيم'
+                ] : [
+                    'Theoretical foundations and basic concepts',
+                    'Practical applications and examples',
+                    'Advanced methods and techniques',
+                    'Comprehensive understanding of all concepts'
+                ];
+
                 $questions[] = [
+                    'id' => $i + 1,
                     'type' => 'multiple_choice',
                     'question' => $language === 'ar' ?
                         "ما هو المفهوم الرئيسي في: " . substr($sentence, 0, 100) . "...؟" :
                         "What is the main concept in: " . substr($sentence, 0, 100) . "...?",
-                    'options' => $language === 'ar' ?
-                        ['الخيار الأول', 'الخيار الثاني', 'الخيار الثالث', 'الخيار الرابع'] :
-                        ['Option A', 'Option B', 'Option C', 'Option D'],
-                    'correct_answer' => $language === 'ar' ? 'الخيار الأول' : 'Option A',
+                    'options' => $options,
+                    'correct_answer' => $options[3], // Last option is usually correct
                     'explanation' => $language === 'ar' ?
                         'هذا سؤال تم إنشاؤه تلقائياً للمراجعة.' :
                         'This is an automatically generated question for review.',
@@ -343,11 +356,12 @@ class GeminiAIService
     {
         return [
             [
+                'id' => 1,
                 'type' => 'multiple_choice',
-                'question' => 'ما هو أهم شيء تعلمته من هذا الكورس؟',
-                'options' => ['المفاهيم الأساسية', 'التطبيقات العملية', 'الأمثلة المقدمة', 'جميع ما سبق'],
-                'correct_answer' => 'جميع ما سبق',
-                'explanation' => 'الكورس يهدف إلى تعليم جميع هذه الجوانب.',
+                'question' => 'What is the most important thing you learned from this course?',
+                'options' => ['Basic concepts', 'Practical applications', 'Examples provided', 'All of the above'],
+                'correct_answer' => 'All of the above',
+                'explanation' => 'The course aims to teach all these aspects.',
                 'difficulty' => 'easy'
             ]
         ];

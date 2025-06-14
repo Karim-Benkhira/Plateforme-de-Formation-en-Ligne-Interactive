@@ -579,6 +579,24 @@
                                 AI-powered practice questions
                             </li>
                         </ul>
+
+                        <?php if($isEnrolled): ?>
+                            <!-- Quick AI Quiz Access -->
+                            <div class="mt-6 p-4 bg-gradient-to-r from-purple-600/20 to-indigo-600/20 rounded-xl border border-purple-500/30">
+                                <div class="flex items-center justify-between">
+                                    <div>
+                                        <h4 class="text-white font-medium mb-1">
+                                            <i class="fas fa-brain mr-2 text-purple-400"></i>AI Quiz Available
+                                        </h4>
+                                        <p class="text-gray-300 text-sm">Test your knowledge with AI-generated questions</p>
+                                    </div>
+                                    <a href="<?php echo e(route('student.ai.quiz', $course->id)); ?>"
+                                       class="bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-all inline-flex items-center">
+                                        <i class="fas fa-play mr-2"></i>Start Quiz
+                                    </a>
+                                </div>
+                            </div>
+                        <?php endif; ?>
                     </div>
                 </div>
             <?php endif; ?>
@@ -666,14 +684,14 @@
                 </a>
 
                 <?php if($isEnrolled): ?>
-                    <!-- AI Practice Questions Button -->
-                    <a href="<?php echo e(route('student.practice.dashboard', $course->id)); ?>"
-                       class="w-full block bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white font-medium py-4 px-4 rounded-xl transition-all transform hover:scale-105 shadow-lg">
+                    <!-- AI Quiz Button -->
+                    <a href="<?php echo e(route('student.ai.quiz', $course->id)); ?>"
+                       class="w-full block bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white font-medium py-4 px-4 rounded-xl transition-all transform hover:scale-105 shadow-lg">
                         <div class="text-center">
                             <div class="flex items-center justify-center mb-2">
-                                <i class="fas fa-robot text-xl mr-2"></i>
-                                <span class="font-bold">AI Practice Questions</span>
-                                <i class="fas fa-brain text-xl ml-2"></i>
+                                <i class="fas fa-brain text-xl mr-2"></i>
+                                <span class="font-bold">AI Quiz</span>
+                                <i class="fas fa-magic text-xl ml-2"></i>
                             </div>
                             <div class="text-sm opacity-90">
                                 <i class="fab fa-google mr-1"></i> Powered by Gemini AI

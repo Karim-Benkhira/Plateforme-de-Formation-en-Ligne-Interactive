@@ -228,6 +228,16 @@ Route::middleware(['auth','role:user'])->group(function () {
 
     Route::get('/student/achievements', [StudentController::class, 'showAchievements'])->name('student.achievements');
 
+    // Test Practice Questions
+    Route::get('/student/test-practice', function() {
+        return view('student.test-practice');
+    })->name('student.test.practice');
+
+    // AI Quiz Routes
+    Route::get('/student/ai-quiz/{courseId}', [App\Http\Controllers\AIQuizController::class, 'showAIQuiz'])->name('student.ai.quiz');
+    Route::post('/student/ai-quiz/{courseId}/generate', [App\Http\Controllers\AIQuizController::class, 'generateQuiz'])->name('student.ai.quiz.generate');
+    Route::post('/student/ai-quiz/{courseId}/submit', [App\Http\Controllers\AIQuizController::class, 'submitQuiz'])->name('student.ai.quiz.submit');
+
     // Practice Questions Routes
     Route::prefix('student/practice')->name('student.practice.')->group(function () {
         Route::get('/course/{courseId}', [PracticeQuestionController::class, 'dashboard'])->name('dashboard');
