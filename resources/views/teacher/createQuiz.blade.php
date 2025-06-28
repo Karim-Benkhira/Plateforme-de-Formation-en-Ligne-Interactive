@@ -636,6 +636,8 @@
                                 <div class="checkbox-desc">Enable secure exam mode with facial recognition to prevent cheating.</div>
                             </div>
                         </div>
+
+
                     </div>
                 </div>
 

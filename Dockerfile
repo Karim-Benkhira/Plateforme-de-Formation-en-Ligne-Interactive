@@ -16,7 +16,18 @@ RUN apt-get update && apt-get install -y \
     unzip \
     nodejs \
     npm \
-    libicu-dev
+    libicu-dev \
+    python3 \
+    python3-pip \
+    python3-dev \
+    cmake \
+    libopenblas-dev \
+    liblapack-dev \
+    libx11-dev \
+    libgtk-3-dev \
+    libboost-python-dev \
+    libdlib-dev \
+    libopencv-dev
 
 # Clear cache
 RUN apt-get clean && rm -rf /var/lib/apt/lists/*
@@ -51,6 +62,13 @@ USER $user
 # Install dependencies
 RUN composer install --no-interaction --optimize-autoloader --no-dev
 RUN npm install && npm run build
+
+# Install Python face recognition dependencies
+RUN pip3 install --break-system-packages \
+    opencv-python-headless \
+    face-recognition \
+    numpy \
+    Pillow
 
 # Expose port 9000 for PHP-FPM
 EXPOSE 9000

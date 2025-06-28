@@ -8,7 +8,7 @@ use App\Http\Controllers\CourseController;
 use App\Http\Controllers\StudentController;
 use App\Http\Controllers\QuizController;
 use App\Http\Controllers\ReclamationController;
-use App\Http\Controllers\FaceRecognitionController;
+
 use App\Http\Controllers\AnalyticsController;
 use App\Http\Controllers\AdaptiveLearningController;
 use App\Http\Controllers\ActivityLogController;
@@ -16,6 +16,7 @@ use App\Http\Controllers\SessionController;
 use App\Http\Controllers\TwoFactorAuthController;
 use App\Http\Controllers\TeacherController;
 use App\Http\Controllers\PracticeQuestionController;
+use App\Http\Controllers\FaceVerificationController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -43,23 +44,16 @@ Route::middleware(['auth'])->group(function () {
 // Other authenticated routes
 Route::middleware(['auth'])->group(function () {
 
-    // Face Recognition Routes
-    Route::prefix('face-recognition')->name('face.')->group(function () {
-        Route::get('/register', [FaceRecognitionController::class, 'showRegistration'])->name('register');
-        Route::get('/modern-register', [FaceRecognitionController::class, 'showModernRegistration'])->name('modern.register');
-        Route::get('/debug-register', [FaceRecognitionController::class, 'showDebugRegistration'])->name('debug.register');
-        Route::post('/register', [FaceRecognitionController::class, 'registerFace'])->name('register.post');
-        Route::post('/verify', [FaceRecognitionController::class, 'verifyFace'])->name('verify');
-        Route::get('/data', [FaceRecognitionController::class, 'getFaceData'])->name('data');
 
-        // Exam session routes
-        Route::post('/exam-session/{quizId}', [FaceRecognitionController::class, 'startExamSession'])->name('exam.session.start');
-        Route::post('/terminate-session/{sessionId}', [FaceRecognitionController::class, 'terminateSession'])->name('exam.session.terminate');
 
-        // Exam monitoring (for teachers/admins)
-        Route::get('/monitoring', [FaceRecognitionController::class, 'showExamMonitoring'])
-            ->name('exam.monitoring')
-            ->middleware('role:teacher,admin');
+    // Face Verification Routes
+    Route::prefix('face-verification')->name('face-verification.')->group(function () {
+        Route::get('/photo-upload', [FaceVerificationController::class, 'showPhotoUpload'])->name('photo-upload');
+        Route::post('/photo-upload', [FaceVerificationController::class, 'uploadPhoto'])->name('photo-upload.store');
+        Route::delete('/photo', [FaceVerificationController::class, 'deletePhoto'])->name('photo.delete');
+        Route::get('/exam/{quizId}', [FaceVerificationController::class, 'showExamVerification'])->name('exam');
+        Route::post('/verify-exam', [FaceVerificationController::class, 'verifyForExam'])->name('verify-exam');
+        Route::get('/test-service', [FaceVerificationController::class, 'testService'])->name('test-service');
     });
 
     // Two-Factor Authentication Routes
@@ -173,7 +167,7 @@ Route::middleware(['role:admin'])->group(function () {
     Route::get('/admin/analytics/student/{studentId}/report', [AnalyticsController::class, 'downloadStudentReport'])->name('admin.analytics.student.report');
 });
 
-Route::middleware(['auth','role:user'])->group(function () {
+Route::middleware(['auth','role:user','student.photo'])->group(function () {
     Route::get('/student', [StudentController::class, 'index'])->name('student.dashboard');
     Route::get('/student/courses', [StudentController::class, 'showCourses'])->name('student.courses');
     Route::get('/student/courses/{id}', [StudentController::class, 'showCourse'])->name('student.showCourse');
@@ -214,12 +208,11 @@ Route::middleware(['auth','role:user'])->group(function () {
     Route::post('/student/adaptive-learning/practice/submit', [AdaptiveLearningController::class, 'processPracticeAnswers'])->name('student.adaptiveLearning.practice.submit');
     Route::get('/student/adaptive-learning/question-demo', [AdaptiveLearningController::class, 'interactiveQuestionDemo'])->name('student.adaptiveLearning.questionDemo');
 
-    Route::get('/student/quiz/{id}', [QuizController::class, 'takeQuiz'])->name('student.quiz');
+    Route::get('/student/quiz/{id}', [QuizController::class, 'takeQuiz'])->name('student.quiz')->middleware('face.verification');
     Route::get('/student/quiz/result', [StudentController::class, 'showQuizResult'])->name('student.quizResult');
     Route::post('/quiz/submit', [QuizController::class, 'submitQuiz'])->name('student.submitQuiz');
 
-    // Secure Exam with Face Recognition
-    Route::get('/student/secure-exam/{quizId}', [FaceRecognitionController::class, 'showExamVerification'])->name('student.secureExam');
+
 
     Route::get('/student/leaderboard', [StudentController::class, 'showLeaderboard'])->name('student.leaderboard');
 

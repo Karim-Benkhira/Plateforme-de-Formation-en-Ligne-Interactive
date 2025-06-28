@@ -490,7 +490,7 @@
                                 <input type="hidden" name="passing_score" value="{{ $quiz->passing_score ?? 70 }}">
                                 <input type="hidden" name="attempts_allowed" value="{{ $quiz->attempts_allowed ?? 1 }}">
                                 <input type="hidden" name="is_published" value="1">
-                                <input type="hidden" name="requires_face_verification" value="{{ $quiz->requires_face_verification ? '1' : '0' }}">
+
 
                                 <button type="submit" class="btn btn-blue">
                                     <i class="fas fa-check-circle mr-2"></i>

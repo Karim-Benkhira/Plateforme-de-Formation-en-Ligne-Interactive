@@ -114,12 +114,18 @@
                 </div>
             </div>
 
-            <div class="flex items-center">
-                <input type="checkbox" name="requires_face_verification" id="requires_face_verification" value="1" class="w-5 h-5 bg-gray-700 border-gray-600 rounded text-purple-600 focus:ring-purple-500" {{ old('requires_face_verification') ? 'checked' : '' }}>
+            <div class="flex items-center mt-4">
+                <input type="checkbox" name="requires_face_verification" id="requires_face_verification" value="1" class="w-5 h-5 bg-gray-700 border-gray-600 rounded text-blue-600 focus:ring-blue-500" {{ old('requires_face_verification') ? 'checked' : '' }}>
                 <label for="requires_face_verification" class="ml-2 text-gray-300">Require face verification</label>
                 <div class="ml-2 group relative">
                     <i class="fas fa-info-circle text-gray-500 cursor-help"></i>
                     <div class="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 w-48 p-2 bg-gray-800 text-xs text-gray-300 rounded shadow-lg opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none">
+                        Students will need to verify their identity with facial recognition before taking this exam
+                    </div>
+                </div>
+            </div>
+
+
                         Students will need to verify their identity with facial recognition before taking the quiz
                     </div>
                 </div>

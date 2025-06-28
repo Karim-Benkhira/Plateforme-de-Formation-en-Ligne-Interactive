@@ -184,11 +184,12 @@
 
                     <div class="bg-gray-800/50 p-4 rounded-lg border border-gray-700/50">
                         <div class="flex items-center">
-                            <input type="checkbox" name="requires_face_verification" id="requires_face_verification" value="1" class="h-5 w-5 text-yellow-600 focus:ring-yellow-500 border-gray-700 bg-gray-700 rounded" {{ old('requires_face_verification') ? 'checked' : '' }}>
+                            <input type="checkbox" name="requires_face_verification" id="requires_face_verification" value="1" class="h-5 w-5 text-blue-600 focus:ring-blue-500 border-gray-700 bg-gray-700 rounded" {{ old('requires_face_verification') ? 'checked' : '' }}>
                             <label for="requires_face_verification" class="ml-2 text-gray-300 font-medium">Require face verification</label>
                         </div>
                         <p class="text-sm text-gray-400 mt-1 ml-7">Students will need to verify their identity with facial recognition</p>
                     </div>
+
                 </div>
             </div>
 

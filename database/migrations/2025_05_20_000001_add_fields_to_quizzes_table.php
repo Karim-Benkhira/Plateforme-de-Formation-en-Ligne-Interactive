@@ -17,8 +17,7 @@ return new class extends Migration
             $table->integer('passing_score')->default(70)->after('duration');
             $table->integer('attempts_allowed')->default(1)->after('passing_score');
             $table->boolean('is_published')->default(false)->after('attempts_allowed');
-            $table->boolean('requires_face_verification')->default(false)->after('is_published');
-            $table->foreignId('creator_id')->nullable()->after('requires_face_verification')->constrained('users')->onDelete('set null');
+            $table->foreignId('creator_id')->nullable()->after('is_published')->constrained('users')->onDelete('set null');
         });
     }
 
@@ -35,7 +34,6 @@ return new class extends Migration
                 'passing_score',
                 'attempts_allowed',
                 'is_published',
-                'requires_face_verification',
                 'creator_id'
             ]);
         });

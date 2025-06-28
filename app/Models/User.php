@@ -77,20 +77,30 @@ class User extends Authenticatable
         return $this->hasMany(QuizResult::class);
     }
 
+
+
     /**
-     * Get the face data associated with the user.
+     * Get the student photo associated with the user.
      */
-    public function faceData()
+    public function studentPhoto()
     {
-        return $this->hasOne(FaceData::class);
+        return $this->hasOne(StudentPhoto::class);
     }
 
     /**
-     * Check if the user has registered their face.
+     * Check if the user has uploaded a photo for verification.
      */
-    public function hasFaceRegistered()
+    public function hasStudentPhoto()
     {
-        return $this->faceData && $this->faceData->face_descriptor !== null;
+        return $this->studentPhoto !== null;
+    }
+
+    /**
+     * Check if the user's photo is verified for face recognition.
+     */
+    public function isPhotoVerified()
+    {
+        return $this->studentPhoto && $this->studentPhoto->is_verified;
     }
 
     /**

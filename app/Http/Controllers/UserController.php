@@ -95,6 +95,12 @@ class UserController extends Controller
             \Illuminate\Support\Facades\Log::info('User registered as ' . $roleLabel . ': ' . $request->email);
 
             $user->save();
+
+            // For students, redirect to photo upload after login
+            if ($user->role === 'user') {
+                return redirect()->route('login')->with('success', 'Registration successful! After logging in, you\'ll need to upload a photo for exam verification.');
+            }
+
             return redirect()->route('login')->with('success', 'Registration successful. Please log in.');
         } catch (\Exception $e) {
             // Log the error
@@ -203,6 +209,11 @@ class UserController extends Controller
             } elseif ($user->role === 'teacher') {
                 return redirect()->route('teacher.dashboard');
             } else {
+                // For students, check if they need to upload a photo
+                if (!$user->hasStudentPhoto()) {
+                    return redirect()->route('face-verification.photo-upload')
+                        ->with('info', 'Please upload a photo to enable face verification for secure exams.');
+                }
                 return redirect()->route('student.dashboard');
             }
         }
