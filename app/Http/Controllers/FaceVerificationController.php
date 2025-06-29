@@ -77,24 +77,89 @@ class FaceVerificationController extends Controller
                 // Decode base64
                 $decodedImage = base64_decode($imageData);
                 if ($decodedImage === false) {
+                    Log::error('Failed to decode base64 image data');
                     return back()->with('error', 'Invalid image data.');
                 }
 
                 // Generate filename
                 $filename = 'student_photos/' . $user->id . '_' . time() . '.jpg';
 
-                // Store the image
-                Storage::put('public/' . $filename, $decodedImage);
+                // Store the image with error checking using native PHP file operations
+                try {
+                    $fullPath = storage_path('app/public/' . $filename);
+                    $directory = dirname($fullPath);
+
+                    // Ensure directory exists
+                    if (!is_dir($directory)) {
+                        mkdir($directory, 0755, true);
+                    }
+
+                    $bytesWritten = file_put_contents($fullPath, $decodedImage);
+                    if ($bytesWritten === false) {
+                        Log::error("file_put_contents failed for file: {$fullPath}");
+                        return back()->with('error', 'Failed to save photo file.');
+                    }
+
+                    Log::info("Successfully stored captured image: {$fullPath} ({$bytesWritten} bytes)");
+                } catch (\Exception $e) {
+                    Log::error("File storage exception: " . $e->getMessage());
+                    return back()->with('error', 'Failed to save photo file: ' . $e->getMessage());
+                }
             } else {
                 // Handle uploaded file
                 $photo = $request->file('photo');
-                $filename = 'student_photos/' . $user->id . '_' . time() . '.' . $photo->getClientOriginalExtension();
-                $path = $photo->storeAs('public', $filename);
+                $baseFilename = $user->id . '_' . time() . '.' . $photo->getClientOriginalExtension();
+
+                try {
+                    $filename = 'student_photos/' . $baseFilename;
+                    $fullPath = storage_path('app/public/' . $filename);
+                    $directory = dirname($fullPath);
+
+                    // Ensure directory exists
+                    if (!is_dir($directory)) {
+                        mkdir($directory, 0755, true);
+                    }
+
+                    // Move uploaded file to destination
+                    $moved = $photo->move($directory, $baseFilename);
+                    if (!$moved) {
+                        Log::error("Failed to move uploaded file to: {$fullPath}");
+                        return back()->with('error', 'Failed to save uploaded file.');
+                    }
+
+                    Log::info("Successfully stored uploaded file: {$fullPath}");
+                } catch (\Exception $e) {
+                    Log::error("Upload storage exception: " . $e->getMessage());
+                    return back()->with('error', 'Failed to save uploaded file: ' . $e->getMessage());
+                }
             }
 
             // Process the photo for face recognition
+            $fullPath = storage_path('app/public/' . $filename);
+
+            // Add debug logging
+            Log::info("Photo upload debug - Filename: {$filename}");
+            Log::info("Photo upload debug - Full path: {$fullPath}");
+            Log::info("Photo upload debug - File exists: " . (file_exists($fullPath) ? 'Yes' : 'No'));
+
+            // Wait a moment to ensure file is written to disk
+            if (!file_exists($fullPath)) {
+                // Wait up to 3 seconds for file to be written
+                $attempts = 0;
+                while (!file_exists($fullPath) && $attempts < 30) {
+                    usleep(100000); // 100ms
+                    $attempts++;
+                }
+
+                if (!file_exists($fullPath)) {
+                    Log::error("File still not found after waiting: {$fullPath}");
+                    Storage::delete('public/' . $filename);
+                    return back()->with('error', 'Failed to save photo file. Please try again.');
+                }
+            }
+
             $result = $this->faceVerificationService->processStudentPhoto(
-                storage_path('app/public/' . $filename),
+                $fullPath,
                 $user->id
             );
 

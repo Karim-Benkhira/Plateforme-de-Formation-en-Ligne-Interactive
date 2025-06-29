@@ -32,8 +32,19 @@ class FaceVerificationService
         try {
             Log::info("Processing student photo for user {$userId}: {$imagePath}");
 
+            // Add detailed debugging
+            Log::info("FaceVerificationService debug - Checking path: {$imagePath}");
+            Log::info("FaceVerificationService debug - File exists: " . (file_exists($imagePath) ? 'Yes' : 'No'));
+            Log::info("FaceVerificationService debug - Directory exists: " . (file_exists(dirname($imagePath)) ? 'Yes' : 'No'));
+
+            if (file_exists($imagePath)) {
+                Log::info("FaceVerificationService debug - File size: " . filesize($imagePath) . " bytes");
+                Log::info("FaceVerificationService debug - File permissions: " . substr(sprintf('%o', fileperms($imagePath)), -4));
+            }
+
             // Verify the image file exists
             if (!file_exists($imagePath)) {
+                Log::error("FaceVerificationService - Image file not found at: {$imagePath}");
                 return [
                     'success' => false,
                     'message' => 'Image file not found'
