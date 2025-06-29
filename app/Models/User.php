@@ -233,4 +233,12 @@ class User extends Authenticatable
     {
         return $this->hasMany(\App\Models\PracticeQuestion::class);
     }
+
+    /**
+     * Get the practice sessions for the student.
+     */
+    public function practiceSessions()
+    {
+        return $this->hasMany(\App\Models\PracticeSession::class);
+    }
 }

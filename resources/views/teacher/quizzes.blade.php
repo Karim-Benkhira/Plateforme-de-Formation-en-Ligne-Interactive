@@ -170,17 +170,7 @@
     </div>
 
     <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <a href="{{ route('teacher.courses') }}" class="bg-gray-900/30 rounded-2xl p-6 border border-yellow-500/20 hover:border-yellow-400/50 transition-all card-hover">
-            <div class="flex items-center">
-                <div class="p-4 rounded-2xl bg-gradient-to-br from-yellow-500 to-orange-600 mr-4 shadow-lg">
-                    <i class="fas fa-lightbulb text-white text-xl"></i>
-                </div>
-                <div>
-                    <h3 class="text-lg font-bold text-white mb-1">AI Quiz Generation</h3>
-                    <p class="text-gray-400 text-sm">Create quizzes automatically from your course content</p>
-                </div>
-            </div>
-        </a>
+        <!-- AI Quiz Generation removed - now only available in student practice section -->
         <a href="{{ route('teacher.analytics') }}" class="bg-gray-900/30 rounded-2xl p-6 border border-blue-500/20 hover:border-blue-400/50 transition-all card-hover">
             <div class="flex items-center">
                 <div class="p-4 rounded-2xl bg-gradient-to-br from-blue-500 to-cyan-600 mr-4 shadow-lg">

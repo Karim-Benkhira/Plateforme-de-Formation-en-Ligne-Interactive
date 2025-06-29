@@ -36,9 +36,11 @@ Route::middleware(['auth', 'two-factor.challenge'])->group(function () {
     Route::post('/two-factor-challenge', [TwoFactorAuthController::class, 'verifyChallenge']);
 });
 
-// Logout route without prevent.concurrent.logins middleware
+// Logout routes without prevent.concurrent.logins middleware
 Route::middleware(['auth'])->group(function () {
     Route::post('logout', [UserController::class, 'LogOut'])->name('logout');
+    // Handle GET requests to logout by redirecting to a logout confirmation or directly logging out
+    Route::get('logout', [UserController::class, 'handleGetLogout'])->name('logout.get');
 });
 
 // Other authenticated routes
@@ -134,10 +136,7 @@ Route::middleware(['role:admin'])->group(function () {
     Route::put('/admin/questions/{id}', [QuizController::class, 'updateQuestion'])->name('admin.updateQuestion');
     Route::delete('/admin/questions/{id}', [QuizController::class, 'deleteQuestion'])->name('admin.deleteQuestion');
 
-    // AI Quiz Generation
-    Route::get('/admin/courses/{courseId}/generate-quiz', [QuizController::class, 'showGenerateAIQuiz'])->name('admin.showGenerateAIQuiz');
-    Route::post('/admin/courses/{courseId}/generate-quiz', [QuizController::class, 'generateAIQuiz'])->name('admin.generateAIQuiz');
-    Route::post('/admin/courses/{courseId}/preview-quiz', [QuizController::class, 'previewAIQuiz'])->name('admin.previewAIQuiz');
+    // AI Quiz Generation removed - now only available in student AI practice section
 
     Route::get('/admin/courses', [AdminController::class, 'showCourses'])->name('admin.courses');
     Route::get('/admin/courses/create', [AdminController::class, 'createCourse'])->name('admin.createCourse');
@@ -209,6 +208,7 @@ Route::middleware(['auth','role:user','student.photo'])->group(function () {
     Route::get('/student/adaptive-learning/question-demo', [AdaptiveLearningController::class, 'interactiveQuestionDemo'])->name('student.adaptiveLearning.questionDemo');
 
     Route::get('/student/quiz/{id}', [QuizController::class, 'takeQuiz'])->name('student.quiz')->middleware('face.verification');
+    Route::get('/student/secure-exam/{id}', [StudentController::class, 'showSecureExam'])->name('student.secureExam');
     Route::get('/student/quiz/result', [StudentController::class, 'showQuizResult'])->name('student.quizResult');
     Route::post('/quiz/submit', [QuizController::class, 'submitQuiz'])->name('student.submitQuiz');
 
@@ -221,12 +221,8 @@ Route::middleware(['auth','role:user','student.photo'])->group(function () {
 
     Route::get('/student/achievements', [StudentController::class, 'showAchievements'])->name('student.achievements');
 
-    // Test Practice Questions
-    Route::get('/student/test-practice', function() {
-        return view('student.test-practice');
-    })->name('student.test.practice');
-
-    // AI Quiz Routes
+    // AI Practice Routes
+    Route::get('/student/ai-practice', [App\Http\Controllers\AIQuizController::class, 'showAIPractice'])->name('student.ai.practice');
     Route::get('/student/ai-quiz/{courseId}', [App\Http\Controllers\AIQuizController::class, 'showAIQuiz'])->name('student.ai.quiz');
     Route::post('/student/ai-quiz/{courseId}/generate', [App\Http\Controllers\AIQuizController::class, 'generateQuiz'])->name('student.ai.quiz.generate');
     Route::post('/student/ai-quiz/{courseId}/submit', [App\Http\Controllers\AIQuizController::class, 'submitQuiz'])->name('student.ai.quiz.submit');
@@ -343,21 +339,14 @@ Route::middleware(['auth','role:teacher'])->group(function () {
     Route::put('/teacher/questions/{id}', [QuizController::class, 'updateQuestion'])->name('teacher.updateQuestion');
     Route::delete('/teacher/questions/{id}', [QuizController::class, 'deleteQuestion'])->name('teacher.deleteQuestion');
 
-    // AI Quiz Generation
-    Route::get('/teacher/courses/{courseId}/generate-quiz', function($courseId) {
-        $course = \App\Models\Course::where('id', $courseId)
-            ->where('creator_id', \Illuminate\Support\Facades\Auth::id())
-            ->firstOrFail();
-
-        return view('teacher.generateAIQuiz-updated', [
-            'course' => $course
-        ]);
-    })->name('teacher.generate-quiz');
-    Route::post('/teacher/courses/{courseId}/generate-quiz', [QuizController::class, 'generateAIQuiz'])->name('teacher.generate-quiz.store');
+    // AI Quiz Generation removed - now only available in student AI practice section
 
     // Analytics
     Route::get('/teacher/analytics', [TeacherController::class, 'showAnalytics'])->name('teacher.analytics');
     Route::get('/teacher/analytics/course/{courseId}', [TeacherController::class, 'showCourseAnalytics'])->name('teacher.course-analytics');
+
+    // Face Verification Monitoring
+    Route::get('/teacher/face-verification', [TeacherController::class, 'showFaceVerificationStatus'])->name('teacher.face-verification');
 
     // Enrollment Management
     Route::prefix('teacher/enrollments')->name('teacher.enrollments.')->group(function () {

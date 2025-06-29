@@ -176,13 +176,23 @@ docker-compose exec app composer install --no-dev --optimize-autoloader
 docker-compose exec app php artisan storage:link --force
 ```
 
-## 👥 Comptes de démonstration
+## 👥 Comptes par défaut
 
-| Rôle       | Email                | Mot de passe |
-|------------|----------------------|--------------|
-| Admin      | test@example.com     | admin123     |
-| Enseignant | teacher@example.com  | password     |
-| Étudiant   | student@example.com  | password     |
+**Ces comptes sont automatiquement créés lors de l'exécution de `php artisan migrate --seed`**
+
+| Rôle       | Email                | Mot de passe | Nom d'utilisateur |
+|------------|----------------------|--------------|-------------------|
+| **Admin**  | test@example.com     | password     | testadmin         |
+| **Admin**  | admin@test.com       | password     | admin             |
+| **Enseignant** | teacher@test.com | password     | teacher           |
+| **Étudiant** | student@test.com   | password     | student           |
+
+### 🚀 Accès rapide
+1. Aller à: `http://localhost:8000/login`
+2. Utiliser n'importe quel compte ci-dessus
+3. Mot de passe pour tous: `password`
+
+> **Note**: Ces comptes sont créés automatiquement par le seeder et seront disponibles sur toute nouvelle installation du projet.
 
 ## 🚀 Fonctionnalités principales
 

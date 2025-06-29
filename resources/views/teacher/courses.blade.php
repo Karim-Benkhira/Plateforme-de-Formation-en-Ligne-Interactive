@@ -117,11 +117,7 @@
                                 <i class="fas fa-eye mr-2"></i>
                                 View
                             </a>
-                            <a href="{{ route('teacher.generate-quiz', $course->id) }}"
-                               class="flex-1 bg-gradient-to-r from-purple-500 to-pink-600 hover:from-purple-600 hover:to-pink-700 text-white py-3 px-4 rounded-xl text-center transition-all font-medium shadow-lg">
-                                <i class="fas fa-magic mr-2"></i>
-                                AI Quiz
-                            </a>
+                            <!-- AI Quiz Generation removed - now only available in student practice section -->
                             <a href="{{ route('teacher.course-analytics', $course->id) }}"
                                class="bg-gradient-to-r from-blue-500 to-cyan-600 hover:from-blue-600 hover:to-cyan-700 text-white py-3 px-4 rounded-xl transition-all shadow-lg">
                                 <i class="fas fa-chart-bar"></i>

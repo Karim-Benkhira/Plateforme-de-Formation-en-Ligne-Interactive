@@ -18,6 +18,7 @@ class PracticeQuestion extends Model
     protected $fillable = [
         'user_id',
         'course_id',
+        'session_id',
         'type',
         'question',
         'options',
@@ -29,8 +30,14 @@ class PracticeQuestion extends Model
         'language',
         'is_ai_generated',
         'ai_service',
+        'content_context',
+        'content_keywords',
+        'generation_method',
+        'generation_metadata',
         'user_answer',
         'is_correct',
+        'time_spent_seconds',
+        'attempts_count',
         'answered_at',
     ];
 
@@ -42,6 +49,8 @@ class PracticeQuestion extends Model
     protected $casts = [
         'options' => 'array',
         'key_points' => 'array',
+        'content_keywords' => 'array',
+        'generation_metadata' => 'array',
         'is_ai_generated' => 'boolean',
         'is_correct' => 'boolean',
         'answered_at' => 'datetime',
@@ -61,6 +70,14 @@ class PracticeQuestion extends Model
     public function course(): BelongsTo
     {
         return $this->belongsTo(Course::class);
+    }
+
+    /**
+     * Get the practice session that owns this question.
+     */
+    public function practiceSession(): BelongsTo
+    {
+        return $this->belongsTo(PracticeSession::class, 'session_id', 'session_id');
     }
 
     /**

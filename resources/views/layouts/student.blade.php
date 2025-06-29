@@ -236,6 +236,10 @@
                         <i class="fas fa-graduation-cap"></i>
                         <span x-show="sidebarOpen">My Courses</span>
                     </a>
+                    <a href="{{ route('student.ai.practice') }}" class="sidebar-link {{ request()->routeIs('student.ai.*') ? 'active' : '' }}">
+                        <i class="fas fa-robot"></i>
+                        <span x-show="sidebarOpen">AI Practice</span>
+                    </a>
                     <a href="{{ route('student.progress') }}" class="sidebar-link {{ request()->routeIs('student.progress') ? 'active' : '' }}">
                         <i class="fas fa-chart-line"></i>
                         <span x-show="sidebarOpen">My Progress</span>

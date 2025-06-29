@@ -4,29 +4,46 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Course;
+use App\Models\PracticeSession;
+use App\Models\PracticeQuestion;
 use App\Services\GeminiAIService;
-use App\Services\StudentPracticeService;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Str;
 
 class AIQuizController extends Controller
 {
     protected $geminiService;
-    protected $practiceService;
 
-    public function __construct(GeminiAIService $geminiService, StudentPracticeService $practiceService)
+    public function __construct(GeminiAIService $geminiService)
     {
         $this->geminiService = $geminiService;
-        $this->practiceService = $practiceService;
     }
 
     /**
-     * Show AI Quiz page for a course
+     * Show AI Practice dashboard with all available courses
+     */
+    public function showAIPractice()
+    {
+        return view('student.ai-practice');
+    }
+
+    /**
+     * Show AI Quiz page for a specific course
      */
     public function showAIQuiz($courseId)
     {
         $course = Course::findOrFail($courseId);
-        
+
+        // Check if user is enrolled and approved for this course
+        $user = Auth::user();
+        $enrollment = $user->enrolledCourses()->where('course_id', $courseId)->first();
+
+        if (!$enrollment || $enrollment->pivot->status !== 'approved') {
+            return redirect()->route('student.ai.practice')
+                ->with('error', 'You must be enrolled and approved for this course to access AI practice questions.');
+        }
+
         return view('student.ai-quiz', compact('course'));
     }
 
@@ -85,9 +102,13 @@ class AIQuizController extends Controller
 
             Log::info('Final questions to return: ' . json_encode($questions));
 
+            // Create practice session and save questions to database
+            $sessionData = $this->savePracticeSession($course, $request, $questions, $courseContent, !empty($questions));
+
             return response()->json([
                 'success' => true,
-                'questions' => $questions
+                'questions' => $questions,
+                'session_id' => $sessionData['session_id']
             ]);
 
         } catch (\Exception $e) {
@@ -104,55 +125,440 @@ class AIQuizController extends Controller
 
             Log::info('Generated fallback questions: ' . json_encode($fallbackQuestions));
 
+            // Create practice session for fallback questions
+            $sessionData = $this->savePracticeSession($course, $request, $fallbackQuestions, 'General course content', false);
+
             return response()->json([
                 'success' => true,
                 'questions' => $fallbackQuestions,
+                'session_id' => $sessionData['session_id'],
                 'message' => 'Generated using fallback system'
             ]);
         }
     }
 
     /**
-     * Extract content from course
+     * Extract comprehensive content from course for AI analysis
      */
     protected function extractCourseContent(Course $course)
     {
-        $content = '';
+        $content = [];
 
-        // Get course title and description
-        $content .= "Course Title: " . $course->title . "\n\n";
-        $content .= "Course Description: " . $course->description . "\n\n";
+        // Add course basic information
+        $content[] = "Course Title: " . $course->title;
+        $content[] = "Course Description: " . $course->description;
+        $content[] = "Course Level: " . ucfirst($course->level ?? 'beginner');
 
-        // Get course contents
-        $content .= "Course Content:\n";
-        
+        if ($course->category) {
+            $content[] = "Course Category: " . $course->category->name;
+        }
+
+        // Extract content from legacy Contents table
+        $legacyContent = $this->extractLegacyContent($course);
+        if (!empty($legacyContent)) {
+            $content[] = "Course Materials:";
+            $content[] = $legacyContent;
+        }
+
+        // Extract content from Sections and Lessons (newer structure)
+        $sectionsContent = $this->extractSectionsContent($course);
+        if (!empty($sectionsContent)) {
+            $content[] = "Course Lessons:";
+            $content[] = $sectionsContent;
+        }
+
+        // Combine all content
+        $fullContent = implode("\n\n", array_filter($content));
+
+        // If still no substantial content, create a meaningful fallback
+        if (strlen($fullContent) < 200) {
+            $fallbackContent = $this->generateFallbackContent($course);
+            $fullContent .= "\n\n" . $fallbackContent;
+        }
+
+        // Limit content length for API efficiency (max 12000 characters)
+        if (strlen($fullContent) > 12000) {
+            $fullContent = substr($fullContent, 0, 12000) . "\n\n[Content truncated for processing efficiency]";
+        }
+
+        return $fullContent;
+    }
+
+    /**
+     * Extract content from legacy Contents table
+     */
+    protected function extractLegacyContent(Course $course)
+    {
+        $contentParts = [];
+
         if ($course->contents) {
             foreach ($course->contents as $courseContent) {
-                if ($courseContent->type === 'text') {
-                    $content .= "- " . $courseContent->file . "\n\n";
-                } elseif ($courseContent->type === 'youtube') {
-                    $content .= "- Video content: " . $courseContent->title . "\n\n";
-                } elseif ($courseContent->type === 'video') {
-                    $content .= "- Video content: " . $courseContent->title . "\n\n";
-                } elseif ($courseContent->type === 'pdf') {
-                    $content .= "- PDF document: " . $courseContent->title . "\n\n";
+                switch ($courseContent->type) {
+                    case 'text':
+                        if (!empty($courseContent->content)) {
+                            $contentParts[] = "Text Content: " . $courseContent->content;
+                        } elseif (!empty($courseContent->file)) {
+                            $contentParts[] = "Text File: " . $courseContent->file;
+                        }
+                        break;
+
+                    case 'youtube':
+                        $videoInfo = $this->extractYouTubeInfo($courseContent->file);
+                        $contentParts[] = "YouTube Video: " . $videoInfo;
+                        break;
+
+                    case 'video':
+                        $contentParts[] = "Video Content: " . ($courseContent->title ?? 'Course Video');
+                        break;
+
+                    case 'pdf':
+                        $pdfContent = $this->extractPDFContent($courseContent->file);
+                        if (!empty($pdfContent)) {
+                            $contentParts[] = "PDF Content: " . $pdfContent;
+                        } else {
+                            $contentParts[] = "PDF Document: " . ($courseContent->title ?? 'Course Document');
+                        }
+                        break;
                 }
             }
         }
 
-        // If no content was found, add a fallback message
-        if (strlen($content) < 100) {
-            $content .= "This course covers topics related to " . $course->title . ".\n";
-            $content .= "Key concepts include theoretical foundations and practical applications.\n";
-        }
-
-        return $content;
+        return implode("\n\n", $contentParts);
     }
 
     /**
-     * Generate fallback questions when AI fails
+     * Extract content from Sections and Lessons
+     */
+    protected function extractSectionsContent(Course $course)
+    {
+        $contentParts = [];
+
+        $sections = $course->publishedSections()->with('publishedLessons')->get();
+
+        foreach ($sections as $section) {
+            $sectionContent = [];
+            $sectionContent[] = "Section: " . $section->title;
+
+            if (!empty($section->description)) {
+                $sectionContent[] = "Section Description: " . $section->description;
+            }
+
+            foreach ($section->publishedLessons as $lesson) {
+                $lessonContent = $this->extractLessonContent($lesson);
+                if (!empty($lessonContent)) {
+                    $sectionContent[] = $lessonContent;
+                }
+            }
+
+            if (count($sectionContent) > 1) { // More than just section title
+                $contentParts[] = implode("\n", $sectionContent);
+            }
+        }
+
+        return implode("\n\n", $contentParts);
+    }
+
+    /**
+     * Extract content from individual lesson
+     */
+    protected function extractLessonContent($lesson)
+    {
+        $lessonParts = [];
+        $lessonParts[] = "Lesson: " . $lesson->title;
+
+        if (!empty($lesson->description)) {
+            $lessonParts[] = "Description: " . $lesson->description;
+        }
+
+        switch ($lesson->content_type) {
+            case 'text':
+                if (!empty($lesson->content_text)) {
+                    $lessonParts[] = "Content: " . $lesson->content_text;
+                }
+                break;
+
+            case 'video':
+                $videoInfo = $this->extractVideoInfo($lesson);
+                $lessonParts[] = $videoInfo;
+                break;
+
+            case 'pdf':
+                if (!empty($lesson->content_file)) {
+                    $pdfContent = $this->extractPDFContent($lesson->content_file);
+                    if (!empty($pdfContent)) {
+                        $lessonParts[] = "PDF Content: " . $pdfContent;
+                    } else {
+                        $lessonParts[] = "PDF Document: " . $lesson->title;
+                    }
+                }
+                break;
+        }
+
+        return implode("\n", $lessonParts);
+    }
+
+    /**
+     * Extract information from YouTube videos
+     */
+    protected function extractYouTubeInfo($url)
+    {
+        if (empty($url)) {
+            return "YouTube Video Content";
+        }
+
+        // Extract video ID for potential future transcript extraction
+        preg_match('/(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/', $url, $matches);
+        $videoId = $matches[1] ?? null;
+
+        if ($videoId) {
+            return "YouTube Video (ID: $videoId) - Educational content related to " . $this->course->title ?? 'course topic';
+        }
+
+        return "YouTube Video - Educational content";
+    }
+
+    /**
+     * Extract video information from lesson
+     */
+    protected function extractVideoInfo($lesson)
+    {
+        $info = "Video Content: " . $lesson->title;
+
+        if ($lesson->video_provider === 'youtube' && !empty($lesson->video_id)) {
+            $info .= " (YouTube Video ID: " . $lesson->video_id . ")";
+        } elseif (!empty($lesson->content_url)) {
+            $info .= " (Video URL: " . $lesson->content_url . ")";
+        }
+
+        if ($lesson->duration) {
+            $info .= " - Duration: " . $lesson->duration . " minutes";
+        }
+
+        return $info;
+    }
+
+    /**
+     * Extract text content from PDF files (placeholder for future implementation)
+     */
+    protected function extractPDFContent($filePath)
+    {
+        // TODO: Implement PDF text extraction using libraries like:
+        // - spatie/pdf-to-text
+        // - smalot/pdfparser
+        // For now, return empty to avoid errors
+
+        // Placeholder logic - in a real implementation, you would:
+        // 1. Check if file exists in storage
+        // 2. Use PDF parsing library to extract text
+        // 3. Clean and format the extracted text
+        // 4. Return the text content
+
+        return '';
+    }
+
+    /**
+     * Generate meaningful fallback content when no content is available
+     */
+    protected function generateFallbackContent(Course $course)
+    {
+        $fallback = [];
+
+        $fallback[] = "This course covers comprehensive topics related to " . $course->title . ".";
+
+        // Generate content based on course title keywords
+        $titleWords = explode(' ', strtolower($course->title));
+        $relevantTopics = [];
+
+        // Map common educational keywords to topics
+        $topicMap = [
+            'programming' => ['algorithms', 'data structures', 'coding best practices', 'debugging techniques'],
+            'web' => ['HTML', 'CSS', 'JavaScript', 'responsive design', 'web development'],
+            'development' => ['software engineering', 'project management', 'testing', 'deployment'],
+            'database' => ['SQL', 'data modeling', 'database design', 'queries'],
+            'security' => ['cybersecurity', 'encryption', 'authentication', 'network security'],
+            'design' => ['user interface', 'user experience', 'visual design', 'prototyping'],
+            'marketing' => ['digital marketing', 'social media', 'content strategy', 'analytics'],
+            'business' => ['management', 'strategy', 'operations', 'leadership'],
+            'data' => ['data analysis', 'statistics', 'visualization', 'machine learning'],
+            'mobile' => ['app development', 'iOS', 'Android', 'mobile UI/UX']
+        ];
+
+        foreach ($titleWords as $word) {
+            if (isset($topicMap[$word])) {
+                $relevantTopics = array_merge($relevantTopics, $topicMap[$word]);
+            }
+        }
+
+        if (!empty($relevantTopics)) {
+            $fallback[] = "Key topics include: " . implode(', ', array_slice($relevantTopics, 0, 4)) . ".";
+        } else {
+            $fallback[] = "Key concepts include theoretical foundations and practical applications.";
+        }
+
+        $fallback[] = "Students will learn essential skills and gain hands-on experience in this subject area.";
+        $fallback[] = "The course is designed for " . ($course->level ?? 'beginner') . " level learners.";
+
+        return implode(" ", $fallback);
+    }
+
+    /**
+     * Generate intelligent fallback questions when AI fails
      */
     protected function generateFallbackQuestions($courseContent, $numQuestions, $difficulty, $questionType, $language)
+    {
+        $questions = [];
+
+        // Analyze course content to extract key information
+        $contentAnalysis = $this->analyzeContentForQuestions($courseContent);
+
+        // Generate content-specific questions first
+        $contentSpecificQuestions = $this->generateContentSpecificQuestions(
+            $contentAnalysis,
+            $numQuestions,
+            $difficulty,
+            $questionType,
+            $language
+        );
+
+        // If we have enough content-specific questions, use them
+        if (count($contentSpecificQuestions) >= $numQuestions) {
+            return array_slice($contentSpecificQuestions, 0, $numQuestions);
+        }
+
+        // Otherwise, supplement with template-based questions
+        $templateQuestions = $this->generateTemplateQuestions(
+            $courseContent,
+            $numQuestions - count($contentSpecificQuestions),
+            $difficulty,
+            $questionType,
+            $language
+        );
+
+        return array_merge($contentSpecificQuestions, $templateQuestions);
+    }
+
+    /**
+     * Analyze course content to extract key information for question generation
+     */
+    protected function analyzeContentForQuestions($courseContent)
+    {
+        $analysis = [
+            'key_terms' => [],
+            'concepts' => [],
+            'topics' => [],
+            'definitions' => [],
+            'examples' => [],
+            'processes' => [],
+            'domain' => 'general'
+        ];
+
+        // Extract course title and determine domain
+        if (preg_match('/Course Title:\s*(.+?)(?:\n|$)/i', $courseContent, $matches)) {
+            $title = strtolower($matches[1]);
+            $analysis['domain'] = $this->identifyCourseDomain($title);
+            $analysis['topics'][] = $matches[1];
+        }
+
+        // Extract key terms (capitalized words, technical terms)
+        preg_match_all('/\b[A-Z][a-z]+(?:\s+[A-Z][a-z]+)*\b/', $courseContent, $matches);
+        $analysis['key_terms'] = array_unique(array_slice($matches[0], 0, 20));
+
+        // Extract potential definitions (patterns like "X is", "X refers to", etc.)
+        preg_match_all('/([A-Za-z\s]+)\s+(?:is|are|refers?\s+to|means?|defined?\s+as)\s+([^.!?]+)/i', $courseContent, $matches);
+        for ($i = 0; $i < min(count($matches[1]), 10); $i++) {
+            $analysis['definitions'][] = [
+                'term' => trim($matches[1][$i]),
+                'definition' => trim($matches[2][$i])
+            ];
+        }
+
+        // Extract section titles and lesson titles
+        preg_match_all('/(?:Section|Lesson|Chapter):\s*(.+?)(?:\n|$)/i', $courseContent, $matches);
+        $analysis['topics'] = array_merge($analysis['topics'], $matches[1]);
+
+        // Extract numbered lists or bullet points (potential concepts)
+        preg_match_all('/(?:^|\n)\s*[-•*]\s*(.+?)(?:\n|$)/m', $courseContent, $matches);
+        $analysis['concepts'] = array_slice($matches[1], 0, 15);
+
+        return $analysis;
+    }
+
+    /**
+     * Identify the course domain based on title keywords
+     */
+    protected function identifyCourseDomain($title)
+    {
+        $domainKeywords = [
+            'programming' => ['programming', 'coding', 'software', 'development', 'python', 'java', 'javascript', 'php', 'laravel'],
+            'web' => ['web', 'html', 'css', 'frontend', 'backend', 'website', 'responsive'],
+            'database' => ['database', 'sql', 'mysql', 'postgresql', 'mongodb', 'data'],
+            'security' => ['security', 'cybersecurity', 'encryption', 'authentication', 'firewall'],
+            'design' => ['design', 'ui', 'ux', 'graphic', 'visual', 'photoshop', 'illustrator'],
+            'marketing' => ['marketing', 'digital', 'social media', 'seo', 'advertising', 'branding'],
+            'business' => ['business', 'management', 'strategy', 'leadership', 'entrepreneurship'],
+            'data_science' => ['data science', 'machine learning', 'ai', 'analytics', 'statistics'],
+            'mobile' => ['mobile', 'android', 'ios', 'app development', 'react native']
+        ];
+
+        foreach ($domainKeywords as $domain => $keywords) {
+            foreach ($keywords as $keyword) {
+                if (strpos($title, $keyword) !== false) {
+                    return $domain;
+                }
+            }
+        }
+
+        return 'general';
+    }
+
+    /**
+     * Generate content-specific questions based on analysis
+     */
+    protected function generateContentSpecificQuestions($analysis, $numQuestions, $difficulty, $questionType, $language)
+    {
+        $questions = [];
+        $questionCount = 0;
+
+        // Generate questions from definitions
+        foreach ($analysis['definitions'] as $def) {
+            if ($questionCount >= $numQuestions) break;
+
+            $question = $this->createDefinitionQuestion($def, $difficulty, $questionType, $language);
+            if ($question) {
+                $questions[] = $question;
+                $questionCount++;
+            }
+        }
+
+        // Generate questions from key terms
+        foreach ($analysis['key_terms'] as $term) {
+            if ($questionCount >= $numQuestions) break;
+
+            $question = $this->createTermQuestion($term, $analysis['domain'], $difficulty, $questionType, $language);
+            if ($question) {
+                $questions[] = $question;
+                $questionCount++;
+            }
+        }
+
+        // Generate questions from concepts
+        foreach ($analysis['concepts'] as $concept) {
+            if ($questionCount >= $numQuestions) break;
+
+            $question = $this->createConceptQuestion($concept, $analysis['domain'], $difficulty, $questionType, $language);
+            if ($question) {
+                $questions[] = $question;
+                $questionCount++;
+            }
+        }
+
+        return $questions;
+    }
+
+    /**
+     * Generate template-based questions as fallback
+     */
+    protected function generateTemplateQuestions($courseContent, $numQuestions, $difficulty, $questionType, $language)
     {
         $questions = [];
 
@@ -353,5 +759,319 @@ class AIQuizController extends Controller
             'total' => $total,
             'percentage' => $percentage
         ]);
+    }
+
+    /**
+     * Create a question from a definition
+     */
+    protected function createDefinitionQuestion($definition, $difficulty, $questionType, $language)
+    {
+        if (empty($definition['term']) || empty($definition['definition'])) {
+            return null;
+        }
+
+        $term = $definition['term'];
+        $def = $definition['definition'];
+
+        if ($questionType === 'multiple_choice' || $questionType === 'mixed') {
+            return [
+                'id' => uniqid(),
+                'type' => 'multiple_choice',
+                'question' => $language === 'ar' ?
+                    "ما هو تعريف {$term}؟" :
+                    "What is the definition of {$term}?",
+                'options' => $this->generateDefinitionOptions($def, $language),
+                'correct_answer' => 0,
+                'explanation' => $language === 'ar' ?
+                    "التعريف الصحيح هو: {$def}" :
+                    "The correct definition is: {$def}"
+            ];
+        } elseif ($questionType === 'true_false') {
+            return [
+                'id' => uniqid(),
+                'type' => 'true_false',
+                'question' => $language === 'ar' ?
+                    "{$term} يُعرف بأنه: {$def}" :
+                    "{$term} is defined as: {$def}",
+                'correct_answer' => $language === 'ar' ? 'صح' : 'true',
+                'explanation' => $language === 'ar' ?
+                    "هذا التعريف صحيح" :
+                    "This definition is correct"
+            ];
+        }
+
+        return null;
+    }
+
+    /**
+     * Create a question from a key term
+     */
+    protected function createTermQuestion($term, $domain, $difficulty, $questionType, $language)
+    {
+        if (empty($term)) {
+            return null;
+        }
+
+        $domainContext = $this->getDomainContext($domain, $language);
+
+        if ($questionType === 'multiple_choice' || $questionType === 'mixed') {
+            return [
+                'id' => uniqid(),
+                'type' => 'multiple_choice',
+                'question' => $language === 'ar' ?
+                    "في سياق {$domainContext}، ما هو الغرض الأساسي من {$term}؟" :
+                    "In the context of {$domainContext}, what is the primary purpose of {$term}?",
+                'options' => $this->generateTermOptions($term, $domain, $language),
+                'correct_answer' => 0,
+                'explanation' => $language === 'ar' ?
+                    "{$term} هو مفهوم مهم في {$domainContext}" :
+                    "{$term} is an important concept in {$domainContext}"
+            ];
+        }
+
+        return null;
+    }
+
+    /**
+     * Create a question from a concept
+     */
+    protected function createConceptQuestion($concept, $domain, $difficulty, $questionType, $language)
+    {
+        if (empty($concept)) {
+            return null;
+        }
+
+        $domainContext = $this->getDomainContext($domain, $language);
+
+        if ($questionType === 'multiple_choice' || $questionType === 'mixed') {
+            return [
+                'id' => uniqid(),
+                'type' => 'multiple_choice',
+                'question' => $language === 'ar' ?
+                    "بناءً على محتوى الكورس، أي من التالي يصف بشكل أفضل: {$concept}؟" :
+                    "Based on the course content, which of the following best describes: {$concept}?",
+                'options' => $this->generateConceptOptions($concept, $domain, $language),
+                'correct_answer' => 0,
+                'explanation' => $language === 'ar' ?
+                    "هذا المفهوم مهم لفهم {$domainContext}" :
+                    "This concept is important for understanding {$domainContext}"
+            ];
+        }
+
+        return null;
+    }
+
+    /**
+     * Generate options for definition questions
+     */
+    protected function generateDefinitionOptions($correctDefinition, $language)
+    {
+        $options = [substr($correctDefinition, 0, 100)]; // Correct answer first
+
+        // Generate plausible but incorrect options
+        $incorrectOptions = $language === 'ar' ? [
+            'مفهوم غير مرتبط بالموضوع الأساسي',
+            'تعريف عام لا يتعلق بالسياق المحدد',
+            'وصف مختلف تماماً عن المطلوب'
+        ] : [
+            'A concept unrelated to the main topic',
+            'A general definition not specific to this context',
+            'A completely different description'
+        ];
+
+        $options = array_merge($options, array_slice($incorrectOptions, 0, 3));
+        return $options;
+    }
+
+    /**
+     * Generate options for term questions
+     */
+    protected function generateTermOptions($term, $domain, $language)
+    {
+        $domainSpecificOptions = $this->getDomainSpecificOptions($domain, $language);
+
+        // First option is always the most relevant/correct
+        $options = [$domainSpecificOptions[0]];
+
+        // Add other plausible options
+        $options = array_merge($options, array_slice($domainSpecificOptions, 1, 3));
+
+        return $options;
+    }
+
+    /**
+     * Generate options for concept questions
+     */
+    protected function generateConceptOptions($concept, $domain, $language)
+    {
+        $options = [];
+
+        // Create a relevant first option based on the concept
+        $options[] = $language === 'ar' ?
+            "مفهوم أساسي يساعد في فهم الموضوع" :
+            "A fundamental concept that helps understand the topic";
+
+        // Add generic but plausible options
+        $genericOptions = $language === 'ar' ? [
+            'أداة مساعدة في التطبيق العملي',
+            'مبدأ نظري مهم للدراسة',
+            'عنصر تكميلي في المنهج'
+        ] : [
+            'A practical tool for implementation',
+            'An important theoretical principle',
+            'A supplementary element in the curriculum'
+        ];
+
+        $options = array_merge($options, $genericOptions);
+        return $options;
+    }
+
+    /**
+     * Get domain context description
+     */
+    protected function getDomainContext($domain, $language)
+    {
+        $contexts = [
+            'ar' => [
+                'programming' => 'البرمجة',
+                'web' => 'تطوير الويب',
+                'database' => 'قواعد البيانات',
+                'security' => 'الأمن السيبراني',
+                'design' => 'التصميم',
+                'marketing' => 'التسويق',
+                'business' => 'إدارة الأعمال',
+                'data_science' => 'علم البيانات',
+                'mobile' => 'تطوير التطبيقات',
+                'general' => 'التعليم العام'
+            ],
+            'en' => [
+                'programming' => 'programming',
+                'web' => 'web development',
+                'database' => 'database management',
+                'security' => 'cybersecurity',
+                'design' => 'design',
+                'marketing' => 'marketing',
+                'business' => 'business management',
+                'data_science' => 'data science',
+                'mobile' => 'mobile development',
+                'general' => 'general education'
+            ]
+        ];
+
+        return $contexts[$language][$domain] ?? $contexts[$language]['general'];
+    }
+
+    /**
+     * Get domain-specific options for questions
+     */
+    protected function getDomainSpecificOptions($domain, $language)
+    {
+        $domainOptions = [
+            'programming' => [
+                'ar' => [
+                    'أداة لكتابة وتنفيذ الكود البرمجي',
+                    'مكتبة للرسوميات والتصميم',
+                    'نظام لإدارة قواعد البيانات',
+                    'برنامج لتحرير النصوص'
+                ],
+                'en' => [
+                    'A tool for writing and executing code',
+                    'A graphics and design library',
+                    'A database management system',
+                    'A text editing program'
+                ]
+            ],
+            'web' => [
+                'ar' => [
+                    'تقنية لبناء مواقع الويب التفاعلية',
+                    'أداة لتصميم الجرافيك',
+                    'نظام لإدارة الملفات',
+                    'برنامج لتحليل البيانات'
+                ],
+                'en' => [
+                    'A technology for building interactive websites',
+                    'A graphic design tool',
+                    'A file management system',
+                    'A data analysis program'
+                ]
+            ],
+            'general' => [
+                'ar' => [
+                    'مفهوم مهم في هذا المجال',
+                    'أداة مساعدة في التعلم',
+                    'مبدأ أساسي في الموضوع',
+                    'عنصر تكميلي في الدراسة'
+                ],
+                'en' => [
+                    'An important concept in this field',
+                    'A helpful learning tool',
+                    'A fundamental principle in the subject',
+                    'A supplementary element in study'
+                ]
+            ]
+        ];
+
+        return $domainOptions[$domain][$language] ?? $domainOptions['general'][$language];
+    }
+
+    /**
+     * Save practice session and questions to database
+     */
+    protected function savePracticeSession(Course $course, Request $request, array $questions, string $courseContent, bool $usedAI)
+    {
+        $user = Auth::user();
+        $sessionId = Str::uuid();
+
+        // Create practice session
+        $session = PracticeSession::create([
+            'session_id' => $sessionId,
+            'user_id' => $user->id,
+            'course_id' => $course->id,
+            'total_questions' => count($questions),
+            'difficulty' => $request->difficulty,
+            'question_type' => $request->question_type,
+            'language' => $request->language ?? 'en',
+            'ai_service_used' => $usedAI ? 'gemini' : 'fallback',
+            'used_fallback' => !$usedAI,
+            'content_summary' => Str::limit($courseContent, 500),
+            'status' => 'active',
+        ]);
+
+        // Save individual questions
+        foreach ($questions as $index => $question) {
+            $contentAnalysis = $this->analyzeContentForQuestions($courseContent);
+
+            PracticeQuestion::create([
+                'user_id' => $user->id,
+                'course_id' => $course->id,
+                'session_id' => $sessionId,
+                'type' => $question['type'] ?? 'multiple_choice',
+                'question' => $question['question'],
+                'options' => $question['options'] ?? null,
+                'correct_answer' => $question['correct_answer'],
+                'explanation' => $question['explanation'] ?? null,
+                'sample_answer' => $question['sample_answer'] ?? null,
+                'key_points' => $question['key_points'] ?? null,
+                'difficulty' => $request->difficulty,
+                'language' => $request->language ?? 'en',
+                'is_ai_generated' => $usedAI,
+                'ai_service' => $usedAI ? 'gemini' : 'fallback',
+                'content_context' => Str::limit($courseContent, 1000),
+                'content_keywords' => $contentAnalysis['key_terms'] ?? [],
+                'generation_method' => $usedAI ? 'ai' : 'fallback',
+                'generation_metadata' => [
+                    'question_index' => $index,
+                    'domain' => $contentAnalysis['domain'] ?? 'general',
+                    'generated_at' => now()->toISOString(),
+                    'content_length' => strlen($courseContent),
+                ],
+            ]);
+        }
+
+        return [
+            'session_id' => $sessionId,
+            'session' => $session,
+            'questions_saved' => count($questions)
+        ];
     }
 }

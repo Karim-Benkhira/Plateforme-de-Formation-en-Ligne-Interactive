@@ -50,7 +50,7 @@ class GeminiAIService
     }
 
     /**
-     * Build the prompt for practice question generation
+     * Build the prompt for practice question generation with enhanced content analysis
      */
     protected function buildPracticePrompt(
         string $courseContent,
@@ -66,9 +66,9 @@ class GeminiAIService
         ];
 
         $difficultyDescriptions = [
-            'easy' => $language === 'ar' ? 'سهلة - أسئلة أساسية ومباشرة' : 'Easy - Basic and straightforward questions',
-            'medium' => $language === 'ar' ? 'متوسطة - أسئلة تتطلب فهم وتحليل' : 'Medium - Questions requiring understanding and analysis',
-            'hard' => $language === 'ar' ? 'صعبة - أسئلة تتطلب تفكير نقدي وتطبيق' : 'Hard - Questions requiring critical thinking and application'
+            'easy' => $language === 'ar' ? 'سهلة - أسئلة أساسية ومباشرة' : 'Easy - Basic recall and comprehension questions',
+            'medium' => $language === 'ar' ? 'متوسطة - أسئلة تتطلب فهم وتحليل' : 'Medium - Application and analysis questions',
+            'hard' => $language === 'ar' ? 'صعبة - أسئلة تتطلب تفكير نقدي وتطبيق' : 'Hard - Synthesis, evaluation, and critical thinking questions'
         ];
 
         $typeInstructions = [
@@ -78,37 +78,115 @@ class GeminiAIService
             'mixed' => $language === 'ar' ? 'مزيج من جميع الأنواع' : 'Mix of all question types'
         ];
 
+        // Enhanced system prompt with content analysis instructions
         $prompt = $language === 'ar' ?
-            "أنت مساعد تعليمي ذكي متخصص في إنشاء أسئلة تدريبية للطلاب.\n\n" :
-            "You are an intelligent educational assistant specialized in creating practice questions for students.\n\n";
+            "أنت مساعد تعليمي ذكي متخصص في تحليل المحتوى التعليمي وإنشاء أسئلة تدريبية مخصصة.\n\n" :
+            "You are an intelligent educational assistant specialized in analyzing educational content and creating customized practice questions.\n\n";
 
+        // Content analysis instructions
         $prompt .= $language === 'ar' ?
-            "المهمة: إنشاء {$numQuestions} سؤال تدريبي بمستوى {$difficultyDescriptions[$difficulty]} من نوع {$typeInstructions[$questionType]}.\n\n" :
-            "Task: Generate {$numQuestions} practice questions at {$difficultyDescriptions[$difficulty]} level of type {$typeInstructions[$questionType]}.\n\n";
-
-        $prompt .= $language === 'ar' ?
-            "المحتوى التعليمي:\n{$courseContent}\n\n" :
-            "Course Content:\n{$courseContent}\n\n";
-
-        $prompt .= $language === 'ar' ?
-            "متطلبات الأسئلة:\n" :
-            "Question Requirements:\n";
+            "أولاً، قم بتحليل المحتوى التعليمي المقدم بعناية لفهم:\n" :
+            "First, carefully analyze the provided educational content to understand:\n";
 
         if ($language === 'ar') {
-            $prompt .= "- يجب أن تكون الأسئلة مفيدة للمراجعة والتدريب\n";
-            $prompt .= "- يجب أن تغطي النقاط الرئيسية في المحتوى\n";
-            $prompt .= "- يجب أن تكون واضحة ومفهومة\n";
-            $prompt .= "- يجب أن تساعد الطالب على فهم المفاهيم بشكل أفضل\n\n";
+            $prompt .= "- الموضوع الرئيسي والمفاهيم الأساسية\n";
+            $prompt .= "- النقاط التعليمية المهمة والتفاصيل الرئيسية\n";
+            $prompt .= "- المصطلحات والتعريفات الخاصة بالمجال\n";
+            $prompt .= "- العلاقات بين المفاهيم المختلفة\n";
+            $prompt .= "- التطبيقات العملية والأمثلة\n\n";
         } else {
-            $prompt .= "- Questions should be useful for review and practice\n";
-            $prompt .= "- Questions should cover key points in the content\n";
-            $prompt .= "- Questions should be clear and understandable\n";
-            $prompt .= "- Questions should help students better understand concepts\n\n";
+            $prompt .= "- The main topic and core concepts\n";
+            $prompt .= "- Important learning points and key details\n";
+            $prompt .= "- Domain-specific terminology and definitions\n";
+            $prompt .= "- Relationships between different concepts\n";
+            $prompt .= "- Practical applications and examples\n\n";
         }
+
+        // Task specification
+        $prompt .= $language === 'ar' ?
+            "المهمة: بناءً على تحليلك للمحتوى، قم بإنشاء {$numQuestions} سؤال تدريبي مخصص بمستوى {$difficultyDescriptions[$difficulty]} من نوع {$typeInstructions[$questionType]}.\n\n" :
+            "Task: Based on your content analysis, generate {$numQuestions} customized practice questions at {$difficultyDescriptions[$difficulty]} level of type {$typeInstructions[$questionType]}.\n\n";
+
+        // Course content
+        $prompt .= $language === 'ar' ?
+            "المحتوى التعليمي للتحليل:\n{$courseContent}\n\n" :
+            "Educational Content for Analysis:\n{$courseContent}\n\n";
+
+        // Enhanced requirements
+        $prompt .= $language === 'ar' ?
+            "متطلبات الأسئلة المحددة:\n" :
+            "Specific Question Requirements:\n";
+
+        if ($language === 'ar') {
+            $prompt .= "- يجب أن تكون الأسئلة مرتبطة مباشرة بالمحتوى المقدم\n";
+            $prompt .= "- يجب أن تغطي مختلف جوانب الموضوع (ليس فقط النقاط الأولى)\n";
+            $prompt .= "- يجب أن تختبر فهم الطالب للمفاهيم الأساسية\n";
+            $prompt .= "- يجب أن تكون متنوعة وتتجنب التكرار\n";
+            $prompt .= "- يجب أن تستخدم المصطلحات والأمثلة من المحتوى\n";
+            $prompt .= "- يجب أن تكون واضحة ومفهومة ومناسبة للمستوى المطلوب\n\n";
+        } else {
+            $prompt .= "- Questions must be directly related to the provided content\n";
+            $prompt .= "- Questions should cover different aspects of the topic (not just the first points)\n";
+            $prompt .= "- Questions should test student understanding of core concepts\n";
+            $prompt .= "- Questions should be diverse and avoid repetition\n";
+            $prompt .= "- Questions should use terminology and examples from the content\n";
+            $prompt .= "- Questions should be clear, understandable, and appropriate for the difficulty level\n\n";
+        }
+
+        // Add difficulty-specific instructions
+        $prompt .= $this->getDifficultySpecificInstructions($difficulty, $language);
 
         $prompt .= $this->getFormatInstructions($questionType, $language);
 
         return $prompt;
+    }
+
+    /**
+     * Get difficulty-specific instructions for question generation
+     */
+    protected function getDifficultySpecificInstructions(string $difficulty, string $language): string
+    {
+        $instructions = $language === 'ar' ? "إرشادات خاصة بالمستوى:\n" : "Difficulty-Specific Instructions:\n";
+
+        switch ($difficulty) {
+            case 'easy':
+                if ($language === 'ar') {
+                    $instructions .= "- ركز على التذكر والفهم الأساسي\n";
+                    $instructions .= "- استخدم أسئلة مباشرة حول التعريفات والحقائق\n";
+                    $instructions .= "- تجنب الأسئلة المعقدة أو التي تتطلب تحليل عميق\n\n";
+                } else {
+                    $instructions .= "- Focus on recall and basic comprehension\n";
+                    $instructions .= "- Use direct questions about definitions and facts\n";
+                    $instructions .= "- Avoid complex questions requiring deep analysis\n\n";
+                }
+                break;
+
+            case 'medium':
+                if ($language === 'ar') {
+                    $instructions .= "- ركز على التطبيق والتحليل\n";
+                    $instructions .= "- اطرح أسئلة حول العلاقات بين المفاهيم\n";
+                    $instructions .= "- استخدم سيناريوهات أو أمثلة للتطبيق\n\n";
+                } else {
+                    $instructions .= "- Focus on application and analysis\n";
+                    $instructions .= "- Ask questions about relationships between concepts\n";
+                    $instructions .= "- Use scenarios or examples for application\n\n";
+                }
+                break;
+
+            case 'hard':
+                if ($language === 'ar') {
+                    $instructions .= "- ركز على التقييم والتفكير النقدي\n";
+                    $instructions .= "- اطرح أسئلة تتطلب مقارنة أو تحليل معقد\n";
+                    $instructions .= "- استخدم مشاكل تتطلب دمج معلومات من مصادر متعددة\n\n";
+                } else {
+                    $instructions .= "- Focus on evaluation and critical thinking\n";
+                    $instructions .= "- Ask questions requiring comparison or complex analysis\n";
+                    $instructions .= "- Use problems requiring synthesis of multiple information sources\n\n";
+                }
+                break;
+        }
+
+        return $instructions;
     }
 
     /**
@@ -188,10 +266,11 @@ class GeminiAIService
                     ]
                 ],
                 'generationConfig' => [
-                    'temperature' => 0.7,
-                    'topK' => 40,
-                    'topP' => 0.95,
-                    'maxOutputTokens' => 2048,
+                    'temperature' => 0.3,      // Lower temperature for more focused, consistent responses
+                    'topK' => 20,              // Reduced for more focused token selection
+                    'topP' => 0.8,             // Slightly lower for more deterministic responses
+                    'maxOutputTokens' => 3072, // Increased for more detailed questions and explanations
+                    'candidateCount' => 1,     // Single response for consistency
                 ]
             ]);
 

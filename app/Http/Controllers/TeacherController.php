@@ -17,18 +17,15 @@ use Illuminate\Support\Facades\Hash;
 
 class TeacherController extends Controller
 {
-    protected $aiService;
     protected $analyticsService;
 
     public function __construct()
     {
         try {
-            $this->aiService = app(\App\Services\AIService::class);
             $this->analyticsService = app(\App\Services\AnalyticsService::class);
         } catch (\Exception $e) {
-            \Illuminate\Support\Facades\Log::error('Error initializing services: ' . $e->getMessage());
-            // Create empty service instances to prevent errors
-            $this->aiService = new \stdClass();
+            \Illuminate\Support\Facades\Log::error('Error initializing analytics service: ' . $e->getMessage());
+            // Create empty service instance to prevent errors
             $this->analyticsService = new \stdClass();
         }
     }
@@ -325,5 +322,36 @@ class TeacherController extends Controller
         }
 
         return redirect()->route('teacher.profile')->with('success', 'Profile image updated successfully.');
+    }
+
+    /**
+     * Show face verification status for teacher's students
+     */
+    public function showFaceVerificationStatus()
+    {
+        $teacher = auth()->user();
+
+        // Get all courses created by this teacher
+        $courses = Course::where('creator_id', $teacher->id)
+            ->with(['approvedEnrollments' => function($query) {
+                $query->with('studentPhoto');
+            }])
+            ->get();
+
+        // Get students enrolled in teacher's courses with their face verification status
+        $studentsData = [];
+        foreach ($courses as $course) {
+            foreach ($course->approvedEnrollments as $student) {
+                $studentsData[] = [
+                    'student' => $student,
+                    'course' => $course,
+                    'has_photo' => $student->hasStudentPhoto(),
+                    'photo_verified' => $student->studentPhoto ? $student->studentPhoto->is_verified : false,
+                    'photo_uploaded_at' => $student->studentPhoto ? $student->studentPhoto->created_at : null,
+                ];
+            }
+        }
+
+        return view('teacher.face-verification', compact('studentsData', 'courses'));
     }
 }

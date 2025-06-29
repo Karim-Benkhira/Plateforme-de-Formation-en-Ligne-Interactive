@@ -2,76 +2,25 @@
 
 <?php $__env->startPush('styles'); ?>
 <style>
-    .photo-upload-container {
-        max-width: 800px;
-        margin: 0 auto;
-    }
-
-    .upload-card {
-        background: rgba(31, 41, 55, 0.8);
-        backdrop-filter: blur(10px);
-        border: 1px solid rgba(75, 85, 99, 0.3);
-        border-radius: 16px;
-        box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
-    }
-
     .upload-area {
-        border: 2px dashed #0ea5e9;
-        border-radius: 12px;
-        padding: 3rem 2rem;
-        text-align: center;
-        background: linear-gradient(135deg, rgba(14, 165, 233, 0.1) 0%, rgba(139, 92, 246, 0.1) 100%);
+        border: 2px dashed #3b82f6;
+        border-radius: 1rem;
         transition: all 0.3s ease;
         cursor: pointer;
         position: relative;
         overflow: hidden;
     }
 
-    .upload-area::before {
-        content: '';
-        position: absolute;
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;
-        background: linear-gradient(45deg, transparent 30%, rgba(14, 165, 233, 0.1) 50%, transparent 70%);
-        transform: translateX(-100%);
-        transition: transform 0.6s ease;
-    }
-
-    .upload-area:hover::before {
-        transform: translateX(100%);
-    }
-
     .upload-area:hover {
-        border-color: #38bdf8;
-        background: linear-gradient(135deg, rgba(14, 165, 233, 0.15) 0%, rgba(139, 92, 246, 0.15) 100%);
+        border-color: #60a5fa;
+        background: rgba(59, 130, 246, 0.05);
         transform: translateY(-2px);
-        box-shadow: 0 10px 25px rgba(14, 165, 233, 0.2);
     }
 
     .upload-area.dragover {
         border-color: #10b981;
-        background: linear-gradient(135deg, rgba(16, 185, 129, 0.15) 0%, rgba(5, 150, 105, 0.15) 100%);
+        background: rgba(16, 185, 129, 0.1);
         transform: scale(1.02);
-    }
-
-    .camera-container {
-        position: relative;
-        width: 100%;
-        max-width: 500px;
-        margin: 0 auto;
-        border-radius: 16px;
-        overflow: hidden;
-        background: #111827;
-        box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.3);
-    }
-
-    .camera-video {
-        width: 100%;
-        height: auto;
-        display: block;
-        border-radius: 16px;
     }
 
     .camera-overlay {
@@ -79,403 +28,303 @@
         top: 50%;
         left: 50%;
         transform: translate(-50%, -50%);
-        width: 250px;
-        height: 250px;
-        border: 3px solid rgba(14, 165, 233, 0.8);
+        width: 200px;
+        height: 200px;
+        border: 3px solid rgba(59, 130, 246, 0.8);
         border-radius: 50%;
         pointer-events: none;
         animation: pulse 2s infinite;
     }
 
     @keyframes pulse {
-        0%, 100% { opacity: 0.8; transform: translate(-50%, -50%) scale(1); }
-        50% { opacity: 1; transform: translate(-50%, -50%) scale(1.05); }
-    }
-
-    .preview-image {
-        max-width: 400px;
-        max-height: 400px;
-        border-radius: 16px;
-        box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.3);
-        border: 2px solid rgba(14, 165, 233, 0.3);
+        0% { box-shadow: 0 0 0 0 rgba(59, 130, 246, 0.7); }
+        70% { box-shadow: 0 0 0 10px rgba(59, 130, 246, 0); }
+        100% { box-shadow: 0 0 0 0 rgba(59, 130, 246, 0); }
     }
 
     .tab-button {
-        padding: 1rem 2rem;
-        border-radius: 12px;
-        font-weight: 600;
         transition: all 0.3s ease;
-        cursor: pointer;
-        position: relative;
-        overflow: hidden;
-    }
-
-    .tab-button::before {
-        content: '';
-        position: absolute;
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;
-        background: linear-gradient(45deg, transparent 30%, rgba(255, 255, 255, 0.1) 50%, transparent 70%);
-        transform: translateX(-100%);
-        transition: transform 0.6s ease;
-    }
-
-    .tab-button:hover::before {
-        transform: translateX(100%);
     }
 
     .tab-button.active {
-        background: linear-gradient(135deg, #0ea5e9 0%, #8b5cf6 100%);
+        background: linear-gradient(135deg, #3b82f6, #8b5cf6);
         color: white;
-        box-shadow: 0 10px 25px rgba(14, 165, 233, 0.4);
-        transform: translateY(-2px);
-    }
-
-    .tab-button:not(.active) {
-        background: rgba(75, 85, 99, 0.4);
-        color: #d1d5db;
-        border: 1px solid rgba(75, 85, 99, 0.3);
-    }
-
-    .tab-button:not(.active):hover {
-        background: rgba(75, 85, 99, 0.6);
         transform: translateY(-1px);
-        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
     }
 
-    .btn-primary {
-        background: linear-gradient(135deg, #0ea5e9 0%, #8b5cf6 100%);
-        border: none;
-        color: white;
-        font-weight: 600;
-        transition: all 0.3s ease;
-        position: relative;
-        overflow: hidden;
-    }
-
-    .btn-primary::before {
-        content: '';
-        position: absolute;
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;
-        background: linear-gradient(45deg, transparent 30%, rgba(255, 255, 255, 0.2) 50%, transparent 70%);
-        transform: translateX(-100%);
-        transition: transform 0.6s ease;
-    }
-
-    .btn-primary:hover::before {
-        transform: translateX(100%);
-    }
-
-    .btn-primary:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 10px 25px rgba(14, 165, 233, 0.4);
-    }
-
-    .btn-secondary {
-        background: rgba(75, 85, 99, 0.6);
-        border: 1px solid rgba(75, 85, 99, 0.5);
-        color: #d1d5db;
-        font-weight: 500;
-        transition: all 0.3s ease;
-    }
-
-    .btn-secondary:hover {
-        background: rgba(75, 85, 99, 0.8);
-        transform: translateY(-1px);
-        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
-    }
-
-    .hidden {
-        display: none !important;
-    }
-
-    .fade-in {
-        animation: fadeIn 0.5s ease-in;
-    }
-
-    @keyframes fadeIn {
-        from { opacity: 0; transform: translateY(20px); }
-        to { opacity: 1; transform: translateY(0); }
-    }
-
-    .icon-gradient {
-        background: linear-gradient(135deg, #0ea5e9 0%, #8b5cf6 100%);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-        background-clip: text;
-    }
-
-    .loading-overlay {
-        position: fixed;
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;
-        background: rgba(17, 24, 39, 0.9);
-        backdrop-filter: blur(5px);
-        z-index: 9999;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-    }
-
-    .loading-spinner {
-        width: 60px;
-        height: 60px;
-        border: 4px solid rgba(14, 165, 233, 0.3);
-        border-top: 4px solid #0ea5e9;
-        border-radius: 50%;
-        animation: spin 1s linear infinite;
-    }
-
-    @keyframes spin {
-        0% { transform: rotate(0deg); }
-        100% { transform: rotate(360deg); }
-    }
-
-    .success-animation {
-        animation: successPulse 0.6s ease-out;
-    }
-
-    @keyframes successPulse {
-        0% { transform: scale(0.8); opacity: 0; }
-        50% { transform: scale(1.05); }
-        100% { transform: scale(1); opacity: 1; }
+    .preview-image {
+        border-radius: 1rem;
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+        border: 2px solid rgba(59, 130, 246, 0.3);
     }
 </style>
 <?php $__env->stopPush(); ?>
 
 <?php $__env->startSection('content'); ?>
-<div class="min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 py-8">
+<!-- Main Container -->
+<div class="min-h-screen bg-gradient-to-br from-gray-900 via-blue-900 to-purple-900 py-8">
     <div class="container mx-auto px-4">
-        <div class="photo-upload-container">
-            <!-- Header -->
-            <div class="text-center mb-12 fade-in">
-                <div class="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-br from-primary-500 to-secondary-600 rounded-full mb-6 shadow-lg">
-                    <i class="fas fa-user-shield text-white text-3xl"></i>
-                </div>
-                <h1 class="text-4xl font-bold text-white mb-4">
-                    <span class="icon-gradient">Secure Identity</span> Verification
-                </h1>
-                <p class="text-gray-300 max-w-2xl mx-auto text-lg leading-relaxed">
-                    Upload a clear photo of your face to enable secure exam verification. This ensures exam integrity and prevents unauthorized access to your assessments.
-                </p>
-                <div class="mt-6 p-4 bg-yellow-500/10 border border-yellow-500/20 rounded-lg max-w-md mx-auto">
-                    <div class="flex items-center justify-center">
-                        <i class="fas fa-exclamation-triangle text-yellow-400 mr-3"></i>
-                        <p class="text-yellow-300 font-medium">Photo upload is required to access the platform</p>
-                    </div>
+        <!-- Header Section -->
+        <div class="text-center mb-8">
+            <div class="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-br from-primary-500 to-secondary-500 rounded-full mb-6 shadow-lg">
+                <i class="fas fa-camera text-white text-3xl"></i>
+            </div>
+            <h1 class="text-4xl font-bold text-white mb-4">
+                📸 Identity Verification
+            </h1>
+            <p class="text-blue-100 text-lg max-w-2xl mx-auto mb-6">
+                Upload a clear photo of your face to enable secure exam verification and access the platform
+            </p>
+
+            <!-- Important Notice -->
+            <div class="max-w-md mx-auto bg-amber-500/10 border border-amber-500/30 rounded-xl p-4 mb-8">
+                <div class="flex items-center justify-center">
+                    <i class="fas fa-exclamation-triangle text-amber-400 mr-3"></i>
+                    <p class="text-amber-200 font-medium">Photo upload is required to access the platform</p>
                 </div>
             </div>
+        </div>
 
         <?php if($existingPhoto): ?>
             <!-- Existing Photo Display -->
-            <div class="upload-card p-8 mb-8 fade-in">
-                <div class="text-center">
-                    <div class="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-br from-green-500 to-emerald-600 rounded-full mb-6">
-                        <i class="fas fa-check-circle text-white text-2xl"></i>
-                    </div>
-                    <h3 class="text-2xl font-bold text-white mb-2">Photo Successfully Uploaded</h3>
-                    <p class="text-gray-300 mb-6">
-                        Your identity verification photo was uploaded on <?php echo e($existingPhoto->created_at->format('M d, Y \a\t g:i A')); ?>
+            <div class="max-w-2xl mx-auto">
+                <div class="bg-gray-800/50 backdrop-blur-sm rounded-2xl border border-gray-700/50 p-8 shadow-2xl">
+                    <div class="text-center">
+                        <!-- Success Icon -->
+                        <div class="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-br from-green-500 to-emerald-600 rounded-full mb-6 shadow-lg">
+                            <i class="fas fa-check-circle text-white text-3xl"></i>
+                        </div>
 
-                    </p>
+                        <!-- Success Message -->
+                        <h3 class="text-2xl font-bold text-white mb-3">✅ Photo Successfully Uploaded</h3>
+                        <p class="text-gray-300 mb-8">
+                            Your identity verification photo was uploaded on
+                            <span class="text-blue-400 font-medium"><?php echo e($existingPhoto->created_at->format('M d, Y \a\t g:i A')); ?></span>
+                        </p>
 
-                    <div class="flex justify-center mb-8">
-                        <div class="relative">
-                            <img src="<?php echo e($existingPhoto->photo_url); ?>" alt="Your verification photo"
-                                 class="w-32 h-32 rounded-full object-cover border-4 border-green-500 shadow-lg">
-                            <div class="absolute -bottom-2 -right-2 w-8 h-8 bg-green-500 rounded-full flex items-center justify-center">
-                                <i class="fas fa-check text-white text-sm"></i>
+                        <!-- Photo Display -->
+                        <div class="flex justify-center mb-8">
+                            <div class="relative">
+                                <img src="<?php echo e($existingPhoto->photo_url); ?>" alt="Your verification photo"
+                                     class="w-40 h-40 rounded-full object-cover border-4 border-green-500 shadow-xl">
+                                <div class="absolute -bottom-2 -right-2 w-10 h-10 bg-green-500 rounded-full flex items-center justify-center shadow-lg">
+                                    <i class="fas fa-check text-white text-lg"></i>
+                                </div>
                             </div>
                         </div>
-                    </div>
 
-                    <div class="flex flex-col sm:flex-row gap-4 justify-center items-center">
-                        <a href="<?php echo e(route('student.dashboard')); ?>"
-                           class="btn-primary px-6 py-3 rounded-lg inline-flex items-center">
-                            <i class="fas fa-home mr-2"></i>
-                            Go to Dashboard
-                        </a>
+                        <!-- Status Card -->
+                        <div class="bg-green-500/10 border border-green-500/30 rounded-xl p-4 mb-8">
+                            <div class="flex items-center justify-center">
+                                <i class="fas fa-shield-check text-green-400 mr-3"></i>
+                                <span class="text-green-200 font-medium">Ready for secure exam verification</span>
+                            </div>
+                        </div>
 
-                        <form action="<?php echo e(route('face-verification.photo.delete')); ?>" method="POST" class="inline">
-                            <?php echo csrf_field(); ?>
-                            <?php echo method_field('DELETE'); ?>
-                            <button type="submit"
-                                    class="btn-secondary px-6 py-3 rounded-lg inline-flex items-center"
-                                    onclick="return confirm('Are you sure you want to delete your photo? You will need to upload a new one to access the platform.')">
-                                <i class="fas fa-trash mr-2"></i>
-                                Replace Photo
-                            </button>
-                        </form>
+                        <!-- Action Buttons -->
+                        <div class="flex flex-col sm:flex-row gap-4 justify-center items-center">
+                            <a href="<?php echo e(route('student.dashboard')); ?>"
+                               class="w-full sm:w-auto bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white font-semibold py-4 px-8 rounded-xl transition-all duration-200 transform hover:scale-105 shadow-lg inline-flex items-center justify-center">
+                                <i class="fas fa-home mr-2"></i>
+                                Go to Dashboard
+                            </a>
+
+                            <form action="<?php echo e(route('face-verification.photo.delete')); ?>" method="POST" class="w-full sm:w-auto">
+                                <?php echo csrf_field(); ?>
+                                <?php echo method_field('DELETE'); ?>
+                                <button type="submit"
+                                        class="w-full bg-gradient-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800 text-white font-semibold py-4 px-8 rounded-xl transition-all duration-200 transform hover:scale-105 shadow-lg inline-flex items-center justify-center"
+                                        onclick="return confirm('Are you sure you want to delete your photo? You will need to upload a new one to access the platform.')">
+                                    <i class="fas fa-trash mr-2"></i>
+                                    Replace Photo
+                                </button>
+                            </form>
+                        </div>
                     </div>
                 </div>
             </div>
         <?php else: ?>
             <!-- Upload Interface -->
-            <div class="upload-card p-8 fade-in">
-                <!-- Tab Navigation -->
-                <div class="flex justify-center mb-8">
-                    <div class="flex bg-gray-800/50 rounded-xl p-2 border border-gray-700">
-                        <button id="upload-tab" class="tab-button active">
-                            <i class="fas fa-cloud-upload-alt mr-2"></i>
-                            Upload Photo
-                        </button>
-                        <button id="camera-tab" class="tab-button">
-                            <i class="fas fa-camera mr-2"></i>
-                            Take Photo
-                        </button>
+            <div class="max-w-4xl mx-auto">
+                <div class="bg-gray-800/50 backdrop-blur-sm rounded-2xl border border-gray-700/50 p-8 shadow-2xl">
+                    <!-- Tab Navigation -->
+                    <div class="flex justify-center mb-8">
+                        <div class="flex bg-gray-900/50 rounded-xl p-2 border border-gray-700/50">
+                            <button id="upload-tab" class="tab-button px-6 py-3 rounded-lg font-semibold transition-all duration-200 active bg-gradient-to-r from-blue-600 to-purple-600 text-white">
+                                <i class="fas fa-cloud-upload-alt mr-2"></i>
+                                Upload Photo
+                            </button>
+                            <button id="camera-tab" class="tab-button px-6 py-3 rounded-lg font-semibold transition-all duration-200 text-gray-400 hover:text-white">
+                                <i class="fas fa-camera mr-2"></i>
+                                Take Photo
+                            </button>
+                        </div>
                     </div>
-                </div>
 
-                <!-- Upload Section -->
-                <div id="upload-section">
-                    <form action="<?php echo e(route('face-verification.photo-upload.store')); ?>" method="POST" enctype="multipart/form-data" id="upload-form">
-                        <?php echo csrf_field(); ?>
-                        <input type="hidden" name="upload_method" value="upload">
+                    <!-- Upload Section -->
+                    <div id="upload-section">
+                        <form action="<?php echo e(route('face-verification.photo-upload.store')); ?>" method="POST" enctype="multipart/form-data" id="upload-form">
+                            <?php echo csrf_field(); ?>
+                            <input type="hidden" name="upload_method" value="upload">
 
-                        <div class="upload-area" id="upload-area">
-                            <input type="file" id="photo-input" name="photo" accept="image/*" class="hidden">
-                            <div id="upload-content" class="relative z-10">
-                                <div class="mb-6">
-                                    <i class="fas fa-cloud-upload-alt text-6xl icon-gradient mb-4"></i>
+                            <div class="upload-area bg-gray-900/30 border-2 border-dashed border-blue-500/50 rounded-2xl p-12 text-center hover:border-blue-400/70 transition-all duration-300" id="upload-area">
+                                <input type="file" id="photo-input" name="photo" accept="image/*" class="hidden">
+
+                                <div id="upload-content">
+                                    <!-- Upload Icon -->
+                                    <div class="mb-6">
+                                        <div class="inline-flex items-center justify-center w-24 h-24 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full mb-4">
+                                            <i class="fas fa-cloud-upload-alt text-white text-3xl"></i>
+                                        </div>
+                                    </div>
+
+                                    <!-- Upload Text -->
+                                    <h3 class="text-2xl font-bold text-white mb-3">
+                                        Choose or Drag Your Photo
+                                    </h3>
+                                    <p class="text-gray-300 mb-8 text-lg">
+                                        JPG, PNG up to 5MB • Clear face photo required
+                                    </p>
+
+                                    <!-- Browse Button -->
+                                    <button type="button" class="bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white font-semibold py-4 px-8 rounded-xl transition-all duration-200 transform hover:scale-105 shadow-lg inline-flex items-center">
+                                        <i class="fas fa-folder-open mr-3"></i>
+                                        Browse Files
+                                    </button>
+
+                                    <p class="text-gray-400 text-sm mt-6">
+                                        Or drag and drop your photo here
+                                    </p>
                                 </div>
-                                <h3 class="text-2xl font-bold text-white mb-3">
-                                    Choose or Drag Your Photo
-                                </h3>
-                                <p class="text-gray-300 mb-6 text-lg">
-                                    JPG, PNG up to 5MB • Clear face photo required
-                                </p>
-                                <button type="button" class="btn-primary px-8 py-4 rounded-lg inline-flex items-center text-lg font-semibold">
-                                    <i class="fas fa-folder-open mr-3"></i>
-                                    Browse Files
+
+                                <!-- Preview Content -->
+                                <div id="preview-content" class="hidden">
+                                    <img id="preview-image" class="preview-image mx-auto mb-6 max-w-sm rounded-xl shadow-lg" alt="Preview">
+                                    <div class="flex flex-col sm:flex-row justify-center gap-4">
+                                        <button type="button" id="change-photo" class="bg-gradient-to-r from-gray-600 to-gray-700 hover:from-gray-700 hover:to-gray-800 text-white font-semibold py-3 px-6 rounded-xl transition-all duration-200 transform hover:scale-105 shadow-lg inline-flex items-center">
+                                            <i class="fas fa-exchange-alt mr-2"></i>
+                                            Change Photo
+                                        </button>
+                                        <button type="submit" class="bg-gradient-to-r from-green-600 to-green-700 hover:from-green-700 hover:to-green-800 text-white font-semibold py-3 px-8 rounded-xl transition-all duration-200 transform hover:scale-105 shadow-lg inline-flex items-center">
+                                            <i class="fas fa-upload mr-2"></i>
+                                            Upload Photo
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+
+                    <!-- Camera Section -->
+                    <div id="camera-section" class="hidden">
+                        <div class="text-center">
+                            <!-- Camera Status -->
+                            <div id="camera-status" class="mb-6">
+                                <div class="inline-flex items-center px-6 py-3 bg-blue-500/20 border border-blue-500/30 rounded-xl text-blue-200">
+                                    <i class="fas fa-info-circle mr-3"></i>
+                                    <span>Position your face within the circle and click capture</span>
+                                </div>
+                            </div>
+
+                            <!-- Camera Container -->
+                            <div class="relative bg-gray-900 rounded-2xl overflow-hidden shadow-xl mb-8 max-w-lg mx-auto">
+                                <video id="camera-video" class="w-full h-auto rounded-2xl" autoplay muted playsinline style="min-height: 300px;"></video>
+                                <div class="camera-overlay"></div>
+                                <canvas id="camera-canvas" class="hidden"></canvas>
+
+                                <!-- Camera Error Message -->
+                                <div id="camera-error" class="hidden absolute inset-0 flex items-center justify-center bg-gray-900/90 rounded-2xl">
+                                    <div class="text-center p-8">
+                                        <i class="fas fa-exclamation-triangle text-yellow-400 text-5xl mb-6"></i>
+                                        <h3 class="text-xl font-bold text-white mb-3">Camera Access Required</h3>
+                                        <p class="text-gray-300 mb-6">Please allow camera access to take your photo</p>
+                                        <button id="retry-camera" class="bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white font-semibold py-3 px-6 rounded-xl transition-all duration-200 transform hover:scale-105 shadow-lg">
+                                            <i class="fas fa-redo mr-2"></i>
+                                            Try Again
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Camera Controls -->
+                            <div id="camera-controls" class="space-y-4">
+                                <button id="start-camera" class="bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white font-semibold py-4 px-8 rounded-xl transition-all duration-200 transform hover:scale-105 shadow-lg">
+                                    <i class="fas fa-video mr-3"></i>
+                                    Start Camera
                                 </button>
-                                <p class="text-gray-400 text-sm mt-4">
-                                    Or drag and drop your photo here
-                                </p>
-                            </div>
+                                <button id="capture-photo" class="bg-gradient-to-r from-green-600 to-green-700 hover:from-green-700 hover:to-green-800 text-white font-semibold py-4 px-8 rounded-xl transition-all duration-200 transform hover:scale-105 shadow-lg hidden">
+                                    <i class="fas fa-camera mr-3"></i>
+                                    Capture Photo
+                                </button>
 
-                            <div id="preview-content" class="hidden text-center">
-                                <img id="preview-image" class="preview-image mx-auto mb-6" alt="Preview">
-                                <div class="flex flex-col sm:flex-row justify-center gap-4">
-                                    <button type="button" id="change-photo" class="btn-secondary px-6 py-3 rounded-lg inline-flex items-center">
-                                        <i class="fas fa-exchange-alt mr-2"></i>
-                                        Change Photo
-                                    </button>
-                                    <button type="submit" class="btn-primary px-8 py-3 rounded-lg inline-flex items-center">
-                                        <i class="fas fa-upload mr-2"></i>
-                                        Upload Photo
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-                    </form>
-                </div>
-
-                <!-- Camera Section -->
-                <div id="camera-section" class="hidden">
-                    <div class="text-center">
-                        <!-- Camera Status -->
-                        <div id="camera-status" class="mb-6">
-                            <div class="inline-flex items-center px-4 py-2 bg-blue-500/20 border border-blue-500/30 rounded-lg text-blue-300">
-                                <i class="fas fa-info-circle mr-2"></i>
-                                <span>Position your face within the circle and click capture</span>
-                            </div>
-                        </div>
-
-                        <div class="camera-container mb-8">
-                            <video id="camera-video" class="camera-video" autoplay muted playsinline></video>
-                            <div class="camera-overlay"></div>
-                            <canvas id="camera-canvas" class="hidden"></canvas>
-
-                            <!-- Camera Error Message -->
-                            <div id="camera-error" class="hidden absolute inset-0 flex items-center justify-center bg-gray-900/90 rounded-16">
-                                <div class="text-center p-6">
-                                    <i class="fas fa-exclamation-triangle text-yellow-400 text-4xl mb-4"></i>
-                                    <h3 class="text-xl font-bold text-white mb-2">Camera Access Required</h3>
-                                    <p class="text-gray-300 mb-4">Please allow camera access to take your photo</p>
-                                    <button id="retry-camera" class="btn-primary px-6 py-3 rounded-lg">
-                                        <i class="fas fa-redo mr-2"></i>
-                                        Try Again
-                                    </button>
+                                <!-- Guidelines -->
+                                <div class="bg-amber-500/10 border border-amber-500/30 rounded-xl p-4 mt-6">
+                                    <p class="text-amber-200 text-sm">
+                                        <i class="fas fa-lightbulb mr-2"></i>
+                                        Make sure your face is clearly visible and well-lit
+                                    </p>
                                 </div>
                             </div>
                         </div>
 
-                        <div id="camera-controls" class="space-y-4">
-                            <button id="start-camera" class="btn-primary px-8 py-4 rounded-lg text-lg font-semibold">
-                                <i class="fas fa-video mr-3"></i>
-                                Start Camera
-                            </button>
-                            <button id="capture-photo" class="btn-primary px-8 py-4 rounded-lg text-lg font-semibold hidden">
-                                <i class="fas fa-camera mr-3"></i>
-                                Capture Photo
-                            </button>
-                            <div class="text-sm text-gray-400 mt-2">
-                                Make sure your face is clearly visible and well-lit
-                            </div>
-                        </div>
-
+                        <!-- Captured Photo Section -->
                         <div id="captured-photo-section" class="hidden mt-8">
-                            <img id="captured-image" class="preview-image mx-auto mb-6" alt="Captured photo">
-                            <form action="<?php echo e(route('face-verification.photo-upload.store')); ?>" method="POST" id="camera-form">
-                                <?php echo csrf_field(); ?>
-                                <input type="hidden" name="upload_method" value="capture">
-                                <input type="hidden" name="photo" id="captured-data">
+                            <div class="text-center">
+                                <img id="captured-image" class="preview-image mx-auto mb-6 max-w-sm rounded-xl shadow-lg" alt="Captured photo">
+                                <form action="<?php echo e(route('face-verification.photo-upload.store')); ?>" method="POST" id="camera-form">
+                                    <?php echo csrf_field(); ?>
+                                    <input type="hidden" name="upload_method" value="capture">
+                                    <input type="hidden" name="photo" id="captured-data">
 
-                                <div class="flex flex-col sm:flex-row justify-center gap-4">
-                                    <button type="button" id="retake-photo" class="btn-secondary px-6 py-3 rounded-lg inline-flex items-center">
-                                        <i class="fas fa-redo mr-2"></i>
-                                        Retake Photo
-                                    </button>
-                                    <button type="submit" class="btn-primary px-8 py-3 rounded-lg inline-flex items-center">
-                                        <i class="fas fa-save mr-2"></i>
-                                        Save Photo
-                                    </button>
+                                    <div class="flex flex-col sm:flex-row justify-center gap-4">
+                                        <button type="button" id="retake-photo" class="bg-gradient-to-r from-gray-600 to-gray-700 hover:from-gray-700 hover:to-gray-800 text-white font-semibold py-3 px-6 rounded-xl transition-all duration-200 transform hover:scale-105 shadow-lg inline-flex items-center">
+                                            <i class="fas fa-redo mr-2"></i>
+                                            Retake Photo
+                                        </button>
+                                        <button type="submit" class="bg-gradient-to-r from-green-600 to-green-700 hover:from-green-700 hover:to-green-800 text-white font-semibold py-3 px-8 rounded-xl transition-all duration-200 transform hover:scale-105 shadow-lg inline-flex items-center">
+                                            <i class="fas fa-save mr-2"></i>
+                                            Save Photo
+                                        </button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Guidelines Section -->
+                    <div class="mt-8 bg-blue-500/10 border border-blue-500/30 rounded-2xl p-8">
+                        <h4 class="font-bold text-blue-200 mb-6 text-xl flex items-center">
+                            <i class="fas fa-lightbulb mr-3 text-yellow-400"></i>
+                            Photo Guidelines for Best Results
+                        </h4>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div class="space-y-4">
+                                <div class="flex items-start">
+                                    <i class="fas fa-check-circle text-green-400 mr-3 mt-1 text-lg"></i>
+                                    <span class="text-gray-300">Face clearly visible and well-lit</span>
                                 </div>
-                            </form>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Guidelines -->
-                <div class="mt-8 bg-blue-500/10 border border-blue-500/20 rounded-xl p-6">
-                    <h4 class="font-bold text-blue-300 mb-4 text-lg">
-                        <i class="fas fa-lightbulb mr-2"></i>
-                        Photo Guidelines for Best Results
-                    </h4>
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div class="space-y-3">
-                            <div class="flex items-start">
-                                <i class="fas fa-check-circle text-green-400 mr-3 mt-1"></i>
-                                <span class="text-gray-300">Face clearly visible and well-lit</span>
+                                <div class="flex items-start">
+                                    <i class="fas fa-check-circle text-green-400 mr-3 mt-1 text-lg"></i>
+                                    <span class="text-gray-300">Look directly at the camera</span>
+                                </div>
+                                <div class="flex items-start">
+                                    <i class="fas fa-check-circle text-green-400 mr-3 mt-1 text-lg"></i>
+                                    <span class="text-gray-300">Remove sunglasses or face coverings</span>
+                                </div>
                             </div>
-                            <div class="flex items-start">
-                                <i class="fas fa-check-circle text-green-400 mr-3 mt-1"></i>
-                                <span class="text-gray-300">Look directly at the camera</span>
-                            </div>
-                            <div class="flex items-start">
-                                <i class="fas fa-check-circle text-green-400 mr-3 mt-1"></i>
-                                <span class="text-gray-300">Remove sunglasses or face coverings</span>
-                            </div>
-                        </div>
-                        <div class="space-y-3">
-                            <div class="flex items-start">
-                                <i class="fas fa-check-circle text-green-400 mr-3 mt-1"></i>
-                                <span class="text-gray-300">Use a plain background if possible</span>
-                            </div>
-                            <div class="flex items-start">
-                                <i class="fas fa-check-circle text-green-400 mr-3 mt-1"></i>
-                                <span class="text-gray-300">Recent photo representing current appearance</span>
-                            </div>
-                            <div class="flex items-start">
-                                <i class="fas fa-check-circle text-green-400 mr-3 mt-1"></i>
-                                <span class="text-gray-300">High quality image (not blurry)</span>
+                            <div class="space-y-4">
+                                <div class="flex items-start">
+                                    <i class="fas fa-check-circle text-green-400 mr-3 mt-1 text-lg"></i>
+                                    <span class="text-gray-300">Use a plain background if possible</span>
+                                </div>
+                                <div class="flex items-start">
+                                    <i class="fas fa-check-circle text-green-400 mr-3 mt-1 text-lg"></i>
+                                    <span class="text-gray-300">Recent photo representing current appearance</span>
+                                </div>
+                                <div class="flex items-start">
+                                    <i class="fas fa-check-circle text-green-400 mr-3 mt-1 text-lg"></i>
+                                    <span class="text-gray-300">High quality image (not blurry)</span>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -483,35 +332,48 @@
             </div>
         <?php endif; ?>
 
+        <!-- Success Message -->
         <?php if(session('success')): ?>
-            <div class="mt-6 p-4 bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-lg">
-                <div class="flex items-center">
-                    <i class="fas fa-check-circle text-green-500 mr-3"></i>
-                    <p class="text-green-800 dark:text-green-200"><?php echo e(session('success')); ?></p>
+            <div class="mt-8 max-w-2xl mx-auto">
+                <div class="bg-green-500/10 border border-green-500/30 rounded-xl p-6">
+                    <div class="flex items-center">
+                        <i class="fas fa-check-circle text-green-400 mr-3 text-xl"></i>
+                        <p class="text-green-200 font-medium"><?php echo e(session('success')); ?></p>
+                    </div>
                 </div>
             </div>
         <?php endif; ?>
 
+        <!-- Error Message -->
         <?php if(session('error')): ?>
-            <div class="mt-6 p-4 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg">
-                <div class="flex items-center">
-                    <i class="fas fa-exclamation-circle text-red-500 mr-3"></i>
-                    <p class="text-red-800 dark:text-red-200"><?php echo e(session('error')); ?></p>
+            <div class="mt-8 max-w-2xl mx-auto">
+                <div class="bg-red-500/10 border border-red-500/30 rounded-xl p-6">
+                    <div class="flex items-center">
+                        <i class="fas fa-exclamation-circle text-red-400 mr-3 text-xl"></i>
+                        <p class="text-red-200 font-medium"><?php echo e(session('error')); ?></p>
+                    </div>
                 </div>
             </div>
         <?php endif; ?>
 
+        <!-- Validation Errors -->
         <?php if($errors->any()): ?>
-            <div class="mt-6 p-4 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg">
-                <div class="flex items-start">
-                    <i class="fas fa-exclamation-triangle text-red-500 mr-3 mt-1"></i>
-                    <div>
-                        <h4 class="font-semibold text-red-800 dark:text-red-200 mb-2">Please fix the following errors:</h4>
-                        <ul class="text-red-700 dark:text-red-300 text-sm space-y-1">
-                            <?php $__currentLoopData = $errors->all(); $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $error): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
-                                <li>• <?php echo e($error); ?></li>
-                            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
-                        </ul>
+            <div class="mt-8 max-w-2xl mx-auto">
+                <div class="bg-red-500/10 border border-red-500/30 rounded-xl p-6">
+                    <div class="flex items-start">
+                        <i class="fas fa-exclamation-triangle text-red-400 mr-3 mt-1 text-xl"></i>
+                        <div>
+                            <h4 class="font-semibold text-red-200 mb-3">Please fix the following errors:</h4>
+                            <ul class="text-red-300 space-y-2">
+                                <?php $__currentLoopData = $errors->all(); $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $error): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                    <li class="flex items-start">
+                                        <i class="fas fa-times text-red-400 mr-2 mt-1 text-sm"></i>
+                                        <?php echo e($error); ?>
+
+                                    </li>
+                                <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                            </ul>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -519,11 +381,21 @@
     </div>
 
     <!-- Loading Overlay -->
-    <div id="loading-overlay" class="loading-overlay hidden">
-        <div class="text-center">
-            <div class="loading-spinner mx-auto mb-4"></div>
-            <h3 class="text-xl font-semibold text-white mb-2">Processing Your Photo</h3>
-            <p class="text-gray-300">Please wait while we verify your image...</p>
+    <div id="loading-overlay" class="fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center z-50 hidden">
+        <div class="bg-gray-800 border border-gray-700 rounded-2xl p-8 max-w-sm w-full mx-4 shadow-2xl">
+            <div class="text-center">
+                <div class="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full mb-6">
+                    <svg class="animate-spin h-10 w-10 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                    </svg>
+                </div>
+                <h3 class="text-xl font-bold text-white mb-3">📸 Processing Your Photo</h3>
+                <p class="text-gray-300">Please wait while we verify your image...</p>
+                <div class="mt-4 w-full bg-gray-700 rounded-full h-2">
+                    <div class="bg-gradient-to-r from-blue-500 to-purple-600 h-2 rounded-full animate-pulse" style="width: 60%"></div>
+                </div>
+            </div>
         </div>
     </div>
 </div>
@@ -539,16 +411,22 @@ document.addEventListener('DOMContentLoaded', function() {
     const cameraSection = document.getElementById('camera-section');
 
     uploadTab.addEventListener('click', function() {
-        uploadTab.classList.add('active');
-        cameraTab.classList.remove('active');
+        // Update tab styles
+        uploadTab.className = 'tab-button px-6 py-3 rounded-lg font-semibold transition-all duration-200 active bg-gradient-to-r from-blue-600 to-purple-600 text-white';
+        cameraTab.className = 'tab-button px-6 py-3 rounded-lg font-semibold transition-all duration-200 text-gray-400 hover:text-white';
+
+        // Show/hide sections
         uploadSection.classList.remove('hidden');
         cameraSection.classList.add('hidden');
         stopCamera();
     });
 
     cameraTab.addEventListener('click', function() {
-        cameraTab.classList.add('active');
-        uploadTab.classList.remove('active');
+        // Update tab styles
+        cameraTab.className = 'tab-button px-6 py-3 rounded-lg font-semibold transition-all duration-200 active bg-gradient-to-r from-blue-600 to-purple-600 text-white';
+        uploadTab.className = 'tab-button px-6 py-3 rounded-lg font-semibold transition-all duration-200 text-gray-400 hover:text-white';
+
+        // Show/hide sections
         cameraSection.classList.remove('hidden');
         uploadSection.classList.add('hidden');
 

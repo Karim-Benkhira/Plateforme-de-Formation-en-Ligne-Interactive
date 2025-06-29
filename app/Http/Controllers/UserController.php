@@ -219,6 +219,26 @@ class UserController extends Controller
         }
     }
 
+    /**
+     * Handle GET requests to logout URL
+     * This provides a user-friendly way to handle direct logout URL access
+     *
+     * Two approaches available:
+     * 1. Confirmation page (more secure) - prevents accidental logouts
+     * 2. Direct logout (more convenient) - immediately logs out user
+     */
+    public function handleGetLogout(Request $request)
+    {
+        // OPTION 1: Show confirmation page (more secure)
+        // Uncomment the line below and comment out the return statement at the bottom
+        // return view('auth.logout-confirm');
+
+        // OPTION 2: Direct logout (more convenient) - CURRENTLY ACTIVE
+        // This directly logs out the user when they access /logout via GET
+        // This is safe because it requires authentication middleware
+        return $this->LogOut($request);
+    }
+
     public function LogOut(Request $request){
         try {
             // Get the user ID before logging out

@@ -283,9 +283,7 @@
                         <a href="{{ route('teacher.quizzes.create') }}" class="inline-flex items-center px-4 py-2 bg-blue-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-blue-700 active:bg-blue-800 focus:outline-none focus:border-blue-800 focus:ring focus:ring-blue-200 disabled:opacity-25 transition">
                             <i class="fas fa-plus mr-2"></i> Create Quiz
                         </a>
-                        <a href="{{ route('teacher.generate-quiz', $course->id) }}" class="inline-flex items-center px-4 py-2 bg-purple-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-purple-700 active:bg-purple-800 focus:outline-none focus:border-purple-800 focus:ring focus:ring-purple-200 disabled:opacity-25 transition">
-                            <i class="fas fa-magic mr-2"></i> AI Generate
-                        </a>
+                        <!-- AI Quiz Generation removed - now only available in student practice section -->
                     </div>
                 </div>
             @endif

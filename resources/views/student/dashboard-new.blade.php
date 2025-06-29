@@ -130,47 +130,58 @@ use Illuminate\Support\Facades\Route;
             </div>
             <div class="section-content">
                 @php
-                    $enrolledCourses = Auth::user()->enrolledCourses ?? collect();
-                    $completedCourses = $enrolledCourses->filter(function($course) {
-                        return Auth::user()->quizResults()->whereHas('quiz', function($query) use ($course) {
-                            $query->where('course_id', $course->id);
-                        })->exists();
+                    $user = Auth::user();
+                    $enrolledCourses = $user->enrolledCourses()
+                        ->wherePivot('status', 'approved')
+                        ->with(['category', 'contents', 'sections'])
+                        ->get();
+
+                    $coursesWithContent = $enrolledCourses->filter(function($course) {
+                        return $course->contents->count() > 0 || $course->sections->count() > 0;
                     });
                 @endphp
 
-                @if($completedCourses->count() > 0)
+                @if($coursesWithContent->count() > 0)
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-                        @foreach($completedCourses->take(4) as $course)
+                        @foreach($coursesWithContent->take(4) as $course)
                             <a href="{{ route('student.ai.quiz', $course->id) }}" class="action-card bg-gradient-to-r from-purple-900 to-indigo-900 hover:from-purple-800 hover:to-indigo-800">
                                 <div class="action-icon">
                                     <i class="fas fa-brain text-purple-300"></i>
                                 </div>
                                 <div>
                                     <h3 class="action-title">{{ Str::limit($course->title, 20) }}</h3>
-                                    <p class="action-description">Take AI Quiz</p>
+                                    <p class="action-description">AI Practice Quiz</p>
                                 </div>
                             </a>
                         @endforeach
                     </div>
 
-                    @if($completedCourses->count() > 4)
-                        <div class="text-center">
-                            <p class="text-gray-400 text-sm">And {{ $completedCourses->count() - 4 }} more courses available for practice</p>
-                        </div>
-                    @endif
+                    <div class="text-center">
+                        @if($coursesWithContent->count() > 4)
+                            <p class="text-gray-400 text-sm mb-3">And {{ $coursesWithContent->count() - 4 }} more courses available for practice</p>
+                        @endif
+                        <a href="{{ route('student.ai.practice') }}"
+                           class="btn-primary">
+                            <i class="fas fa-robot mr-2"></i>
+                            View All AI Practice
+                        </a>
+                    </div>
                 @else
                     <div class="text-center py-6">
                         <div class="inline-flex items-center justify-center w-16 h-16 rounded-full bg-purple-900 mb-4">
                             <i class="fas fa-robot text-purple-400 text-2xl"></i>
                         </div>
-                        <p class="text-gray-400">Complete a course quiz to unlock AI practice questions</p>
-                        <p class="text-sm text-gray-500 mt-2">Finish your first quiz to start practicing with AI-generated questions</p>
+                        <p class="text-gray-400">Enroll in courses to unlock AI practice questions</p>
+                        <p class="text-sm text-gray-500 mt-2">Get approved for courses with content to start practicing with AI-generated questions</p>
 
-                        <!-- Test Button -->
-                        <div class="mt-4">
-                            <a href="{{ route('student.test.practice') }}"
+                        <div class="mt-4 space-x-3">
+                            <a href="{{ route('student.courses') }}"
+                               class="bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-lg transition-all duration-200 inline-flex items-center">
+                                <i class="fas fa-search mr-2"></i> Browse Courses
+                            </a>
+                            <a href="{{ route('student.ai.practice') }}"
                                class="bg-purple-600 hover:bg-purple-700 text-white font-medium py-2 px-4 rounded-lg transition-all duration-200 inline-flex items-center">
-                                <i class="fas fa-flask mr-2"></i> Test AI Practice Questions
+                                <i class="fas fa-robot mr-2"></i> AI Practice Center
                             </a>
                         </div>
                     </div>

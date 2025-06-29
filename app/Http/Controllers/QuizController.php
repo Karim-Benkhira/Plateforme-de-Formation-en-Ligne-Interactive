@@ -7,7 +7,6 @@ use App\Models\Course;
 use App\Models\Quiz;
 use App\Models\Question;
 use App\Models\QuizResult;
-use App\Services\AIQuizService;
 use Illuminate\Support\Facades\Log;
 
 class QuizController extends Controller
@@ -398,138 +397,9 @@ class QuizController extends Controller
         ]);
     }
 
-    /**
-     * Show the form for generating AI quiz
-     *
-     * @param int $courseId
-     * @return \Illuminate\View\View
-     */
-    public function showGenerateAIQuiz($courseId)
-    {
-        $course = Course::findOrFail($courseId);
+    // AI Quiz Generation methods removed - functionality moved to student AI practice section
 
-        // Determine the view based on user role
-        if (auth()->user()->role === 'admin') {
-            return view('admin.generateAIQuiz-new', compact('course'));
-        } else {
-            return view('teacher.generateAIQuiz', compact('course'));
-        }
-    }
 
-    /**
-     * Generate quiz using AI
-     *
-     * @param Request $request
-     * @param int $courseId
-     * @return \Illuminate\Http\RedirectResponse
-     */
-    public function generateAIQuiz(Request $request, $courseId)
-    {
-        $request->validate([
-            'name' => 'required|string|max:255',
-            'num_questions' => 'required|integer|min:1|max:20',
-            'difficulty' => 'required|in:easy,medium,hard',
-            'question_type' => 'required|in:multiple_choice,true_false,short_answer',
-        ]);
 
-        try {
-            $course = Course::findOrFail($courseId);
 
-            // Create the quiz
-            $quiz = new Quiz();
-            $quiz->name = $request->name;
-            $quiz->course_id = $courseId;
-            $quiz->is_ai_generated = true;
-            $quiz->save();
-
-            // Generate questions using AI
-            $aiQuizService = new AIQuizService();
-            $result = $aiQuizService->generateQuiz(
-                $course,
-                $request->num_questions,
-                $request->difficulty,
-                $request->question_type
-            );
-
-            if (!$result['success']) {
-                return redirect()->back()->withErrors(['ai_error' => $result['message']])->withInput();
-            }
-
-            // Save the generated questions
-            $success = $aiQuizService->saveQuizQuestions($quiz, $result['data'], $request->question_type);
-
-            if (!$success) {
-                return redirect()->back()->withErrors(['db_error' => 'Failed to save generated questions.'])->withInput();
-            }
-
-            // Determine the redirect route based on user role
-            $redirectRoute = auth()->user()->role === 'admin' ? 'admin.quizQuestions' : 'teacher.quizQuestions';
-
-            return redirect()->route($redirectRoute, $quiz->id)
-                ->with('success', 'Quiz generated successfully with AI. Review the questions below.');
-
-        } catch (\Exception $e) {
-            Log::error('Error generating AI quiz: ' . $e->getMessage());
-            return redirect()->back()->withErrors(['error' => 'An error occurred while generating the quiz: ' . $e->getMessage()])->withInput();
-        }
-    }
-
-    /**
-     * Preview AI generated questions before saving
-     *
-     * @param Request $request
-     * @param int $courseId
-     * @return \Illuminate\View\View
-     */
-    public function previewAIQuiz(Request $request, $courseId)
-    {
-        $request->validate([
-            'name' => 'required|string|max:255',
-            'num_questions' => 'required|integer|min:1|max:20',
-            'difficulty' => 'required|in:easy,medium,hard',
-            'question_type' => 'required|in:multiple_choice,true_false,short_answer',
-        ]);
-
-        try {
-            $course = Course::findOrFail($courseId);
-
-            // Generate questions using AI
-            $aiQuizService = new AIQuizService();
-            $result = $aiQuizService->generateQuiz(
-                $course,
-                $request->num_questions,
-                $request->difficulty,
-                $request->question_type
-            );
-
-            if (!$result['success']) {
-                return redirect()->back()->withErrors(['ai_error' => $result['message']])->withInput();
-            }
-
-            // Determine the view based on user role
-            if (auth()->user()->role === 'admin') {
-                return view('admin.previewAIQuiz-new', [
-                    'course' => $course,
-                    'quizName' => $request->name,
-                    'questions' => $result['data'],
-                    'numQuestions' => $request->num_questions,
-                    'difficulty' => $request->difficulty,
-                    'questionType' => $request->question_type
-                ]);
-            } else {
-                return view('teacher.previewAIQuiz', [
-                    'course' => $course,
-                    'quizName' => $request->name,
-                    'questions' => $result['data'],
-                    'numQuestions' => $request->num_questions,
-                    'difficulty' => $request->difficulty,
-                    'questionType' => $request->question_type
-                ]);
-            }
-
-        } catch (\Exception $e) {
-            Log::error('Error previewing AI quiz: ' . $e->getMessage());
-            return redirect()->back()->withErrors(['error' => 'An error occurred while previewing the quiz: ' . $e->getMessage()])->withInput();
-        }
-    }
 }

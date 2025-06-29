@@ -170,8 +170,7 @@
                         </td>
                         <td class="px-4 py-4">
                             <div class="flex gap-2">
-                                <a href="{{ route('admin.showGenerateAIQuiz', $course->id) }}"
-                                   class="group bg-purple-900/40 hover:bg-purple-800/60 text-purple-300 border border-purple-700/50 rounded-lg px-3 py-1.5 transition-all duration-200 flex items-center tooltip-trigger">
+                                <!-- AI Quiz Generation removed - now only available in student practice section -->
                                     <i class="fas fa-robot mr-1.5 group-hover:scale-110 transition-transform duration-200"></i>
                                     <span>AI Quiz</span>
                                     <span class="tooltip-text">Generate AI Quiz</span>

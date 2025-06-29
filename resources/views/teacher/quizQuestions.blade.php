@@ -518,10 +518,7 @@
                     <i class="fas fa-plus mr-2"></i>
                     <span>Add Question Manually</span>
                 </a>
-                <a href="{{ route('teacher.generate-quiz', $quiz->course->id) }}" class="btn btn-secondary" style="min-width: 200px;">
-                    <i class="fas fa-magic mr-2"></i>
-                    <span>Generate with AI</span>
-                </a>
+                <!-- AI Quiz Generation removed - now only available in student practice section -->
             </div>
         </div>
     @endif

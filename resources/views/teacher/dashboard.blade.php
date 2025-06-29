@@ -205,24 +205,16 @@
                     <p class="text-gray-400 text-sm">Create a quiz manually with custom questions</p>
                 </a>
 
-                <a href="{{ route('teacher.courses') }}" class="bg-gray-800/50 rounded-xl p-6 border border-gray-700/50 hover:border-yellow-400/50 transition-all card-hover">
-                    <div class="flex items-start mb-4">
-                        <div class="p-3 bg-gradient-to-r from-yellow-500 to-orange-600 rounded-xl mr-4">
-                            <i class="fas fa-robot text-white text-xl"></i>
-                        </div>
-                    </div>
-                    <h3 class="text-lg font-bold text-white mb-2">AI-Generated Quiz</h3>
-                    <p class="text-gray-400 text-sm">Create quiz automatically using AI</p>
-                </a>
+                <!-- AI Quiz Generation removed - now only available in student practice section -->
 
-                <a href="{{ route('face.exam.monitoring') }}" class="bg-gray-800/50 rounded-xl p-6 border border-gray-700/50 hover:border-red-400/50 transition-all card-hover">
+                <a href="{{ route('teacher.face-verification') }}" class="bg-gray-800/50 rounded-xl p-6 border border-gray-700/50 hover:border-red-400/50 transition-all card-hover">
                     <div class="flex items-start mb-4">
                         <div class="p-3 bg-gradient-to-r from-red-500 to-pink-600 rounded-xl mr-4">
-                            <i class="fas fa-video text-white text-xl"></i>
+                            <i class="fas fa-shield-alt text-white text-xl"></i>
                         </div>
                     </div>
-                    <h3 class="text-lg font-bold text-white mb-2">Secure Exam Monitoring</h3>
-                    <p class="text-gray-400 text-sm">Monitor exams with face recognition</p>
+                    <h3 class="text-lg font-bold text-white mb-2">Face Verification Status</h3>
+                    <p class="text-gray-400 text-sm">Monitor student verification status</p>
                 </a>
             </div>
         </div>
@@ -314,12 +306,7 @@
             </div>
 
             <div class="space-y-4">
-                <div class="flex items-start p-4 bg-gray-800/50 rounded-xl border border-gray-700/50">
-                    <div class="p-2 rounded-lg bg-gradient-to-r from-yellow-500 to-orange-600 mr-3 flex-shrink-0">
-                        <i class="fas fa-robot text-white"></i>
-                    </div>
-                    <p class="text-gray-300 text-sm">Use AI to generate quizzes from your course content to save time and create diverse questions.</p>
-                </div>
+                <!-- AI Quiz Generation tip removed - now only available in student practice section -->
 
                 <div class="flex items-start p-4 bg-gray-800/50 rounded-xl border border-gray-700/50">
                     <div class="p-2 rounded-lg gradient-pink-blue mr-3 flex-shrink-0">

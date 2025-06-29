@@ -343,6 +343,42 @@ class StudentController extends UserController
         return view('student.quizRules');
     }
 
+    /**
+     * Show secure exam page - redirects to face verification if needed
+     */
+    public function showSecureExam($id)
+    {
+        $quiz = \App\Models\Quiz::with(['course', 'questions'])->findOrFail($id);
+
+        // Check if user is enrolled in the course
+        $user = auth()->user();
+        $isEnrolled = $quiz->course->users()
+            ->where('user_id', $user->id)
+            ->where('status', 'approved')
+            ->exists();
+
+        if (!$isEnrolled) {
+            return redirect()->route('student.courses')
+                ->with('error', 'You must be enrolled in this course to take the exam.');
+        }
+
+        // If quiz requires face verification, redirect to verification page
+        if ($quiz->requires_face_verification) {
+            // Check if user has uploaded a photo
+            if (!$user->hasStudentPhoto()) {
+                return redirect()->route('face-verification.photo-upload')
+                    ->with('error', 'You need to upload a photo before taking this secure exam.');
+            }
+
+            // Redirect to face verification page
+            return redirect()->route('face-verification.exam', $quiz->id)
+                ->with('info', 'Face verification is required for this secure exam.');
+        }
+
+        // If no face verification required, show the secure exam page
+        return view('student.secure-exam', compact('quiz'));
+    }
+
     public function showCourse($id) {
         $course = Course::with([
             'contents',
