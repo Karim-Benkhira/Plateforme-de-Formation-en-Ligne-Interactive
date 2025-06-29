@@ -256,8 +256,7 @@ class GeminiAIService
         }
 
         try {
-            $response = Http::timeout(30)->post($this->baseUrl . "/models/{$this->model}:generateContent", [
-                'key' => $this->apiKey,
+            $response = Http::timeout(30)->post($this->baseUrl . "/models/{$this->model}:generateContent?key=" . $this->apiKey, [
                 'contents' => [
                     [
                         'parts' => [

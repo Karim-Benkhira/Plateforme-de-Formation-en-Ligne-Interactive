@@ -1,0 +1,17 @@
+Array
+(
+    [id] => 1
+    [type] => multiple_choice
+    [question] => A developer is building a web application using Laravel.  They need to separate the application's concerns into distinct components for better organization and maintainability. Which architectural pattern does Laravel inherently utilize to achieve this separation?
+    [difficulty] => medium
+    [explanation] => Laravel explicitly uses the Model-View-Controller (MVC) architectural pattern.  This pattern separates the application into three interconnected parts: Models (data), Views (presentation), and Controllers (logic), promoting better code organization and maintainability.
+    [options] => Array
+        (
+            [0] => A) Model-View-Controller (MVC)
+            [1] => B) Model-View-Presenter (MVP)
+            [2] => C) Model-View-ViewModel (MVVM)
+            [3] => D) Presentation-Abstraction-Control (PAC)
+        )
+
+    [correct_answer] => A
+)
